@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[TortoiseGit代码版本还原方法]]></title>
+    <url>%2F2018%2F07%2F31%2FTortoiseGit%E4%BB%A3%E7%A0%81%E7%89%88%E6%9C%AC%E8%BF%98%E5%8E%9F%E6%96%B9%E6%B3%95%2F</url>
+    <content type="text"><![CDATA[TortoiseGit代码版本还原方法 参考文章：Git 代码版本还原方法 在使用 Git 管理自己的代码和资料时，难免会遇到意料之外的事。比如误操作，将当前的分支删除；或者重置到某个版本，然后发现自己想要的代码找不到了；又或者需要还原到之前提交的某个版本，但是那个版本已经被重置过，在历史中找不到了。 忙活了大半天，发现辛苦换来的成果都没了，遇到这种情况几乎是要崩溃的，不过幸好我们还有 Git。 一般情况下，如果在版本的分支历史上，还可以找到想要的那个版本，那通常比较简单，只要选择重置到该版本就可以了。 重置类型有三种模式可供选择，soft、mixed 和 hard 的区别如下： soft 不改动工作区和索引假设有一些 commits1A - B - C (master) HEAD 指向 C， 并且暂存区（stage，或称为 index）matches C. 当使用 git reset --soft B 时，master 和 HEAD 指向 B，但是依然保留了 C 添加跟踪的文件，此时会将这些文件放入暂存区中，显示为已缓存。同时工作区中修改的文件，显示为未缓存。 mixed 保持工作区不变，重置索引当使用 git reset --mixed B 时，master 和 HEAD 指向 B，这时候 C 添加跟踪的文件仍然会在，但是会显示为未缓存（不是版本控制），而当前工作目录中的修改内容，仍然会在，显示未缓存的状态 （如果不知道怎么选，默认使用 mixed） hard 重置索引和工作区（丢弃所有本地变更）当使用 git reset --hard B 时，C 添加跟踪的文件，以及当前工作目录中的修改内容，都会丢失。 如果比较悲剧，分支历史上已经找不到想要的那个版本的代码了，但是别急，只要是有提交的代码，Git 都能找回来。 命令行操作查看引用记录1git reflog 会输出类似如下的内容，所有的提交记录都能看到123456789101122d3349 HEAD@&#123;0&#125;: checkout: moving from develop to master22d3349 HEAD@&#123;1&#125;: rebase -i (finish): returning to refs/heads/develop22d3349 HEAD@&#123;2&#125;: rebase -i (start): checkout 22d3349f671986 HEAD@&#123;3&#125;: checkout: moving from master to develop22d3349 HEAD@&#123;4&#125;: checkout: moving from develop to masterf671986 HEAD@&#123;5&#125;: checkout: moving from master to develop22d3349 HEAD@&#123;6&#125;: checkout: moving from rctf to masterf671986 HEAD@&#123;7&#125;: commit: Revertf4d0f6d HEAD@&#123;8&#125;: commit: Flag22d3349 HEAD@&#123;9&#125;: checkout: moving from master to rctf22d3349 HEAD@&#123;10&#125;: commit (initial): Initial Commit 还原到指定版本1git reset --hard f4d0f6d ORIG_HEAD在 .git 目录里除了 HEAD 档案之外，还有另一个叫做ORIG_HEAD的档案，当你在做一些比较危险的操作（例如像merge，rebase 或 reset之类的），Git 就会把HEAD的状态存放在这里，让你随时可以跳回危险动作之前的状态。 虽然 git reflog 指令也可以查到相关资讯，但 reflog 的资料比较杂一点，这个 ORIG_HEAD 会更方便的找到最近一次危险动作之前的SHA-1值。用下面这个命令可以查看危险操作日志，-p 参数后面，-1 表示上一条，-2 表示上两条1git log ORIG_HEAD -p -100 输出类似如下的内容1234567891011commit f671986f9aaa4fc49d8f3eba916d7947dc9f7e46Author: xxxx &lt;xxx@example.com&gt;Date: Sun May 13 12:55:31 2018 +0800 Revertdiff --git a/flag.txt b/flag.txtdeleted file mode 100644index 82a7a33..0000000--- a/flag.txt+++ /dev/null@@ -1 +0,0 @@-xxx&#123;12345&#125; 可视化界面操作我在 Windows 下使用 TortoiseGit，只要右键找到显示引用记录，就能找到所有的操作记录，然后选择想要的版本，重置过去就可以了。即便是现在这一步的重置操作选错了版本也没事，因为这个操作也被记录下来，你还是可以重置到正确的版本。 看到这张图，是不是一股暖流涌上心头，终于找回来了。 曾经尝试过用命令来操作，但是试了很久都没成功，只好放弃，改用 TortoiseGit 来操作。TortoiseGit 在 Windows 下几乎是最好用的 Git GUI 工具了。 自从使用了 Git，只要有 commit 过的代码，再也不担心会丢了，尽情的 commit 吧。]]></content>
+      <categories>
+        <category>TortoiseGit</category>
+      </categories>
+      <tags>
+        <tag>TortoiseGit</tag>
+        <tag>代码还原</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Git-submodule用法]]></title>
     <url>%2F2018%2F07%2F26%2FGit-submodule%E7%94%A8%E6%B3%95%2F</url>
     <content type="text"><![CDATA[参考文章git的submodule功能详解 前言项目的版本库在某些情况下需要引用其他版本库中的文件，例如有一套公用的代码库，可以被多个项目调用，这个公用代码库能直接放在某个项目的代码中，而是要独立为一个代码库，那么其他要调用公用的代码库该如何处理？分别把公用的代码库拷贝到各自的项目中会造成冗余，丢弃了公共代码库的维护历史，这些显示不是好的办法，现在要了解的git子模组(git submodule)就解决了这个问题。 Git 子模块功能允许你将一个Git仓库当作另外一个Git仓库的子目录。这允许你克隆另外一个仓库到你的项目中并且保持你的提交相对独立。 准备工作首先需要两个版本库例如：1) 一个公共的版本库(例如：libA.git)git@gitlab.szreach.com:fengyang/liba.git 2) 一个引用公共版本库的主版本库(例如：super.git)git@gitlab.szreach.com:fengyang/super.git TortoiseGit上git submodule功能实现添加子模组的步骤####第一步：使用submodule add…添加子模组在需要作添加子模组的Git版本库中右击，选择“TortoiseGit-&gt;Submodule Add…”，在“Repository:”里面输入需要添加子模组的版本库路径，在“Path：”中输入添加子模组存放的目录路径。如下图所示： 此时查看需要添加子模组的Git工作区的目录结构。在根目录下多了一个.gitmodules文件，并且公共代码库被克隆到lib/lib_a目录下。 ####第二步：查看.gitmodules的内容.gitmodules的内容记录着含子模组存放的目录路径及子模组版本库的路径 注：此时工作区尚未提交，完成提交后，子模组才算正式完成在需要作添加子模组的Git版本库中创立。 注：此主版本库(super.git)就变成了一个包含子模组的版本库。 克隆带子模组的版本库的步骤克隆带子模组的git库，并不能自动将子模组的版本库克隆出来，对于只关心项目本身的数据，而不关心项目引用的外部项目数据的用户，这个功能非常好，数据没有冗余而且克隆的速度也很快。 第一步：克隆super主版本库在工作区中克隆主主版本库后，会发现子模组的版本库并没有克隆，只有将存放子模组版本库的目录克隆下来了。 存放子模组版本库的目录路径 第二步：克隆子模组如果需要克隆出子模组形式引用的外部库，首先需要执行Submodule Update操作。 在需要作克隆子模组的Git工作区中右击，选择“TortoiseGit-&gt;Submodule Update…”,点击“OK”即可。 执行Submodule Update…操作后就会把子模组的版本库克隆下来。 对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果1) 对主Git库工作区作commit操作当在主Git库工作区中变更到达一个适当状态时，我们需要将这些变更提交到Git库，作版本备份和跟踪。 方法： 在工作区内右击，选择“ Commit-&gt; “当前分支名称” ”，在Commit窗口中，选择需要提交的变更path，填写提交说明，点击“Ok”。 结论：在主git工作区作commit操作，只是将主Git工作区的变更历史提交到主Git本地库中，对Submodule没有任何影响。 对主Git库工作区作checkout操作当在主Git库工作区中想要切换到其他某个分支、某个tag、某个commit历史记录。 我们这里举个特殊的例子： 切换到某个commit历史记录(如在主版本库中提交子版本库的历史记录) 方法： 在Git工作区内的某目录上右击，选择“Swicht/Checkout…”在Swicht/Checkout…Checkout窗口中，在Switch to Commmit中列出需要切换的commit历史记录，在此列表中选择需要切换到的commit历史记录，以后点击“Ok”按钮。 注：由于切换到的是在主版本库中提交子版本库的那条历史记录，因此子模组中状态也会改换，也需要在子模组中执行切换。 执行Submodule Update操作即可。 对主Git库工作区作revert操作当在主Git库工作区中这次变更有错误时，就可以使用revert操作来撤销这次次操作。 方法： 在工作区内右击，选择“Revert”，在Revert窗口中，选择需要撤销的变更path，点击“Ok”。 结论：在主git工作区作revert操作，只是将主Git工作区某次的变更操作给撤销，此次操作之前的commit都会被保留，且对Submodule没有任何影响。 对主Git库工作区作push操作当在主Git库工作区中将主Git本地库的数据推送到主Git远程库中。 方法：在工作区的目录上（不要在文件上）右击，选择“Git Sync…” “Local Branch”，”Remote Branch”，“Remote URL”这3栏必须正确才能“推”数据。 结论：在主git工作区作push操作，只是将主Git本地库的变更历史推送到到主Git远程库中，对Submodule没有任何影响。 对主Git库工作区作pull操作当在主Git库工作区中将主Git远程库的拉取到主Git本地库中。 方法：在工作区的目录上（不要在文件上）右击，选择“Git Sync…” “Local Branch”，”Remote Branch”，“Remote URL”这3栏必须正确才能“拉”数据。 结论：在主git工作区作pull操作，只是将主Git远程库的变更历史拉取到到主Git本地库中，对Submodule没有任何影响。 对submodule下的内容进行修改后commit、push，对submodule目录作pull在执行Submodule Update…操作更新出子模组后，都以某个具体的提交版本进行检出，进入子模组目录，会发现其处于非跟踪状态。 显然这种情况下，如果修改lib/lib_a下的文件，提交就会丢失。下面介绍如何在检查的子模组中修改，以及如何更新子模组。 在子模组中切换到master分支(或者其他想要修改的分支)后在进行修改。 切换到master分支，然后在工作区做一些改动。 执行commit后，并且推送到子模组库中后。 回到主版本库中。 在主版本库中查看状态，在主版本库中可以看到子模组已修改，包含了更新的提交。 需要将修改提交在主版本库中进行推送。 对submodule目录作pull当子模组版本库中有新的提交历史记录，就需要做pull操作来更新。 注：对子模组库中做了pull操作，同时需要对调用子模组库的主版本库中也要做Pull操作。 如下图所示： 注意：进入子模组目录，会发现其处于非跟踪状态。显然这种情况下，如果修改lib/lib_a下的文件，提交就会丢失。提示如下： 移除Submodule第一步：用Delete(keep local) 将目录或文件命令从git的索引库中移除子模块目录方法： 在工作区内目录或文件上右击，选择“Delete(keep local)”，在Delete窗口中，点击“Remove”。 Delete(keep local)把目录lib/从git的索引库中移除,但是对目录lib/本身并不进行任何操作。 因此需要彻底删除。 第二步：删除物理文件 第三步：删除.gitmodule文件 第四步：删除.git/config的submodule配置源文件 删除如下图所示红框的部门 第五步：删除后，提交更改]]></content>
@@ -42,6 +54,10 @@
       <categories>
         <category>Qt - Gui</category>
       </categories>
+      <tags>
+        <tag>QFileSystemModel</tag>
+        <tag>Qt</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Qt中实现QThread线程同步QFtp]]></title>
@@ -50,6 +66,11 @@
       <categories>
         <category>Qt - 网络</category>
       </categories>
+      <tags>
+        <tag>Qt</tag>
+        <tag>线程</tag>
+        <tag>QThreas</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[IPC研究之QLocalServer和QLocalSocket]]></title>
