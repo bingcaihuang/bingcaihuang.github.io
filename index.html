@@ -228,9 +228,43 @@
       
 
       
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
     </ul>
   
 
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
   
 </nav>
 
@@ -371,76 +405,76 @@
 <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>首先需要两个版本库例如：<br>1) 一个公共的版本库(例如：libA.git)<br><a href="mailto:git@gitlab.szreach.com" target="_blank" rel="noopener">git@gitlab.szreach.com</a>:fengyang/liba.git</p>
 <p>2) 一个引用公共版本库的主版本库(例如：super.git)<br><a href="mailto:git@gitlab.szreach.com" target="_blank" rel="noopener">git@gitlab.szreach.com</a>:fengyang/super.git</p>
 <h2 id="TortoiseGit上git-submodule功能实现"><a href="#TortoiseGit上git-submodule功能实现" class="headerlink" title="TortoiseGit上git submodule功能实现"></a>TortoiseGit上git submodule功能实现</h2><h3 id="添加子模组的步骤"><a href="#添加子模组的步骤" class="headerlink" title="添加子模组的步骤"></a>添加子模组的步骤</h3><p>####第一步：使用submodule add…添加子模组<br>在需要作添加子模组的Git版本库中右击，选择“TortoiseGit-&gt;Submodule Add…”，在“Repository:”里面输入需要添加子模组的版本库路径，在“Path：”<br>中输入添加子模组存放的目录路径。如下图所示：</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588080598.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588080598.png" alt=""></p>
 <p>此时查看需要添加子模组的Git工作区的目录结构。在根目录下多了一个.gitmodules文件，并且公共代码库被克隆到lib/lib_a目录下。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588131524.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588131524.png" alt=""></p>
 <p>####第二步：查看.gitmodules的内容<br>.gitmodules的内容记录着含子模组存放的目录路径及子模组版本库的路径</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588172075.png" alt=""><br>注：此时工作区尚未提交，完成提交后，子模组才算正式完成在需要作添加子模组的Git版本库中创立。</p>
+<p><img src="Git-submodule用法/1532588172075.png" alt=""><br>注：此时工作区尚未提交，完成提交后，子模组才算正式完成在需要作添加子模组的Git版本库中创立。</p>
 <p>注：此主版本库(super.git)就变成了一个包含子模组的版本库。</p>
 <h3 id="克隆带子模组的版本库的步骤"><a href="#克隆带子模组的版本库的步骤" class="headerlink" title="克隆带子模组的版本库的步骤"></a>克隆带子模组的版本库的步骤</h3><p>克隆带子模组的git库，并不能自动将子模组的版本库克隆出来，对于只关心项目本身的数据，而不关心项目引用的外部项目数据的用户，这个功能非常好，数据没有冗余而且克隆的速度也很快。</p>
 <h4 id="第一步：克隆super主版本库"><a href="#第一步：克隆super主版本库" class="headerlink" title="第一步：克隆super主版本库"></a>第一步：克隆super主版本库</h4><p>在工作区中克隆主主版本库后，会发现子模组的版本库并没有克隆，只有将存放子模组版本库的目录克隆下来了。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588235376.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588235376.png" alt=""></p>
 <p>存放子模组版本库的目录路径</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588265251.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588265251.png" alt=""></p>
 <h4 id="第二步：克隆子模组"><a href="#第二步：克隆子模组" class="headerlink" title="第二步：克隆子模组"></a>第二步：克隆子模组</h4><p>如果需要克隆出子模组形式引用的外部库，首先需要执行Submodule Update操作。</p>
 <p>在需要作克隆子模组的Git工作区中右击，选择“TortoiseGit-&gt;Submodule Update…”,点击“OK”即可。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588301375.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588301375.png" alt=""></p>
 <p>执行Submodule Update…操作后就会把子模组的版本库克隆下来。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588313780.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588313780.png" alt=""></p>
 <h3 id="对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果"><a href="#对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果" class="headerlink" title="对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果"></a>对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果</h3><h4 id="1-对主Git库工作区作commit操作"><a href="#1-对主Git库工作区作commit操作" class="headerlink" title="1) 对主Git库工作区作commit操作"></a>1) 对主Git库工作区作commit操作</h4><p>当在主Git库工作区中变更到达一个适当状态时，我们需要将这些变更提交到Git库，作版本备份和跟踪。</p>
 <p>方法：</p>
 <p>在工作区内右击，选择“ Commit-&gt; “当前分支名称” ”，在Commit窗口中，选择需要提交的变更path，填写提交说明，点击“Ok”。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588398302.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588398302.png" alt=""></p>
 <p>结论：在主git工作区作commit操作，只是将主Git工作区的变更历史提交到主Git本地库中，对Submodule没有任何影响。</p>
 <h4 id="对主Git库工作区作checkout操作"><a href="#对主Git库工作区作checkout操作" class="headerlink" title="对主Git库工作区作checkout操作"></a>对主Git库工作区作checkout操作</h4><p>当在主Git库工作区中想要切换到其他某个分支、某个tag、某个commit历史记录。</p>
 <p>我们这里举个特殊的例子：</p>
 <p>切换到某个commit历史记录(如在主版本库中提交子版本库的历史记录)</p>
 <p>方法：</p>
 <p>在Git工作区内的某目录上右击，选择“Swicht/Checkout…”在Swicht/Checkout…Checkout窗口中，在Switch to Commmit中列出需要切换的commit历史记录，在此列表中选择需要切换到的commit历史记录，以后点击“Ok”按钮。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588440810.png" alt=""></p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588447419.png" alt=""></p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588452662.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588440810.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588447419.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588452662.png" alt=""></p>
 <p>注：由于切换到的是在主版本库中提交子版本库的那条历史记录，因此子模组中状态也会改换，也需要在子模组中执行切换。</p>
 <p>执行Submodule Update操作即可。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588463163.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588463163.png" alt=""></p>
 <h4 id="对主Git库工作区作revert操作"><a href="#对主Git库工作区作revert操作" class="headerlink" title="对主Git库工作区作revert操作"></a>对主Git库工作区作revert操作</h4><p>当在主Git库工作区中这次变更有错误时，就可以使用revert操作来撤销这次次操作。</p>
 <p>方法：</p>
 <p>在工作区内右击，选择“Revert”，在Revert窗口中，选择需要撤销的变更path，点击“Ok”。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588499678.png" alt=""></p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588505922.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588499678.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588505922.png" alt=""></p>
 <p>结论：在主git工作区作revert操作，只是将主Git工作区某次的变更操作给撤销，此次操作之前的commit都会被保留，且对Submodule没有任何影响。</p>
 <h4 id="对主Git库工作区作push操作"><a href="#对主Git库工作区作push操作" class="headerlink" title="对主Git库工作区作push操作"></a>对主Git库工作区作push操作</h4><p>当在主Git库工作区中将主Git本地库的数据推送到主Git远程库中。</p>
 <p>方法：在工作区的目录上（不要在文件上）右击，选择“Git Sync…”</p>
 <p>“Local Branch”，”Remote Branch”，“Remote URL”这3栏必须正确才能“推”数据。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588527148.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588527148.png" alt=""></p>
 <p>结论：在主git工作区作push操作，只是将主Git本地库的变更历史推送到到主Git远程库中，对Submodule没有任何影响。</p>
 <h4 id="对主Git库工作区作pull操作"><a href="#对主Git库工作区作pull操作" class="headerlink" title="对主Git库工作区作pull操作"></a>对主Git库工作区作pull操作</h4><p>当在主Git库工作区中将主Git远程库的拉取到主Git本地库中。</p>
 <p>方法：在工作区的目录上（不要在文件上）右击，选择“Git Sync…”</p>
 <p>“Local Branch”，”Remote Branch”，“Remote URL”这3栏必须正确才能“拉”数据。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588582483.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588582483.png" alt=""></p>
 <p>结论：在主git工作区作pull操作，只是将主Git远程库的变更历史拉取到到主Git本地库中，对Submodule没有任何影响。</p>
 <h3 id="对submodule下的内容进行修改后commit、push，对submodule目录作pull"><a href="#对submodule下的内容进行修改后commit、push，对submodule目录作pull" class="headerlink" title="对submodule下的内容进行修改后commit、push，对submodule目录作pull"></a>对submodule下的内容进行修改后commit、push，对submodule目录作pull</h3><p>在执行Submodule Update…操作更新出子模组后，都以某个具体的提交版本进行检出，进入子模组目录，会发现其处于非跟踪状态。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588613891.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588613891.png" alt=""></p>
 <p>显然这种情况下，如果修改lib/lib_a下的文件，提交就会丢失。下面介绍如何在检查的子模组中修改，以及如何更新子模组。</p>
 <p>在子模组中切换到master分支(或者其他想要修改的分支)后在进行修改。</p>
 <ul>
 <li>切换到master分支，然后在工作区做一些改动。</li>
 </ul>
-<p><img src="/2018/07/26/Git-submodule用法/1532588630623.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588630623.png" alt=""></p>
 <ul>
 <li>执行commit后，并且推送到子模组库中后。</li>
 <li>回到主版本库中。</li>
 </ul>
 <p>在主版本库中查看状态，在主版本库中可以看到子模组已修改，包含了更新的提交。</p>
 <ul>
-<li>需要将修改提交在主版本库中进行推送。<br><img src="/2018/07/26/Git-submodule用法/1532588659308.png" alt=""></li>
+<li>需要将修改提交在主版本库中进行推送。<br><img src="Git-submodule用法/1532588659308.png" alt=""></li>
 </ul>
 <h4 id="对submodule目录作pull"><a href="#对submodule目录作pull" class="headerlink" title="对submodule目录作pull"></a>对submodule目录作pull</h4><p>当子模组版本库中有新的提交历史记录，就需要做pull操作来更新。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588709532.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588709532.png" alt=""></p>
 <p>注：对子模组库中做了pull操作，同时需要对调用子模组库的主版本库中也要做Pull操作。</p>
-<p>如下图所示：<br><img src="/2018/07/26/Git-submodule用法/1532588723173.png" alt=""></p>
+<p>如下图所示：<br><img src="Git-submodule用法/1532588723173.png" alt=""></p>
 <p>注意：进入子模组目录，会发现其处于非跟踪状态。显然这种情况下，如果修改lib/lib_a下的文件，提交就会丢失。提示如下：</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588742276.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588742276.png" alt=""></p>
 <h3 id="移除Submodule"><a href="#移除Submodule" class="headerlink" title="移除Submodule"></a>移除Submodule</h3><p>第一步：用Delete(keep local) 将目录或文件命令从git的索引库中移除子模块目录<br>方法：</p>
 <p>在工作区内目录或文件上右击，选择“Delete(keep local)”，在Delete窗口中，点击“Remove”。</p>
 <p>Delete(keep local)把目录lib/从git的索引库中移除,但是对目录lib/本身并不进行任何操作。</p>
@@ -449,7 +483,7 @@
 <p>第三步：删除.gitmodule文件</p>
 <p>第四步：删除.git/config的submodule配置源文件</p>
 <p>删除如下图所示红框的部门</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588786127.png" alt=""></p>
+<p><img src="Git-submodule用法/1532588786127.png" alt=""></p>
 <p>第五步：删除后，提交更改</p>
 
           
@@ -633,12 +667,12 @@
 <p>The Cherry Pick dialog will be shown.<br>Cherry-picking in TortoiseGit is invoked from the Revision Log Dialog. Within this dialog, select the commit(s) to cherry-pick, then right-click on one of the selected commits to pop up the context menu. Select Cherry Pick this commit… (or Cherry Pick select commits… if more than one commit is selected).</p>
 <p>The Cherry Pick dialog will be shown.<br>Cherry-picking in TortoiseGit is invoked from the Revision Log Dialog. Within this dialog, select the commit(s) to cherry-pick, then right-click on one of the selected commits to pop up the context menu. Select Cherry Pick this commit… (or Cherry Pick select commits… if more than one commit is selected).</p>
 <p>The Cherry Pick dialog will be shown.</p>
-<p><img src="/2018/07/26/Git-cherry-pick用法/1532586900831.png" alt=""></p>
+<p><img src="Git-cherry-pick用法/1532586900831.png" alt=""></p>
 <p>The Cherry Pick dialog is similar to the Rebase dialog. The top table displays one line for each selected commit to cherry-pick. Buttons below it control the actions (Pick, Squash, Edit, Skip) and the order in which multiple commits are picked. Selecting a line shows the files affected by the commit.</p>
 <h2 id="git-cherry-pick-从其他分支检出指定的commit到当前分支"><a href="#git-cherry-pick-从其他分支检出指定的commit到当前分支" class="headerlink" title="git cherry-pick 从其他分支检出指定的commit到当前分支"></a>git cherry-pick 从其他分支检出指定的commit到当前分支</h2><blockquote>
 <p>参考文章：<a href="https://www.cnblogs.com/chucklu/p/4707108.html" target="_blank" rel="noopener">git cherry-pick 从其他分支检出指定的commit到当前分支</a></p>
 </blockquote>
-<p><img src="/2018/07/26/Git-cherry-pick用法/1532587081566.png" alt=""></p>
+<p><img src="Git-cherry-pick用法/1532587081566.png" alt=""></p>
 
           
         
@@ -801,8 +835,8 @@
 <h4 id="配置-Git"><a href="#配置-Git" class="headerlink" title="配置 Git"></a>配置 Git</h4><p>设置本地机器默认 commit 的昵称与 Email，姓名与 Email 只用于日志标识，实际推送到远程仓库时，要用有操作权限的账号登录。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;ehlxr&quot;</span><br><span class="line">git config --global user.email &quot;ehlxr@qq.com&quot;</span><br></pre></td></tr></table></figure>
 <h3 id="生成-SSH-keys"><a href="#生成-SSH-keys" class="headerlink" title="生成 SSH keys"></a>生成 SSH keys</h3><p><code>SSH Keys</code> 是 <code>GitHub</code> 推荐的公钥、秘钥形式验证用户合法性的机制，添加 <code>SSH Keys</code> 可以省去每次都要输入密码的步骤，下面将演示如何在本地计算机生成 <code>SSH Keys</code> 的公钥、秘钥。</p>
-<h4 id="首先打开安装的-Git-Bash"><a href="#首先打开安装的-Git-Bash" class="headerlink" title="首先打开安装的 Git Bash"></a>首先打开安装的 Git Bash</h4><p><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532412120402.png" alt=""></p>
-<p><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532412684581.png" alt=""></p>
+<h4 id="首先打开安装的-Git-Bash"><a href="#首先打开安装的-Git-Bash" class="headerlink" title="首先打开安装的 Git Bash"></a>首先打开安装的 Git Bash</h4><p><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532412120402.png" alt=""></p>
+<p><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532412684581.png" alt=""></p>
 <h4 id="运行-ssh-keygen-命令"><a href="#运行-ssh-keygen-命令" class="headerlink" title="运行 ssh-keygen 命令"></a>运行 <code>ssh-keygen</code> 命令</h4><p>输入以下命令：（替换 <code>&quot;your_email@example.com&quot;</code> 为注册时候的邮箱）</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -b 4096 -C &quot;your_email@example.com&quot;</span><br></pre></td></tr></table></figure>
 <h4 id="保存秘钥文件"><a href="#保存秘钥文件" class="headerlink" title="保存秘钥文件"></a>保存秘钥文件</h4><p>当出现以下提示时，直接敲回车键选择默认地址即可（保存私钥文件位置，默认保存在当前用户文件夹下的 .ssh 文件夹中，文件名称为 <code>id_rsa</code> ）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Enter file in which to save the key (/c/Users/lt/.ssh/id_rsa):</span><br></pre></td></tr></table></figure></p>
@@ -814,16 +848,16 @@
 <p><a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/" target="_blank" rel="noopener">Github 官网 SSH Keys 生成教程</a></p>
 <h3 id="开启-GitHub-Pages-服务"><a href="#开启-GitHub-Pages-服务" class="headerlink" title="开启 GitHub Pages 服务"></a>开启 GitHub Pages 服务</h3><p>GitHub 账户注册比较简单，注册免费使用的账户就可以了，这里就不细说了，需要注意的是尽量不要使用 126/163 邮箱注册，我在测试的时候收不到验证码，等收到验证码的时候已经第二天了，早就过期了，我使用 Gmail 和 QQ 邮箱都能很快收到验证码。</p>
 <h4 id="添加生成的-SSH-Keys-到-GitHub"><a href="#添加生成的-SSH-Keys-到-GitHub" class="headerlink" title="添加生成的 SSH Keys 到 GitHub"></a>添加生成的 SSH Keys 到 GitHub</h4><p>打开生成的 <code>SSH Keys</code> 公钥</p>
-<p><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532415720086.png" alt=""></p>
+<p><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532415720086.png" alt=""></p>
 <p>登录注册的 <code>GitHub</code> 账户，按照以下图示 <code>1</code>、<code>2</code>、<code>3</code>、<code>4</code>、<code>5</code>、<code>6</code>、<code>7</code> 步骤操作，复制公钥内容粘贴到下图<code>步骤 5</code> 的 Key 输入框中，在 <code>步骤 6</code> 输入一个标题，点击 <code>步骤 7</code> 的 <code>Add SSH key</code> 按钮，这时候会提示你输入 <code>GitHub</code> 账号密码，输入密码确认即可添加成功。</p>
-<p><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532415882177.png" alt=""></p>
-<p><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532415896392.png" alt=""></p>
+<p><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532415882177.png" alt=""></p>
+<p><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532415896392.png" alt=""></p>
 <h4 id="创建-GitHub-仓库"><a href="#创建-GitHub-仓库" class="headerlink" title="创建 GitHub 仓库"></a>创建 GitHub 仓库</h4><p>按照下图所示操作，仓库名称按照：<code>yourname.github.io</code> 格式创建，这样就可以通过 <code>yourname.github.io</code> 方式访问你的博客。如果创建名称为：<code>myblog</code> , 则博客的访问路径为 <code>yourname.github.io/myblog</code></p>
-<p><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532415968175.png" alt=""></p>
-<p><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532415978635.png" alt=""></p>
+<p><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532415968175.png" alt=""></p>
+<p><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532415978635.png" alt=""></p>
 <p>填写完仓库名称，其他选项默认，点击 <code>Create repository</code> 即可完成创建。</p>
 <h4 id="测试-GitHub-Pages-服务"><a href="#测试-GitHub-Pages-服务" class="headerlink" title="测试 GitHub Pages 服务"></a>测试 GitHub Pages 服务</h4><p>接下来在仓库根目录下创建一个 <code>index.html</code> 文件测试 <code>GitHub Pages</code> 服务是否开启成功。打开刚才创建的仓库，因为我们之前已经添加了 <code>SSH Keys</code>，所以选择复制如下图所示的 <code>SSH</code> 仓库连接</p>
-<p><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532416088608.png" alt=""></p>
+<p><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532416088608.png" alt=""></p>
 <p>在电脑磁盘创建一个文件夹（我创建在：<code>D:/lxr</code>）在 <code>Git Bash</code> 分别输入以下两条命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /d/lxr/ # 进入创建的文件夹</span><br><span class="line"></span><br><span class="line">git init # 初始化本地仓库</span><br></pre></td></tr></table></figure></p>
 <p>在本地文件夹中创建 <code>index.html</code> 文件，随便输入一些内容即可，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&lt;h1&gt;Hello World&lt;/h1&gt;&quot; &gt;&gt; index.html # 创建 index.html 文件</span><br></pre></td></tr></table></figure></p>
 <p>然后分别执行以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add index.html # 添加文件</span><br><span class="line">git commit -m &quot;create index.html&quot; # 提交文件</span><br><span class="line">git remote add origin git@github.com:ehlxr/ehlxr.github.io.git # 添加 GitHub 仓库地址，注意地址填写自己注册的 GitHub 仓库地址</span><br><span class="line">git push -u origin master # push 到 GitHub</span><br></pre></td></tr></table></figure></p>
@@ -835,27 +869,27 @@
 <p><a href="http://ehlxr.me/2016/07/30/CentOS-7-%E5%AE%89%E8%A3%85-Node-js/" target="_blank" rel="noopener">CentOS 7 安装 Node.js</a></p>
 <h3 id="Hexo-安装"><a href="#Hexo-安装" class="headerlink" title="Hexo 安装"></a>Hexo 安装</h3><p>打开 Git Bash 输入以下命令开始安装 Hexo<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure></p>
 <p>出现以下界面表示安装完成</p>
-<p><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532417026774.png" alt=""></p>
+<p><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532417026774.png" alt=""></p>
 <h3 id="Hexo配置文件的设置"><a href="#Hexo配置文件的设置" class="headerlink" title="Hexo配置文件的设置"></a>Hexo配置文件的设置</h3><p>确保你的Hexo的配置文件_config.yml里面有个这个选项配置，并将其置为true<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">post_asset_folder: true</span><br></pre></td></tr></table></figure></p>
 <p>这个功能实际上是Hexo官方文档中提到的资源文件夹功能，它的作用在于当你使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new</span><br></pre></td></tr></table></figure></p>
 <p>生成一篇新文章时，会在<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\source\_posts</span><br></pre></td></tr></table></figure></p>
-<p>目录下生成一个 文章名.md 文件外，附带生成一个与 文章名 同名的文件夹，可以用它来存放这篇文章的所有资源，比如图片，附件等<br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532503002833.png" alt=""></p>
+<p>目录下生成一个 文章名.md 文件外，附带生成一个与 文章名 同名的文件夹，可以用它来存放这篇文章的所有资源，比如图片，附件等<br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532503002833.png" alt=""></p>
 <p>有了上面的配置，再加上Atom的图片插入插件，Hexo在public文件下生成html文件时，会在相应的目录中把那文章对应的资源文件夹中的图片等附件复制过去。</p>
 <h3 id="Hexo-建站"><a href="#Hexo-建站" class="headerlink" title="Hexo 建站"></a>Hexo 建站</h3><p>安装 Hexo 完成后，在本地磁盘创建一个目录用于存放 Hexo 配置文件和博客源代码，我的 Hexo 存放在 <code>D:/Hexo</code> 目录下。</p>
 <p>分别执行下列命令，Hexo 将会在 <code>D:/Hexo</code> 新建所需要的文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 进入 D:/ehlxr 目录</span><br><span class="line">cd /d/ehlxr/</span><br><span class="line"></span><br><span class="line"># 初始化所需要的文件到 Hexo 文件夹</span><br><span class="line">hexo init Hexo</span><br><span class="line"></span><br><span class="line"># 进入 Hexo 文件夹</span><br><span class="line">cd Hexo</span><br><span class="line"></span><br><span class="line"># 安装</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure></p>
 <p>分别执行以下命令在本地进行预览</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 编译生成博文</span><br><span class="line">hexo generate</span><br><span class="line"></span><br><span class="line"># 启动Hexo服务器</span><br><span class="line">hexo server</span><br></pre></td></tr></table></figure>
-<p>出现以下画面表示服务启动成功<br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532417124357.png" alt=""></p>
-<p>打开浏览器输入 <a href="http://localhost:4000/" target="_blank" rel="noopener">http://localhost:4000/</a> 便可以看到最原始的博客了<br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532417147231.png" alt=""></p>
-<h3 id="Hexo-部署到-GitHub-Pages"><a href="#Hexo-部署到-GitHub-Pages" class="headerlink" title="Hexo 部署到 GitHub Pages"></a>Hexo 部署到 GitHub Pages</h3><p>更新 Hexo 安装文件夹中 <code>_config.yml</code> 文件，如图<br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532417205245.png" alt=""></p>
-<p>更新 <code>_config.yml</code> 文件中的 <code>deploy</code> 节点，如图所示，可添加多个地址（如一个 GitHub、Coding、oschina），<code>冒号后面要有空格，这是一个坑</code><br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532417236489.png" alt=""></p>
+<p>出现以下画面表示服务启动成功<br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532417124357.png" alt=""></p>
+<p>打开浏览器输入 <a href="http://localhost:4000/" target="_blank" rel="noopener">http://localhost:4000/</a> 便可以看到最原始的博客了<br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532417147231.png" alt=""></p>
+<h3 id="Hexo-部署到-GitHub-Pages"><a href="#Hexo-部署到-GitHub-Pages" class="headerlink" title="Hexo 部署到 GitHub Pages"></a>Hexo 部署到 GitHub Pages</h3><p>更新 Hexo 安装文件夹中 <code>_config.yml</code> 文件，如图<br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532417205245.png" alt=""></p>
+<p>更新 <code>_config.yml</code> 文件中的 <code>deploy</code> 节点，如图所示，可添加多个地址（如一个 GitHub、Coding、oschina），<code>冒号后面要有空格，这是一个坑</code><br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532417236489.png" alt=""></p>
 <p>分别执行以下命令即可完成部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save # 安装 hexo-deployer-git</span><br><span class="line"></span><br><span class="line">hexo clean # 可简写为 hexo cl</span><br><span class="line">hexo generate # 可简写为 hexo g</span><br><span class="line">hexo deploy # 可简写为 hexo d</span><br></pre></td></tr></table></figure></p>
 <p>访问 <a href="https://yourname.github.io" target="_blank" rel="noopener">https://yourname.github.io</a> 即可看到博客模板的内容，对于 Hexo 的一些详细设置可以参考 <a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">Hexo 官方文档</a> 。本站使用的 Hexo 主题是 NexT，详细设置可参考 <a href="http://theme-next.iissnan.com/" target="_blank" rel="noopener">Next 主题官方网站</a>。</p>
 <p>使用以下命令就可以新建一篇博客文章<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new &quot;开始blog，哈哈&quot;</span><br></pre></td></tr></table></figure></p>
-<p>打开 Hexo 目录下的 <code>source\_posts</code> 目录就可以看见创建的文章了，如图所示<br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532417395955.png" alt=""></p>
+<p>打开 Hexo 目录下的 <code>source\_posts</code> 目录就可以看见创建的文章了，如图所示<br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532417395955.png" alt=""></p>
 <p>文章是 MarkDown 格式文件（关于 Markdown 语法可参考 <a href="http://www.appinn.com/markdown/basic.html" target="_blank" rel="noopener">Markdown 语法说明 (简体中文版)</a>），编辑文章后保存，可以先启动本地 Hexo Server 查看效果，然后执行部署命令就完成了博客文章的发布</p>
 <p>Markdown 编辑器我推荐使用 <a href="http://soft.xiaoshujiang.com/" target="_blank" rel="noopener">小书匠</a></p>
-<p><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532417459361.png" alt=""><br>至此，使用 Hexo 基于 GitHub Pages 搭建个人博客就介绍完了。</p>
+<p><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532417459361.png" alt=""><br>至此，使用 Hexo 基于 GitHub Pages 搭建个人博客就介绍完了。</p>
 <h2 id="使用-Hexo-基于-GitHub-Pages-搭建个人博客（三）"><a href="#使用-Hexo-基于-GitHub-Pages-搭建个人博客（三）" class="headerlink" title="使用 Hexo 基于 GitHub Pages 搭建个人博客（三）"></a>使用 Hexo 基于 GitHub Pages 搭建个人博客（三）</h2><blockquote>
 <p>参考文章：<br><a href="https://ehlxr.me/2016/07/23/%E4%BD%BF%E7%94%A8Hexo%E5%9F%BA%E4%BA%8EGitHub-Pages%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%EF%BC%88%E4%BA%8C%EF%BC%89/" target="_blank" rel="noopener">使用 Hexo 基于 GitHub Pages 搭建个人博客（三）</a></p>
 </blockquote>
@@ -867,7 +901,7 @@
 <p><code>Pisces</code> Scheme 编辑 <code>themes/next/source/css/_schemes/Picses/_layout.styl</code> 文件，更改以下 <code>css</code> 选项定义值：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.header&#123; width: 1150px; &#125;</span><br><span class="line">.container .main-inner &#123; width: 1150px; &#125;</span><br><span class="line">.content-wrap &#123; width: calc(100% - 260px); &#125;</span><br></pre></td></tr></table></figure>
 <h3 id="多说评论"><a href="#多说评论" class="headerlink" title="多说评论"></a>多说评论</h3><h4 id="安装多说"><a href="#安装多说" class="headerlink" title="安装多说"></a>安装多说</h4><p>注册<a href="http://duoshuo.com/" target="_blank" rel="noopener">多说</a>，登录后在首页选择 “我要安装”。</p>
-<h4 id="创建站点"><a href="#创建站点" class="headerlink" title="创建站点"></a>创建站点</h4><p>按要求填写如下图所示表单：<br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532420084035.png" alt=""></p>
+<h4 id="创建站点"><a href="#创建站点" class="headerlink" title="创建站点"></a>创建站点</h4><p>按要求填写如下图所示表单：<br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532420084035.png" alt=""></p>
 <p>注意： <code>多说域名</code> 这一栏填写的即是你的 <code>duoshuo_shortname</code>，在下一步主题配置中需要使用到。</p>
 <h4 id="主题配置多说"><a href="#主题配置多说" class="headerlink" title="主题配置多说"></a>主题配置多说</h4><p>创建站点完成后，在 <code>主题配置文件</code> 中新增 <code>duoshuo_shortname</code> 字段，值设置成上一步创建站点中填写的 <code>多说域名</code> 即可。</p>
 <h4 id="开启多说热评文章"><a href="#开启多说热评文章" class="headerlink" title="开启多说热评文章"></a>开启多说热评文章</h4><p>在 <code>主题配置文件</code> 中，设置 <code>duoshuo_hotartical</code> 配置项的值为 <code>true</code>，即可开启多说热评文章。</p>
@@ -879,11 +913,11 @@
 <p><code>site/page_pv/uv_header</code> 和 <code>site/page_pv/uv_footer</code> 为自定义样式配置，相关的值留空时将不显示，可以使用（带特效的）font-awesome。</p>
 <h4 id="博客主题配置"><a href="#博客主题配置" class="headerlink" title="博客主题配置"></a>博客主题配置</h4><p>修改_config.yml文件<br>打开NexT主题的根目录下的_config.yml文件，修改：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">leancloud_visitors:</span><br><span class="line">  enable: true</span><br><span class="line">  app_id: #&lt;app_id&gt;</span><br><span class="line">  app_key: #&lt;app_key&gt;</span><br></pre></td></tr></table></figure></p>
 <h4 id="配置LeanCloud"><a href="#配置LeanCloud" class="headerlink" title="配置LeanCloud"></a>配置LeanCloud</h4><p>实际使用过程中LeanCloud已经改版，下面列出配置LeanCloud的过程。<br>在注册完成LeanCloud帐号并验证邮箱之后，我们就可以登录我们的LeanCloud帐号，进行一番配置之后拿到<code>AppID</code>以及<code>AppKey</code>这两个参数即可正常使用文章阅读量统计的功能了。</p>
-<h4 id="创建应用"><a href="#创建应用" class="headerlink" title="创建应用"></a>创建应用</h4><p>我们新建一个应用来专门进行博客的访问统计的数据操作。首先，打开控制台，如下图所示：<br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532422005674.png" alt=""></p>
-<p>在接下来的页面，新建的应用名称我们可以随意输入，即便是输入的不满意我们后续也是可以更改的:<br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532422123604.png" alt=""></p>
-<p>创建应用完成后，在应用列表中选择刚创建的HexoBlog应用，点击创建Class：<br>在应用的数据配置界面，左侧下划线开头的都是系统预定义好的表，为了便于区分我们新建一张表来保存我们的数据。点击左侧右上角的齿轮图标，新建Class：<br>在弹出的选项中选择创建Class来新建Class用来专门保存我们博客的文章访问量等数据:<br>点击创建Class之后，理论上来说名字可以随意取名，只要你交互代码做相应的更改即可，但是为了保证我们前面对NexT主题的修改兼容，此处的新建Class名字必须为Counter:<br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532422257257.png" alt=""></p>
+<h4 id="创建应用"><a href="#创建应用" class="headerlink" title="创建应用"></a>创建应用</h4><p>我们新建一个应用来专门进行博客的访问统计的数据操作。首先，打开控制台，如下图所示：<br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532422005674.png" alt=""></p>
+<p>在接下来的页面，新建的应用名称我们可以随意输入，即便是输入的不满意我们后续也是可以更改的:<br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532422123604.png" alt=""></p>
+<p>创建应用完成后，在应用列表中选择刚创建的HexoBlog应用，点击创建Class：<br>在应用的数据配置界面，左侧下划线开头的都是系统预定义好的表，为了便于区分我们新建一张表来保存我们的数据。点击左侧右上角的齿轮图标，新建Class：<br>在弹出的选项中选择创建Class来新建Class用来专门保存我们博客的文章访问量等数据:<br>点击创建Class之后，理论上来说名字可以随意取名，只要你交互代码做相应的更改即可，但是为了保证我们前面对NexT主题的修改兼容，此处的新建Class名字必须为Counter:<br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532422257257.png" alt=""></p>
 <p>由于LeanCloud升级了默认的ACL权限，如果你想避免后续因为权限的问题导致次数统计显示不正常，建议在此处选择无限制。</p>
-<p>创建完成之后，点击设置，选择应用Key:<br>在弹出的界面中，选择左侧的应用Key选项，即可发现我们创建应用的AppID以及AppKey，有了它，我们就有权限能够通过主题中配置好的Javascript代码与这个应用的Counter表进行数据存取操作了:<br><img src="/2018/07/24/使用Hexo基于GitHub-Pages搭建个人博客/1532422425942.png" alt=""></p>
+<p>创建完成之后，点击设置，选择应用Key:<br>在弹出的界面中，选择左侧的应用Key选项，即可发现我们创建应用的AppID以及AppKey，有了它，我们就有权限能够通过主题中配置好的Javascript代码与这个应用的Counter表进行数据存取操作了:<br><img src="使用Hexo基于GitHub-Pages搭建个人博客/1532422425942.png" alt=""></p>
 <p>复制AppID以及AppKey并在NexT主题的_config.yml文件中我们相应的位置填入即可，正确配置之后文件内容像这个样子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">leancloud_visitors:</span><br><span class="line">  enable: true</span><br><span class="line">  app_id: zB9W7fUpG8e9iQF9I018I0bj-aaaaaaaa</span><br><span class="line">  app_key: RkIarEbWMsL4NVGQPKkJaaaa</span><br></pre></td></tr></table></figure></p>
 <p>这个时候重新生成部署Hexo博客，应该就可以正常使用文章阅读量统计的功能了。需要特别说明的是：记录文章访问量的唯一标识符是文章的发布日期以及文章的标题，因此请确保这两个数值组合的唯一性，如果你更改了这两个数值，会造成文章阅读数值的清零重计。</p>
 <h3 id="设置-RSS"><a href="#设置-RSS" class="headerlink" title="设置 RSS"></a>设置 RSS</h3><h4 id="安装-hexo-generator-feed"><a href="#安装-hexo-generator-feed" class="headerlink" title="安装 hexo-generator-feed"></a>安装 hexo-generator-feed</h4><p>在站点的根目录下执行以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-feed --save</span><br></pre></td></tr></table></figure></p>
@@ -1071,7 +1105,7 @@
 </blockquote>
 <p>以前在写Markdown编辑器的时候, 写了一个基于QTreeView+QFileSystemModel的简单资源浏览器, 现在想给其增加一个rename的功能.</p>
 <p>其实实现rename还是比较简单的, 首先在QTreeView中设置setEditTriggers(QAbstractItemView::EditKeyPressed);这样就可以按键盘上的F2来来进行rename. 但是如果想做成有一个右键菜单上有rename, 如下图:</p>
-<p><img src="/2018/07/23/QFileSystemModel的应用文件浏览器/1532339361493.png" alt="浏览器"></p>
+<p><img src="QFileSystemModel的应用文件浏览器/1532339361493.png" alt="浏览器"></p>
 <p>那该怎么做呢. 这里需要加一个menu,当然并不是重点, 重点在于如何才会触发rename这个操作, 在前面我们设置好setEditTriggers之后按键盘F2是可以触发rename的.但是我们并不知道在按下F2之后发生了什么.当然我们可以完全不比理会按下F2之后发生了什么, 既然按下F2可以进行rename, 那么我们就产生一个按下F2的事件也是可以实现目的的代码片段如下:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">connect(menu_, &amp;ProjectExplorerMenu::signalRename, [this]()&#123;</span><br><span class="line">        QString path = model_-&gt;filePath(currentIndex());</span><br><span class="line">        if(path.isNull())</span><br><span class="line">        &#123;</span><br><span class="line">            qDebug() &lt;&lt; &quot;file path is null&quot;;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //真逗比但有效...</span><br><span class="line">        QKeyEvent event(QEvent::KeyPress, Qt::Key_F2, Qt::NoModifier);</span><br><span class="line">        keyPressEvent(&amp;event);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <p>这里面当menu选中rename这一项的时候发出signalRename的信号, 在对应的槽中实例化了一个QKeyEvent对象, 并将其key设置为Qt::key_F2, 即产按下F2的这个事件, 然后把这个事件传给处理键盘按下的事件过滤器keyPressEvent. 就此目标实现. 但是这样做并不是太干净,想做得更干净一点可以查QTreeView的源码. 在QTreeView的keyPressEvent中:</p>
@@ -1084,7 +1118,7 @@
 <h2 id="QFileSystemModel-QDirModel-示例代码，使用方法"><a href="#QFileSystemModel-QDirModel-示例代码，使用方法" class="headerlink" title="QFileSystemModel QDirModel 示例代码，使用方法"></a>QFileSystemModel QDirModel 示例代码，使用方法</h2><blockquote>
 <p>参考文章：<br><a href="http://www.cnblogs.com/xj626852095/p/3648210.html" target="_blank" rel="noopener">QFileSystemModel QDirModel 示例代码， 使用方法</a></p>
 </blockquote>
-<h3 id="QFileSystemModel-查看，添加和删除目录"><a href="#QFileSystemModel-查看，添加和删除目录" class="headerlink" title="QFileSystemModel 查看，添加和删除目录"></a>QFileSystemModel 查看，添加和删除目录</h3><p><img src="/2018/07/23/QFileSystemModel的应用文件浏览器/1532339432098.png" alt="浏览器"></p>
+<h3 id="QFileSystemModel-查看，添加和删除目录"><a href="#QFileSystemModel-查看，添加和删除目录" class="headerlink" title="QFileSystemModel 查看，添加和删除目录"></a>QFileSystemModel 查看，添加和删除目录</h3><p><img src="QFileSystemModel的应用文件浏览器/1532339432098.png" alt="浏览器"></p>
 <h3 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h3><p>dialog.h</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#ifndef DIALOG_H  </span><br><span class="line">#define DIALOG_H  </span><br><span class="line"></span><br><span class="line">#include &lt;QDialog&gt;  </span><br><span class="line">#include &lt;QtGui&gt;  </span><br><span class="line"></span><br><span class="line">class Dialog : public QDialog  </span><br><span class="line">&#123;  </span><br><span class="line">    Q_OBJECT  </span><br><span class="line"></span><br><span class="line">public:  </span><br><span class="line">    Dialog(QWidget *parent = 0);  </span><br><span class="line"></span><br><span class="line">private slots:  </span><br><span class="line">    void createDirectory();  </span><br><span class="line">    void remove();  </span><br><span class="line"></span><br><span class="line">private:  </span><br><span class="line">    QFileSystemModel *model;  </span><br><span class="line">    QTreeView *treeView;  </span><br><span class="line"></span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">#endif // DIALOG_H</span><br></pre></td></tr></table></figure>
 <p>dialog.cpp</p>
@@ -1107,7 +1141,7 @@
 <p>参考文章：<br><a href="https://stackoverflow.com/questions/28087514/how-to-make-browse-for-folder-dialog" target="_blank" rel="noopener">How to make “Browse for folder” dialog?</a></p>
 </blockquote>
 <p>I’m trying to make a folder selection dialog which looks like this:</p>
-<p><img src="/2018/07/23/QFileSystemModel的应用文件浏览器/1532339460459.png" alt="浏览器"></p>
+<p><img src="QFileSystemModel的应用文件浏览器/1532339460459.png" alt="浏览器"></p>
 <p>The images come from this thread: can the Open File dialog be used to select a Folder?</p>
 <p>I tried both QFileDialog::getExistingDirectory() and making an instance of QFileDialog and setting the properties. It just shows the Open File dialog with hidden files.</p>
 <p>Header file:</p>
@@ -1117,7 +1151,7 @@
 <h2 id="QTreeView和QFileSystemModel"><a href="#QTreeView和QFileSystemModel" class="headerlink" title="QTreeView和QFileSystemModel"></a>QTreeView和QFileSystemModel</h2><blockquote>
 <p>参考文章：<br><a href="https://blog.csdn.net/teng_ontheway/article/details/18140905" target="_blank" rel="noopener">QTreeView和QFileSystemModel</a></p>
 </blockquote>
-<p>用Qt来显示一个文件目录是很简单的，如下：<br>例子1：查找显示所有的图片<br><img src="/2018/07/23/QFileSystemModel的应用文件浏览器/1527765372474.png" alt="Alt text"></p>
+<p>用Qt来显示一个文件目录是很简单的，如下：<br>例子1：查找显示所有的图片<br><img src="./1527765372474.png" alt="Alt text"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">QFileSystemModel *model = new QFileSystemModel();  </span><br><span class="line">    model-&gt;setRootPath(&quot;/&quot;);  </span><br><span class="line">    //model-&gt;setFilter(QDir::Dirs|QDir::NoDotAndDotDot);        //只显示文件夹  </span><br><span class="line"></span><br><span class="line">    // 设置过滤器  </span><br><span class="line">    QStringList filter;  </span><br><span class="line">    filter &lt;&lt; &quot;*.png&quot; &lt;&lt; &quot;*.jpg&quot; &lt;&lt; &quot;*.bmp&quot; &lt;&lt; &quot;*.gif&quot;;  </span><br><span class="line">    model-&gt;setNameFilters(filter);  </span><br><span class="line"></span><br><span class="line">    // 没有通过过滤器的文件disable还是隐藏,true为disable false为隐藏  </span><br><span class="line">    model-&gt;setNameFilterDisables(false);  </span><br><span class="line"></span><br><span class="line">    mTreeView = new QTreeView();  </span><br><span class="line">    mTreeView-&gt;setAnimated(false);  </span><br><span class="line">    mTreeView-&gt;setSortingEnabled(true);  </span><br><span class="line">    mTreeView-&gt;setModel(model);</span><br></pre></td></tr></table></figure>
 <ol>
 <li>QDirModel已经不建议使用了，应使用QFileSystemModel</li>
@@ -1126,7 +1160,7 @@
 <li>setNameFilterDisables这个效果如下图：</li>
 </ol>
 <p>setNameFilterDisables(false)表示不符合名字过滤要求的隐藏而不是disable</p>
-<p>例子2：创建一个简单的可以添加文件夹删除文件夹的资源管理<br><img src="/2018/07/23/QFileSystemModel的应用文件浏览器/1527765419822.png" alt="Alt text"></p>
+<p>例子2：创建一个简单的可以添加文件夹删除文件夹的资源管理<br><img src="./1527765419822.png" alt="Alt text"></p>
 <p>实现也很简单：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">model = new QFileSystemModel();  </span><br><span class="line">model-&gt;setRootPath(QDir::currentPath());  </span><br><span class="line"></span><br><span class="line">mTreeView = new QTreeView();  </span><br><span class="line">mTreeView-&gt;setAnimated(false);  </span><br><span class="line">mTreeView-&gt;setSortingEnabled(true);  </span><br><span class="line">mTreeView-&gt;setModel(model);  </span><br><span class="line">mTreeView-&gt;setRootIndex(model-&gt;index(QDir::currentPath()));  </span><br><span class="line"></span><br><span class="line">QPushButton* mkdirButton = new QPushButton(tr(&quot;Make directory&quot;), this);  </span><br><span class="line">QPushButton* rmButton = new QPushButton(tr(&quot;Remove&quot;), this);  </span><br><span class="line">QHBoxLayout* buttonLayout = new QHBoxLayout;  </span><br><span class="line">buttonLayout-&gt;addWidget(mkdirButton);  </span><br><span class="line">buttonLayout-&gt;addWidget(rmButton);  </span><br><span class="line"></span><br><span class="line">QVBoxLayout* layout = new QVBoxLayout();  </span><br><span class="line">layout-&gt;addWidget(mTreeView);  </span><br><span class="line">layout-&gt;addLayout(buttonLayout);  </span><br><span class="line"></span><br><span class="line">setLayout(layout);  </span><br><span class="line">setWindowTitle(&quot;File system...&quot;);  </span><br><span class="line">resize(960,640);  </span><br><span class="line"></span><br><span class="line">//connect(mTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_treeView_doubleClicked(QModelIndex)));  </span><br><span class="line">connect(mkdirButton, SIGNAL(clicked()), this, SLOT(mkdir()));  </span><br><span class="line">connect(rmButton, SIGNAL(clicked()), this, SLOT(rm()));</span><br></pre></td></tr></table></figure>
 <p>添加目录：</p>
@@ -1766,6 +1800,323 @@
 
 
   
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
 
 
 
