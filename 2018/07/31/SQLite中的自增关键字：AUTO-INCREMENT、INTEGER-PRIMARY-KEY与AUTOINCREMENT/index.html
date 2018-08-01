@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENTSQLite不支持关键字AUTO_INCREMENTAUTO_INCREMENT不生效的问题SQL语句：123456CREATE TABLE todo(    id INTEGER AUTO_INCREMENT,    title TEXT,    PRIMARY KEY (">
+<meta name="description" content="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT 参考文章：SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT  SQLite不支持关键字AUTO_INCREMENTAUTO_INCREMENT不生效的问题SQL语句：123456CREATE TAB">
 <meta name="keywords" content="SQL,Sqlite">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT">
 <meta property="og:url" content="http://yoursite.com/2018/07/31/SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT/index.html">
 <meta property="og:site_name" content="BingcaiHuang&#39;s Blog">
-<meta property="og:description" content="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENTSQLite不支持关键字AUTO_INCREMENTAUTO_INCREMENT不生效的问题SQL语句：123456CREATE TABLE todo(    id INTEGER AUTO_INCREMENT,    title TEXT,    PRIMARY KEY (">
+<meta property="og:description" content="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT 参考文章：SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT  SQLite不支持关键字AUTO_INCREMENTAUTO_INCREMENT不生效的问题SQL语句：123456CREATE TAB">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-01T00:53:59.349Z">
+<meta property="og:updated_time" content="2018-08-01T03:16:23.077Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT">
-<meta name="twitter:description" content="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENTSQLite不支持关键字AUTO_INCREMENTAUTO_INCREMENT不生效的问题SQL语句：123456CREATE TABLE todo(    id INTEGER AUTO_INCREMENT,    title TEXT,    PRIMARY KEY (">
+<meta name="twitter:description" content="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT 参考文章：SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT  SQLite不支持关键字AUTO_INCREMENTAUTO_INCREMENT不生效的问题SQL语句：123456CREATE TAB">
 
 
 
@@ -397,7 +397,10 @@
       
 
       
-        <h2 id="SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT"><a href="#SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT" class="headerlink" title="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT"></a>SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT</h2><h3 id="SQLite不支持关键字AUTO-INCREMENT"><a href="#SQLite不支持关键字AUTO-INCREMENT" class="headerlink" title="SQLite不支持关键字AUTO_INCREMENT"></a>SQLite不支持关键字AUTO_INCREMENT</h3><h4 id="AUTO-INCREMENT不生效的问题"><a href="#AUTO-INCREMENT不生效的问题" class="headerlink" title="AUTO_INCREMENT不生效的问题"></a>AUTO_INCREMENT不生效的问题</h4><p>SQL语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER AUTO_INCREMENT,</span><br><span class="line">    title TEXT,</span><br><span class="line">    PRIMARY KEY (id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
+        <h2 id="SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT"><a href="#SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT" class="headerlink" title="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT"></a>SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT</h2><blockquote>
+<p>参考文章：<a href="https://www.cnblogs.com/russellluo/p/3186786.html" target="_blank" rel="noopener">SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT</a></p>
+</blockquote>
+<h3 id="SQLite不支持关键字AUTO-INCREMENT"><a href="#SQLite不支持关键字AUTO-INCREMENT" class="headerlink" title="SQLite不支持关键字AUTO_INCREMENT"></a>SQLite不支持关键字AUTO_INCREMENT</h3><h4 id="AUTO-INCREMENT不生效的问题"><a href="#AUTO-INCREMENT不生效的问题" class="headerlink" title="AUTO_INCREMENT不生效的问题"></a>AUTO_INCREMENT不生效的问题</h4><p>SQL语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER AUTO_INCREMENT,</span><br><span class="line">    title TEXT,</span><br><span class="line">    PRIMARY KEY (id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
 <p>问题描述：按照上述SQL语句创建表todo，用INSERT INTO todo (title) VALUES (‘xxx’)插入记录，但查询该记录后得到的id为NULL（即Python中的None）</p>
 <p>实验脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- encoding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import sqlite3</span><br><span class="line">con = sqlite3.connect(&quot;:memory:&quot;)</span><br><span class="line"></span><br><span class="line"># 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER AUTO_INCREMENT,</span><br><span class="line">    title TEXT,</span><br><span class="line">    PRIMARY KEY (id)</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"></span><br><span class="line"># 插入记录</span><br><span class="line">con.execute(&quot;INSERT INTO todo (title) VALUES (&apos;shopping&apos;);&quot;)</span><br><span class="line"></span><br><span class="line"># 查询记录</span><br><span class="line">for row in con.execute(&quot;SELECT * FROM todo&quot;):</span><br><span class="line">    print row</span><br></pre></td></tr></table></figure></p>
 <p>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ python auto_increment_null.py</span><br><span class="line">(None, u&apos;shopping&apos;)</span><br></pre></td></tr></table></figure></p>
@@ -461,6 +464,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/01/C-新特性学习/" rel="prev" title="C++新特性学习">
+                C++新特性学习 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -537,7 +544,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -548,7 +555,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -559,7 +566,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
