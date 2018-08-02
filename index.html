@@ -293,6 +293,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/02/Qt程序启动画面QSplashScreen/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/02/Qt程序启动画面QSplashScreen/" itemprop="url">Qt程序启动画面QSplashScreen</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-02T08:24:17+08:00">
+                2018-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/02/Qt程序启动画面QSplashScreen/" class="leancloud_visitors" data-flag-title="Qt程序启动画面QSplashScreen">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Qt程序启动画面QSplashScreen"><a href="#Qt程序启动画面QSplashScreen" class="headerlink" title="Qt程序启动画面QSplashScreen"></a>Qt程序启动画面QSplashScreen</h2><p>关于Qt程序启动画面QSplashScreen类的使用，Qt官方文档给出的例子是用于显示静态图片的，帮助文档中有这样一段话：</p>
+<blockquote>
+<p>The user can hide the splash screen by clicking on it with the mouse. Since the splash screen is typically displayed before the event loop has started running, it is necessary to periodically call QApplication::processEvents() to receive the mouse clicks.</p>
+</blockquote>
+<p>翻译成中文意思是：用户可以点击隐藏启动画面，但由于启动界面在系统事件循环开始之前已经显示，需要周期性的调用QApplication::processEvents()，强制事件循环投递事件，达到接受并处理鼠标事件的目的。<br>意思是QSplashScreen启动时，系统事件循环还没有真正跑起来，用户需要手动强制事件循环，对于需要在启动界面中显示进度条、显示动画、或者显示QMovie的操作，这个处理就显得非常有必要，否则上述的几项操作，在缺少事件循环投递的情况下，只会显示成静态图片或者根本没效果。<br>查询资料只有stackoverflow上有比较详细的例子，参考以下两文章</p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/18334499/showing-a-qmovie-in-qsplashscreen" target="_blank" rel="noopener">Showing a QMovie in QSplashScreen</a><br><a href="https://stackoverflow.com/questions/12682888/qt-c-aligning-qprogressbar-inside-a-qsplashscreen" target="_blank" rel="noopener">Qt C++ - Aligning QProgressBar inside a QSplashScreen</a></p>
+</blockquote>
+<p>第一篇文章作者通过代码调试，发现只显示了一帧画面，就是时间循环没启动导致的。往下有个给出了解决方案，摘录有用的部分如下：</p>
+<blockquote>
+<p>Problem is quite profound. To have animation working you have to allow process events in main thread. On other hand initialization process is also performed on main thread.<br>First approach is add those app.processEvents() as often as possible but this will limit frame rate so badly that it is useless.</p>
+</blockquote>
+<p>翻译如下：要使动画正常播放，必须令主线程的事件正常投递，另一方面初始化处理依然在主线程中执行，常用的方法是主动调用app.processEvents()，但这种方法极大的限制了帧率。</p>
+<blockquote>
+<p>To fix it properly you have answer two important question:</p>
+<ul>
+<li>what are you doing during initialization?</li>
+<li>and can this initialization be moved to separate thread?</li>
+</ul>
+</blockquote>
+<p>翻译如下：要正确地处理必须回答以下两个问题：</p>
+<ul>
+<li>在初始化期间做了什么？</li>
+<li>这个初始化处理是否能够通过独立的线程处理？</li>
+</ul>
+<blockquote>
+<p>Once I’ve had application where during initialization large index was build. This took about 40 seconds so quite a lot. I’ve moved building index to separate thread using QtConcurrent::run(this, &amp;MyClass::MyMethodToBuildIndex) and showing some progress by emitting signals periodically from MyClass::MyMethodToBuildIndex (default automatic connection did the whole trick).<br>If you have similar log time initialization this solution will enable animation of your QMovie out of the box, problem will be just smart connection of signal and slots so windows will be shown and hidden with proper timings.</p>
+</blockquote>
+<p>翻译如下：一旦需要做耗时操作，例如建立索引等耗时超过40s的初始化，应通过QtConcurrent::run(this, &amp;MyClass::MyMethodToBuildIndex)把处理转移到子线程中执行，并通过周期性的信号方式通知前台UI显示进度。</p>
+<p>示例代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    QApplication app(argc, argv);</span><br><span class="line">    SplashScreen splash();</span><br><span class="line">    splash.show();</span><br><span class="line">    app.processEvents(); // need to process events manually</span><br><span class="line"></span><br><span class="line">    QMainWindow window;</span><br><span class="line">    SomeLogicClass data;</span><br><span class="line">    window.setData(&amp;data);</span><br><span class="line"></span><br><span class="line">    connect(&amp;data, SIGNAL(initializationProgressChanged(int)),</span><br><span class="line">            &amp;spash, SLOT(setProgress(int)));</span><br><span class="line"></span><br><span class="line">    // show main window when initialization is finished</span><br><span class="line">    connect(&amp;data, SIGNAL(initializationFinished()),</span><br><span class="line">            &amp;window, SLOT(show()));</span><br><span class="line"></span><br><span class="line">    // close splash when initialization is finished</span><br><span class="line">    connect(&amp;data, SIGNAL(initializationFinished()),</span><br><span class="line">            &amp;spash, SLOT(close()));</span><br><span class="line"></span><br><span class="line">    // this line I usually hide behind some method like: startBackgroundInitialization</span><br><span class="line">    QtCuncurent::run(&amp;data, &amp;SomeLogicClass::heavyInitialization);</span><br><span class="line"></span><br><span class="line">    return app.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>If you need to use QSplashScreen::finish instead close then QSignalMapper can help.<br>Note that last argument of connect is default value Qt::AutoConnection which will enforce slots to be run in main thread.</p>
+</blockquote>
+<p>文章二提供了一种在启动界面中绘制进度条，并提供一接口设置进度条数值的方法：<br>sp.h:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">#ifndef SPLASHSCREEN_H</span><br><span class="line">#define SPLASHSCREEN_H</span><br><span class="line"></span><br><span class="line">#include &lt;QSplashScreen&gt;</span><br><span class="line">#include &lt;QApplication&gt;</span><br><span class="line"></span><br><span class="line">class SplashScreen : public QSplashScreen</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">public:</span><br><span class="line">    explicit SplashScreen(QApplication *app, QWidget *parent = 0);</span><br><span class="line">    int m_progress;</span><br><span class="line">    QApplication *app;</span><br><span class="line"></span><br><span class="line">public slots:</span><br><span class="line">    void setProgress(int value)</span><br><span class="line">    &#123;</span><br><span class="line">      m_progress = value;</span><br><span class="line">      if (m_progress &gt; 100)</span><br><span class="line">        m_progress = 100;</span><br><span class="line">      if (m_progress &lt; 0)</span><br><span class="line">        m_progress = 0;</span><br><span class="line">      update();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    void drawContents(QPainter *painter);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">#endif // SPLASHSCREEN_H</span><br></pre></td></tr></table></figure></p>
+<p>sp.cpp<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;sp.h&quot;</span><br><span class="line"></span><br><span class="line">SplashScreen::SplashScreen(QApplication *aApp, QWidget *parent) :</span><br><span class="line">    QSplashScreen(parent), app(aApp), m_progress(0)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    this-&gt;setPixmap(QPixmap(&quot;:/images/splashscreen.png&quot;));</span><br><span class="line">    this-&gt;setCursor(Qt::BusyCursor);</span><br><span class="line"></span><br><span class="line">    this-&gt;showMessage(&quot;Hello&quot;, Qt::AlignBottom);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void SplashScreen::drawContents(QPainter *painter)</span><br><span class="line">&#123;</span><br><span class="line">  QSplashScreen::drawContents(painter);</span><br><span class="line"></span><br><span class="line">  // Set style for progressbar...</span><br><span class="line">  QStyleOptionProgressBarV2 pbstyle;</span><br><span class="line">  pbstyle.initFrom(this);</span><br><span class="line">  pbstyle.state = QStyle::State_Enabled;</span><br><span class="line">  pbstyle.textVisible = false;</span><br><span class="line">  pbstyle.minimum = 0;</span><br><span class="line">  pbstyle.maximum = 100;</span><br><span class="line">  pbstyle.progress = m_progress;</span><br><span class="line">  pbstyle.invertedAppearance = false;</span><br><span class="line">  pbstyle.rect = QRect(0, 265, 380, 19); // Where is it.</span><br><span class="line"></span><br><span class="line">  // Draw it...</span><br><span class="line">  style()-&gt;drawControl(QStyle::CE_ProgressBar, &amp;pbstyle, painter, this);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/01/C-新特性学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2107,170 +2294,13 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/23/IPC研究之QLocalServer和QLocalSocket/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/23/IPC研究之QLocalServer和QLocalSocket/" itemprop="url">IPC研究之QLocalServer和QLocalSocket</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-23T17:10:47+08:00">
-                2018-07-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Qt-网络/" itemprop="url" rel="index">
-                    <span itemprop="name">Qt - 网络</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/07/23/IPC研究之QLocalServer和QLocalSocket/" class="leancloud_visitors" data-flag-title="IPC研究之QLocalServer和QLocalSocket">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="IPC研究之QLocalServer和QLocalSocket"><a href="#IPC研究之QLocalServer和QLocalSocket" class="headerlink" title="IPC研究之QLocalServer和QLocalSocket"></a>IPC研究之QLocalServer和QLocalSocket</h2><blockquote>
-<p>参考文章：<br><a href="http://blog.csdn.net/fldx/article/details/6254676" target="_blank" rel="noopener">IPC研究之QLocalServer和QLocalSocket</a></p>
-</blockquote>
-<p>在Qt中，提供了多种IPC方法，作者所用的是QLocalServer和QLocalSocket。看起来好像和Socket搭上点边，实则底层是windows的name pipe。这应该是支持双工通信的。</p>
-<p>QLocalServer用来监听某个管道。可以这样建立一个监听</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">QLocalServer *localServer;</span><br><span class="line">localServer = new QLocalServer(this);</span><br><span class="line">localServer-&gt;setMaxPendingConnections(MAX_CONNECTION);</span><br><span class="line"></span><br><span class="line">if (localServer-&gt;listen(&quot;commandpipe&quot;))</span><br><span class="line">&#123;</span><br><span class="line">	qDebug() &lt;&lt; &quot;listen commandpipe namepipe sucessful.&quot;;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">	qDebug() &lt;&lt; &quot;failed to listen commandpipe. &quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">connect(localServer, SIGNAL(newConnection()), this, SLOT(DealConnection()));</span><br><span class="line"></span><br><span class="line">void IPCServer::DealConnection()</span><br><span class="line">&#123;</span><br><span class="line">	QLocalSocket *socket = localServer-&gt;nextPendingConnection();</span><br><span class="line">	socket-&gt;waitForReadyRead();</span><br><span class="line">	QDataStream ds(socket);</span><br><span class="line">	ds.setVersion(QDataStream::Qt_4_6);</span><br><span class="line">	QString qstr;</span><br><span class="line">	ds &gt;&gt; qstr;</span><br><span class="line">	qDebug() &lt;&lt; &quot;Server received: &quot; &lt;&lt; qstr;</span><br><span class="line">	qDebug() &lt;&lt; &quot;Server processing...&quot;;</span><br><span class="line">	ds &lt;&lt; qstr.append(&quot; processed&quot;);</span><br><span class="line">	qDebug() &lt;&lt; &quot;Server send &quot; &lt;&lt; qstr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在这里主要采用的是QDataStream读取socket是的内容。读取完了之后，又使用这个socket再把内容转发回去。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">QLocalSocket这一块包含连接，和发送信息这一块。</span><br><span class="line">QLocalSocket _socket = new QLocalSocket(this);</span><br><span class="line">_socket-&gt;connectToServer(&quot;commandpipe&quot;);</span><br><span class="line">qDebug() &lt;&lt; &quot;socket connect to namepipe&quot;;</span><br><span class="line">QDataStream ds(_socket);</span><br><span class="line">ds.setVersion(QDataStream::Qt_4_6);</span><br><span class="line">ds &lt;&lt; QString(&quot;hello&quot;);</span><br><span class="line">_socket-&gt;waitForBytesWritten();</span><br><span class="line">qDebug() &lt;&lt; &quot;send one command&quot;;</span><br><span class="line">_socket-&gt;waitForReadyRead();</span><br><span class="line">QString bbq;</span><br><span class="line">ds &gt;&gt; bbq;</span><br><span class="line">qDebug() &lt;&lt; &quot;received servered &quot; &lt;&lt; bbq;</span><br></pre></td></tr></table></figure>
-<p>注意，这边我一开始发送的时候是使用的发送char *，但接收的时候却是用QString，结果就不对了。因为QString是unicode编码的。所以出错了。不过现在己经正常了。。。。<br>现在Shark中的Service，IPC，都己经走通了。下面主要还有编码格式，QWebKit模块，数据库模块需要完成。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -2314,7 +2344,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2325,7 +2355,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2336,7 +2366,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
