@@ -397,24 +397,18 @@
       
         
           
-            <h2 id="Qt中实现QThread线程同步QFtp"><a href="#Qt中实现QThread线程同步QFtp" class="headerlink" title="Qt中实现QThread线程同步QFtp"></a>Qt中实现QThread线程同步QFtp</h2><blockquote>
-<p>参考文章：<br><a href="http://www.educity.cn/develop/1397117.html" target="_blank" rel="noopener">Qt中实现QThread线程同步QFtp</a></p>
-</blockquote>
-<p>在Qt中实现QThread线程同步QFtp ，对于QFtp，它是一个用来实现FTP协议的类，详情查阅资料。接触Qt没有多长时间，但简单几个小例子已经让我感受到Qt在C++运用方面的强大。写了一个小程序，需要在一个单独的线程中使用QFtp来获取FTP服务器上面的文件。FTP是FileZilla。</p>
-<p>有两个问题我比较关心：</p>
-<ol>
-<li>QThread到底如何使用</li>
-<li>QFtp是Async（异步）操作，也就是说例如connectToHost这样的函数都是立刻返回，当操作完成后QFtp会发出signal。然而既然我的Ftp操作是在一个单独的线程，我想写一个函数downloadFtpFile() 来完成从connect到login到下载文件等一系列的操作，然后再返回。相当于我需要Sync（同步）的操作，所以需要等待（block）每个Ftp命令的结果。</li>
-</ol>
-<p>在该文章最后有一个推荐的使用QThread的方法。我在这里想补充一点：obj.moveToThread(&amp;thread); 这句话将obj从主线程移动到了thread对象所在的线程。但如果obj的对象里面有其他的变量，那么这些变量是在主线程中生成的。所以如果这些变量中有类变量，不能将obj的this指针作为parent传给他们。</p>
-<p>对于第二个问题，我使用了QSemaphore类来完成我的block和同步操作：在slot函数里面接收QFtp命令执行结果的signal，释放信号，同时downloadFtpFile()函数里在调用完每一个QFtp异步命令后等待信号。在有点令人失望的是QSemaphore在通过tryAcquire()等待信号的时候是不处理事件event的。但是我需要在等待的时候程序也能触发slot，告诉我当前命令的执行情况。所以我使用了一个小循环，里面调用qApp-&gt;processEvents();来让我的slot函数被触发。下面是代码例子（只是样例，并不完全符合C++语法）：</p>
-<p>首先是我的下载Ftp文件的函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">downloadFtpFile() //该函数在单独线程里执行     </span><br><span class="line">&#123;</span><br><span class="line">	int m_idFtpOp; // 该变量用来存放每一个QFtp命令ID     </span><br><span class="line">	int nVal;</span><br><span class="line">	QFtp*pFtp = newQFtp(this); // 生成QFtp工具对象     </span><br><span class="line">	connect(pFtp, SIGNAL(listInfo(QUrlInfo)), this, SLOT(slotFtpListInfo(QUrlInfo))); // 我们需要listinfo，因为我们需要下载ftp所有当前目录文件     </span><br><span class="line">	connect(pFtp, SIGNAL(commandFinished(int, bool)), this, SLOT(slotFtpCmdFinished(int, bool)));</span><br><span class="line">	// 每个QFtp命令完成之后，会发出commandFinished信号，我们在槽函数中处理该信号  </span><br><span class="line">	m_idFtpOp = pFtp-&gt;connectToHost(&lt;FTP地址&gt;, 21); // 连接到远程FTP Server     </span><br><span class="line">	bRet = false;</span><br><span class="line">	nVal = 100;</span><br><span class="line">	while (bRet == false) // 使用nVal变量来做一个10000ms（10s）的超时     </span><br><span class="line">	&#123;</span><br><span class="line">		nVal--;</span><br><span class="line">		if (nVal == 0)</span><br><span class="line">			break;</span><br><span class="line">		qApp-&gt;processEvents();   // 这里每100ms处理一次event，使slot函数能够被调用     </span><br><span class="line">		bRet = m_SemOp.tryAcquire(1, 100); // 等待信号100ms     </span><br><span class="line">	&#125;</span><br><span class="line">	if (!bRet || m_bFtpOpError)   // 如果超时，或者slot函数中将m_bFtpOpError置成true，则关闭Ftp，返回错误     </span><br><span class="line">	&#123;</span><br><span class="line">		pFtp-&gt;abort();</span><br><span class="line">		pFtp-&gt;deleteLater();</span><br><span class="line">		return ERRCODE_FCC_FTP_CONN_TIMEOUT;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">下面是槽函数</span><br><span class="line"></span><br><span class="line">slotFtpCmdFinished(int id, bool error)</span><br><span class="line">&#123;</span><br><span class="line">	if (m_idFtpOp == id)  // 如果返回的id是当前正在操作的命令     </span><br><span class="line">	&#123;</span><br><span class="line">		if (error)</span><br><span class="line">			m_bFtpOpError = true;</span><br><span class="line">		else</span><br><span class="line">			m_bFtpOpError = false;</span><br><span class="line">		m_SemOp.release();  // 释放信号（使downloadFtpFile函数中m_SemOp.tryAcquire()返回true）     </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>以上的代码只演示了对QFtp第一个命令connectToHost的等待过程。下面的login，list，get等操作都使用这个方法。</p>
-<p>注意：在此例中，QFtp是在当前线程生成的，所以信号listInfo(QUrlInfo)的connect方式是direct连接。如果QFtp是在另一个线程生成（比如说是在函数downloadFtpFile所在类的构造函数中），那么第一：不能将this指针作为parent传给QFtp对象，第二：需要使用qRegisterMetaType<qurlinfo>(“QUrlInfo”);来注册QUrlInfo类，因为信号发射与接收在不通的线程中，信号使用queued的方式。如果不注册QURlInfo类，会在运行时动态报告错误。</qurlinfo></p>
-<p>总结：本文介绍的是在Qt中如何实现QThread线程同步QFtp ，看过本文之后，如果对于QThread不了解的话，那么请参考Qt中QThread使用方法这篇文章。使用本文介绍的方法，可以在独立的线程中用同步的方式使用QFtp。在某些场合，尤其是采用应答机制的系统中，这样的实现可以很大程度上简化程序流程。</p>
+          Qt中实现QThread线程同步QFtp
+参考文章：Qt中实现QThread线程同步QFtp
 
-          
+在Qt中实现QThread线程同步QFtp ，对于QFtp，它是一个用来实现FTP协议的类，详情查阅资料。接触Qt没有多长时间，但简单几个小例子已经让我感受到Qt在C++运用方面的强大。写了一个小程序，需
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/07/23/Qt中实现QThread线程同步QFtp/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -565,17 +559,18 @@
       
         
           
-            <h2 id="IPC研究之QLocalServer和QLocalSocket"><a href="#IPC研究之QLocalServer和QLocalSocket" class="headerlink" title="IPC研究之QLocalServer和QLocalSocket"></a>IPC研究之QLocalServer和QLocalSocket</h2><blockquote>
-<p>参考文章：<br><a href="http://blog.csdn.net/fldx/article/details/6254676" target="_blank" rel="noopener">IPC研究之QLocalServer和QLocalSocket</a></p>
-</blockquote>
-<p>在Qt中，提供了多种IPC方法，作者所用的是QLocalServer和QLocalSocket。看起来好像和Socket搭上点边，实则底层是windows的name pipe。这应该是支持双工通信的。</p>
-<p>QLocalServer用来监听某个管道。可以这样建立一个监听</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">QLocalServer *localServer;</span><br><span class="line">localServer = new QLocalServer(this);</span><br><span class="line">localServer-&gt;setMaxPendingConnections(MAX_CONNECTION);</span><br><span class="line"></span><br><span class="line">if (localServer-&gt;listen(&quot;commandpipe&quot;))</span><br><span class="line">&#123;</span><br><span class="line">	qDebug() &lt;&lt; &quot;listen commandpipe namepipe sucessful.&quot;;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">	qDebug() &lt;&lt; &quot;failed to listen commandpipe. &quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">connect(localServer, SIGNAL(newConnection()), this, SLOT(DealConnection()));</span><br><span class="line"></span><br><span class="line">void IPCServer::DealConnection()</span><br><span class="line">&#123;</span><br><span class="line">	QLocalSocket *socket = localServer-&gt;nextPendingConnection();</span><br><span class="line">	socket-&gt;waitForReadyRead();</span><br><span class="line">	QDataStream ds(socket);</span><br><span class="line">	ds.setVersion(QDataStream::Qt_4_6);</span><br><span class="line">	QString qstr;</span><br><span class="line">	ds &gt;&gt; qstr;</span><br><span class="line">	qDebug() &lt;&lt; &quot;Server received: &quot; &lt;&lt; qstr;</span><br><span class="line">	qDebug() &lt;&lt; &quot;Server processing...&quot;;</span><br><span class="line">	ds &lt;&lt; qstr.append(&quot; processed&quot;);</span><br><span class="line">	qDebug() &lt;&lt; &quot;Server send &quot; &lt;&lt; qstr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在这里主要采用的是QDataStream读取socket是的内容。读取完了之后，又使用这个socket再把内容转发回去。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">QLocalSocket这一块包含连接，和发送信息这一块。</span><br><span class="line">QLocalSocket _socket = new QLocalSocket(this);</span><br><span class="line">_socket-&gt;connectToServer(&quot;commandpipe&quot;);</span><br><span class="line">qDebug() &lt;&lt; &quot;socket connect to namepipe&quot;;</span><br><span class="line">QDataStream ds(_socket);</span><br><span class="line">ds.setVersion(QDataStream::Qt_4_6);</span><br><span class="line">ds &lt;&lt; QString(&quot;hello&quot;);</span><br><span class="line">_socket-&gt;waitForBytesWritten();</span><br><span class="line">qDebug() &lt;&lt; &quot;send one command&quot;;</span><br><span class="line">_socket-&gt;waitForReadyRead();</span><br><span class="line">QString bbq;</span><br><span class="line">ds &gt;&gt; bbq;</span><br><span class="line">qDebug() &lt;&lt; &quot;received servered &quot; &lt;&lt; bbq;</span><br></pre></td></tr></table></figure>
-<p>注意，这边我一开始发送的时候是使用的发送char *，但接收的时候却是用QString，结果就不对了。因为QString是unicode编码的。所以出错了。不过现在己经正常了。。。。<br>现在Shark中的Service，IPC，都己经走通了。下面主要还有编码格式，QWebKit模块，数据库模块需要完成。</p>
+          IPC研究之QLocalServer和QLocalSocket
+参考文章：IPC研究之QLocalServer和QLocalSocket
 
-          
+在Qt中，提供了多种IPC方法，作者所用的是QLocalServer和QLocalSocket。看起来好像和Socket搭上点边，实则底层是windows的na
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/07/23/IPC研究之QLocalServer和QLocalSocket/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
