@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="C++,回调函数," />
 
 
 
@@ -79,17 +79,18 @@
 
 
 
-<meta name="description" content="About MeAbout Blog知识管理包含了知识总结以及知识归纳整理分类，重温知识的过程是让记忆再一次深刻的过程。本人从一开始使用博客，MSN空间，新浪博客，CNBlog，到变成Evernote的重度用户，再到发现Evernote不能支持Markdown转而投向马克飞象，最终的目的还是为了让花过的时间，踩过的坑，走过的弯路有迹可循，避免将来的某一刻只能凭印象去回忆这些知识。本着好记性不如烂笔">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://yoursite.com/about/index.html">
+<meta name="description" content="一个可注销的通用多路回调列表 文章出处：(C++) 一个可注销的通用多路回调列表  背景回调列表是个很常见的东东，经常被用在 Observer 这样的订阅/发布模式里。当系统触发一个事件时，会遍历所有已经注册的回调列表，挨个调用，通知到相关的对象。 我们知道，为了保持对 C 尽可能的兼容，一直以来，C++ 中的函数并非是所谓的“一级对象” (first-class objects)。而在函数指针的">
+<meta name="keywords" content="C++,回调函数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个可注销的通用多路回调列表">
+<meta property="og:url" content="http://yoursite.com/2018/08/06/一个可注销的通用多路回调列表/index.html">
 <meta property="og:site_name" content="BingcaiHuang&#39;s Blog">
-<meta property="og:description" content="About MeAbout Blog知识管理包含了知识总结以及知识归纳整理分类，重温知识的过程是让记忆再一次深刻的过程。本人从一开始使用博客，MSN空间，新浪博客，CNBlog，到变成Evernote的重度用户，再到发现Evernote不能支持Markdown转而投向马克飞象，最终的目的还是为了让花过的时间，踩过的坑，走过的弯路有迹可循，避免将来的某一刻只能凭印象去回忆这些知识。本着好记性不如烂笔">
+<meta property="og:description" content="一个可注销的通用多路回调列表 文章出处：(C++) 一个可注销的通用多路回调列表  背景回调列表是个很常见的东东，经常被用在 Observer 这样的订阅/发布模式里。当系统触发一个事件时，会遍历所有已经注册的回调列表，挨个调用，通知到相关的对象。 我们知道，为了保持对 C 尽可能的兼容，一直以来，C++ 中的函数并非是所谓的“一级对象” (first-class objects)。而在函数指针的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-07-26T03:41:06.836Z">
+<meta property="og:updated_time" content="2018-08-06T06:11:55.122Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about">
-<meta name="twitter:description" content="About MeAbout Blog知识管理包含了知识总结以及知识归纳整理分类，重温知识的过程是让记忆再一次深刻的过程。本人从一开始使用博客，MSN空间，新浪博客，CNBlog，到变成Evernote的重度用户，再到发现Evernote不能支持Markdown转而投向马克飞象，最终的目的还是为了让花过的时间，踩过的坑，走过的弯路有迹可循，避免将来的某一刻只能凭印象去回忆这些知识。本着好记性不如烂笔">
+<meta name="twitter:title" content="一个可注销的通用多路回调列表">
+<meta name="twitter:description" content="一个可注销的通用多路回调列表 文章出处：(C++) 一个可注销的通用多路回调列表  背景回调列表是个很常见的东东，经常被用在 Observer 这样的订阅/发布模式里。当系统触发一个事件时，会遍历所有已经注册的回调列表，挨个调用，通知到相关的对象。 我们知道，为了保持对 C 尽可能的兼容，一直以来，C++ 中的函数并非是所谓的“一级对象” (first-class objects)。而在函数指针的">
 
 
 
@@ -119,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/about/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/08/06/一个可注销的通用多路回调列表/"/>
 
 
 
 
 
-  <title>about | BingcaiHuang's Blog</title>
+  <title>一个可注销的通用多路回调列表 | BingcaiHuang's Blog</title>
   
 
 
@@ -284,43 +285,223 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/06/一个可注销的通用多路回调列表/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">about</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <h2 id="About-Me"><a href="#About-Me" class="headerlink" title="About Me"></a>About Me</h2><h2 id="About-Blog"><a href="#About-Blog" class="headerlink" title="About Blog"></a>About Blog</h2><p>知识管理包含了知识总结以及知识归纳整理分类，重温知识的过程是让记忆再一次深刻的过程。本人从一开始使用博客，MSN空间，新浪博客，CNBlog，到变成Evernote的重度用户，再到发现Evernote不能支持Markdown转而投向马克飞象，最终的目的还是为了让花过的时间，踩过的坑，走过的弯路有迹可循，避免将来的某一刻只能凭印象去回忆这些知识。本着好记性不如烂笔头的宗旨，打算在折腾记忆尚未磨灭之际记录一下走过的路和踩过的坑……</p>
-<p>Evernote 第一个用的很不开心的地方在于运行实在是越来越慢。虽然电脑硬件在不断的升级，但一款笔记软件变得臃肿不堪，每次使用卡顿都很明显也不算什么太好的用户体验。第二个问题是，随着用户的增多，印象笔记也渐渐从过去的极客范变成平民范，对更新的技术不怎么感冒。比如始终不支持 Markdown 语法就很让人尴尬。我现在写点东西都是用 Markdown 格式，用印象笔记就意味着放弃 Markdown，这是让人无法接受的。有人说用马克飞象可以让 Evernote 支持 Markdown，这样却又不得不继续引入新软件，添加更多的麻烦。第三个问题是，运营压力导致的免费用户功能不断缩水。正常来说，付费用户应是在免费用户基础上给出增值服务，而不是为了让用户付费把以前承诺免费的东西直接收费。去年末的时候，印象笔记突然宣布，限制免费用户以后只能在两台设备上登录使用。我想大部分用户应该和我一样至少是三台设备吧，公司电脑、家里电脑和手机端，结果用起来非常尴尬。有人说可以付费啊，这就又引出一个问题，决定权不在自己手里。现在标准账户年费是98元是不贵，但万一以后涨成980元呢？好多年的积累，不是那么容易转走的，到时候或者被挟制付费，或者花大功夫转移系统，麻烦不说还很可能会造成数据丢失。</p>
-<p>对用户数据的承诺，在商业时代其实真不用当回事儿。Google 当年关闭 Google Reader 的时候，网上很多人请愿请求 Google 不要关闭，因为里面有太多的用户数据了。但即使是不作恶的Google，还是只给了大家导出的选项。导出为 xml 格式貌似给了用户数据，但对于绝大多数非程序员的普通网友来说，等于这些年在 Reader 上积累的数据都丢了。</p>
-<p>怎样避免这种情况呢？最好的方法是不依赖任何一种专有服务，诸如 Evernote、为知笔记之类，而是把所有的数据掌握在自己手里；同时采用通用数据格式，任何时候想切换成本几乎为零，而不是用某软件私有格式，导致积累越多切换成本越大。采用这种方法的好处是，任何一家公司的倒闭、服务的关停自己都不会收到影响，进而拥有了持久性，可以实现大时间周期的积累。</p>
-<p>另外专有软件的服务还有一个问题就是很难再利用，大部分操作只能在软件内部实现，和其他服务通讯的时候必须导入导出，一来繁琐，二来会导致多个副本，维护起来也很费事儿。比如想把以前积累的文档同步到 Github 及 Gitbook 上，印象笔记也好为知笔记也罢，没有一个可以提供类似功能。但如果采用最通用的数据格式，就可以避免这类问题。</p>
-<p>最终我选择了Atom+Hexo+Github作为自己最终的笔记系统，所有内容在本地Markdown文件中编辑好以后，无需调整就可以直接发布到 Github Pages上面生成静态博客，甚至同步在 Gitbook 上生成电子书。写文章写多了，就会发现很多时候，一些复杂的问题很难用一篇文章说清楚。这时候用系列文章写起来会更方便一些。用 Atom 维护 Markdown 文档的方式，可以直接把文件同步到 Gitbook 上，生成电子书。这样就可以有更大的发挥空间了。阳志平先生谈到读书的时候说，学习任意一个领域，你可以一上来就思考怎样写一本这个领域的书，因为抽象知识的最佳结构是树形结构，同时兼容广度与深度，而书最符合知识的树形结构。Atom+Hexo+Github的搭档堪称完美。</p>
-<p>而图片的问题通过Atom插件markdown-image-insert可以完美解决，直接复制粘贴会通过剪贴板获取到图片，并且保存在与文档名称一致的文件夹中。</p>
-<p>笔记作为我们知识的最基本构成，一个开放的系统、能大周期持续发展的系统、不依赖与任何一家企业或服务的系统，才是真正健壮的系统。基于这种考虑，我最终选择并推荐找一款好的文本编辑软件，来维护 Markdown 格式作为知识管理工具。文本编辑软件推荐 Atom 和 Sublime Text，装上相应插件后功能可以非常强大。</p>
-<p>从一窍不通到搭建完整的博客，安装各种插件，折腾的过程带给我的绝不止一个好看的博客，还有一种思维方式，甚至内隐知识的进化，同时感谢开放互联网上分享知识的各路大神。</p>
-<h2 id="Copyright"><a href="#Copyright" class="headerlink" title="Copyright"></a>Copyright</h2><p>本站是为了个人交流学习而搭建，本站内容若非注明“参考文章”均来自本人原创，转载必会注明原文引用地址，若您认为侵犯你的个人知识产权，请联系我<a href="bingcaihuang@gmail.com">邮箱</a>，我会第一时间和您进行沟通处理。</p>
-
+          <h1 class="post-title" itemprop="name headline">一个可注销的通用多路回调列表</h1>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-06T14:03:27+08:00">
+                2018-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/06/一个可注销的通用多路回调列表/" class="leancloud_visitors" data-flag-title="一个可注销的通用多路回调列表">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h2 id="一个可注销的通用多路回调列表"><a href="#一个可注销的通用多路回调列表" class="headerlink" title="一个可注销的通用多路回调列表"></a>一个可注销的通用多路回调列表</h2><blockquote>
+<p>文章出处：<a href="https://gulu-dev.com/post/2015-07-22-multicast" target="_blank" rel="noopener">(C++) 一个可注销的通用多路回调列表</a></p>
+</blockquote>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>回调列表是个很常见的东东，经常被用在 Observer 这样的订阅/发布模式里。当系统触发一个事件时，会遍历所有已经注册的回调列表，挨个调用，通知到相关的对象。</p>
+<p>我们知道，为了保持对 C 尽可能的兼容，一直以来，C++ 中的函数并非是所谓的“一级对象” (first-class objects)。而在函数指针的帮助下，我们可以在 C/C++ 中模拟一些 First-class function 才有的特性，比如把函数像值一样以参数传递和保存。到了 C++11 的出现，有了语言和标准库级别的 lambda / closure / std::function 之后，对函数的操作才变得真正灵活和丰富起来。</p>
+<p>常见的 C/C++ 回调列表有以下这几种实现方式：</p>
+<ol>
+<li><strong>基类指针 （形如 std::vector&lt;IListener*&gt;）</strong>，当回调发生时，以虚函数的形式通知到不同的派生类的对象。这个方案的问题在于，凡是想加入这个列表，必须从 IListener 派生，而且所有的虚函数要求签名严格一致，耦合太高，灵活性较差。</li>
+<li><strong>函数指针 （形如 std::vector<fncallback>）</fncallback></strong>，当回调发生时，挨个调用容器中的函数指针。这个方案避免了继承的强耦合，但仍需要保证所有的响应函数签名一致，而且每一种类型的响应函数都要定义不同的回调列表，多了之后非常啰嗦，再一个函数指针本身可读性也欠佳。</li>
+<li><strong>函数对象 （形如std::vector&lt;std::function&lt; … &gt;&gt;）</strong>，这种回调列表相对于上面两个更加灵活一些，不仅不需要继承，在 std::bind 的帮助下，连函数签名也不需要一致。但问题是，由于 std::function 无法使用 == 和 != 来比较（见参考一(第1条)和参考二），注销比较麻烦，不像上面两个可以直接指针比较。</li>
+</ol>
+<h3 id="好处"><a href="#好处" class="headerlink" title="好处"></a>好处</h3><p>那么这里介绍的所谓通用回调列表有何好处呢？</p>
+<ol>
+<li>（以所谓“完美转发”的形式）支持任意个数和类型的参数调用</li>
+<li>在上面第三点 std::function&lt;&gt; 的基础上，可以使用 std::string 作为 tag， 标记那些后面需要被注销的函数，也同时支持不打 tag 的函数</li>
+<li>在需要时，支持批量地收集这些回调函数的返回值</li>
+</ol>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><p>说完了好处，接下来看一下 BtMulticast 这个类的对外接口和基本的使用吧：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename TRet, class... TArgs&gt;</span><br><span class="line">class BtMulticast</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    using TFunc = std::function &lt; TRet(TArgs...) &gt; ;</span><br><span class="line">    using TElem = std::pair &lt; TFunc, std::string &gt; ;</span><br><span class="line">    using TRetVect = std::vector &lt; std::pair &lt; TRet, std::string &gt; &gt;;</span><br><span class="line"></span><br><span class="line">    bool AddFunc(TFunc func);</span><br><span class="line">    bool AddFunc(const std::string&amp; tag, TFunc func);</span><br><span class="line">    void RemoveFunc(const std::string&amp; tag);</span><br><span class="line"></span><br><span class="line">    template&lt;class... U&gt; void Invoke(U&amp;&amp;... u);</span><br><span class="line">    template&lt;class... U&gt; TRetVect InvokeR(U&amp;&amp;... u);</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    std::vector &lt; TElem &gt; m_funcList;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这个类很简短，</p>
+<ul>
+<li><code>AddFunc</code> / <code>RemoveFunc</code> 是添加和删除回调函数</li>
+<li><code>Invoke</code> / <code>InvokeR</code> 分别触发无返回值和普通返回值的回调。</li>
+</ul>
+<p>需要注意的是，</p>
+<ol>
+<li><code>AddFunc()</code> 可以选择指明 tag， 在这种情况下可通过指明 tag 来 <code>RemoveFunc</code></li>
+<li><code>InvokeR()</code> 实际上返回的是一个返回值列表，采集了每一个回调的结果</li>
+<li><code>TFunc</code> 这个类型定义了最终存储在 <code>BtMulticast</code> 类中的回调函数对象，利用了 C++11 的所谓“完美转发”来把任意类型和个数的参数转发给回调函数</li>
+<li>考虑到 add/remove 通常只发生一次，而每次触发事件都会遍历，内部的存储选择 <code>std::vector</code>，牺牲了一点 add/remove 时的查找速度，换得更快更紧凑的遍历。而看一下实现代码就可以知道，牺牲的那点 add/remove 速度也只有在有 tag 的情况下会发生。</li>
+</ol>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>使用方面，基本用法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// testing multicast: simplest</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticast&lt;void&gt; test;</span><br><span class="line">    test.AddFunc([]() &#123; BT_LOG(&quot;Multicast (simplest): func 1 called. &quot;); &#125;);</span><br><span class="line">    test.AddFunc([]() &#123; BT_LOG(&quot;Multicast (simplest): func 2 called. &quot;); &#125;);</span><br><span class="line">    test.AddFunc([]() &#123; BT_LOG(&quot;Multicast (simplest): func 3 called. &quot;); &#125;);</span><br><span class="line">    test.Invoke();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>三个匿名函数被添加进 test 对象，然后在 test.Invoke() 的时候被依次调用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// testing multicast: tagged &amp; single parameter</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticast&lt;void, int&gt; test;</span><br><span class="line">    test.AddFunc(&quot;a&quot;, [](int p) &#123; BT_LOG(&quot;Multicast (tagged): func a called (param: %d). &quot;, p); &#125;);</span><br><span class="line">    test.AddFunc(&quot;b&quot;, [](int p) &#123; BT_LOG(&quot;Multicast (tagged): func b called (param: %d). &quot;, p); &#125;);</span><br><span class="line">    test.AddFunc(&quot;c&quot;, [](int p) &#123; BT_LOG(&quot;Multicast (tagged): func c called (param: %d). &quot;, p); &#125;);</span><br><span class="line">    test.RemoveFunc(&quot;b&quot;);</span><br><span class="line">    test.Invoke(15);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>三个 tag 分别为 “a”, “b”, “c” 的匿名函数 (参数为 int，注意实例化 BtMulticast 时的类型参数列表变化) 被注册进来，然后 tag 为 “b” 的匿名函数被移除，最后以 15 作为参数依次调用剩下的回调函数 (“a” 和 “c”)。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// testing multicast with multiple parameters and return value list</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticast&lt;int, int, int&gt; testRet;</span><br><span class="line">    testRet.AddFunc(&quot;a&quot;, [](int p1, int p2) -&gt; int &#123; BT_LOG(&quot;Multicast (with RetVal): func a called (p1: %d, p2: %d). &quot;, p1, p2); return p1 + 1 * p2; &#125;);</span><br><span class="line">    testRet.AddFunc(&quot;b&quot;, [](int p1, int p2) -&gt; int &#123; BT_LOG(&quot;Multicast (with RetVal): func b called (p1: %d, p2: %d). &quot;, p1, p2); return p1 + 2 * p2; &#125;);</span><br><span class="line">    testRet.AddFunc(&quot;c&quot;, [](int p1, int p2) -&gt; int &#123; BT_LOG(&quot;Multicast (with RetVal): func c called (p1: %d, p2: %d). &quot;, p1, p2); return p1 + 3 * p2; &#125;);</span><br><span class="line">    testRet.RemoveFunc(&quot;b&quot;);</span><br><span class="line"></span><br><span class="line">    for (auto&amp; p : testRet.InvokeR(20, 2))</span><br><span class="line">        BT_LOG(&quot;Multicast (with RetVal): func %s returned %d. &quot;, p.second, p.first);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后这个用例测试了多个参数和返回值的情况，可以看到 “a”, “b”, “c” 做了不同的操作后，返回的值被采集到了一个返回值列表里面，这个列表被就地 (即所谓的 move 语意) 遍历，内部的值可以根据需要再进行处理。这个用例的运行结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Multicast (with RetVal): func a called (p1: 20, p2: 2).</span><br><span class="line">Multicast (with RetVal): func c called (p1: 20, p2: 2).</span><br><span class="line">Multicast (with RetVal): func a returned 22.</span><br><span class="line">Multicast (with RetVal): func c returned 26.</span><br></pre></td></tr></table></figure>
+<p>可以看到 <code>BtMulticast</code> 能够适配任意个数和类型的参数，因此可认为具有一定的通用性。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>最后我们简单看一下实现。先看看 <code>BtMulticast::AddFunc()</code>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename TRet, class... TArgs&gt;</span><br><span class="line">bool BtMulticast&lt;TRet, TArgs...&gt;::AddFunc(const std::string&amp; tag, TFunc func)</span><br><span class="line">&#123;</span><br><span class="line">    // check if this tag has been used</span><br><span class="line">    if (tag.size())</span><br><span class="line">    &#123;</span><br><span class="line">        auto it = std::find_if(m_funcList.begin(), m_funcList.end(),</span><br><span class="line">            [&amp;tag](const TElem&amp; elem) &#123; return elem.second == tag; &#125;);</span><br><span class="line">        if (it != m_funcList.end())</span><br><span class="line">            return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    m_funcList.emplace_back(func, tag);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当 tag 有效时，先判定是否有 tag 冲突，然后注册一下回调，过程很直白就不多说了。</p>
+<p>再看一下具体的调用过程 <code>BtMulticast::InvokeR()</code>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/* ----- Note -----</span><br><span class="line">    `BtMulticastRetVect` is an extra alias especially for the returning type for the signature of InvokeR() below,</span><br><span class="line">    since `TRetVect` defined inside `BtMulticast` cannot be used in the signature (outside the function body)</span><br><span class="line">    although `BtMulticastRetVect` is defined separately, it literally equals to `typename BtMulticast::TRetVect`</span><br><span class="line">*/</span><br><span class="line">template &lt;typename TRet&gt;</span><br><span class="line">using BtMulticastRetVect = std::vector &lt; std::pair &lt; TRet, std::string &gt; &gt; ;</span><br><span class="line"></span><br><span class="line">template &lt;typename TRet, class... TArgs&gt;</span><br><span class="line">template &lt;class... U&gt;</span><br><span class="line">BtMulticastRetVect&lt;TRet&gt; BtMulticast&lt;TRet, TArgs...&gt;::InvokeR(U&amp;&amp;... u)</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticastRetVect&lt;TRet&gt; ret;</span><br><span class="line">    for (auto&amp; p : m_funcList)</span><br><span class="line">    &#123;</span><br><span class="line">        ret.emplace_back(p.first(std::forward&lt;U&gt;(u)...), p.second);</span><br><span class="line">    &#125;</span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里可以看到我单独定义了一下返回值的类型，具体原因见注释，大体上是说类内定义的类型 <code>TRetVect</code> 只能在类内使用 (包括类定义及相关的成员函数体的定义，成员函数的签名不算在内)。另外这函数前面的两个 <code>template</code> 声明分别是类的模板和函数的模板。</p>
+<p>俺一直觉得 C++ 的模板声明挺啰嗦，很有孔乙己范儿，看了上面这个函数声明，你也一定深有同感罢。应该跟 D 学一下，简化一下。</p>
+<p>C++ 的 <code>typedef</code> 和 <code>class template</code>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef double A;</span><br><span class="line"></span><br><span class="line">template&lt;class T&gt; struct B</span><br><span class="line">&#123;</span><br><span class="line">    typedef int A;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>D 的对应语法 <code>alias</code> 和模板的 <code>(T)</code> 语法，简洁到没朋友。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">alias A = double;</span><br><span class="line"></span><br><span class="line">class B(T)</span><br><span class="line">&#123;</span><br><span class="line">    alias A = int;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不过 C++ 已经把 D 的 alias 关键字的用法学来了，翻到前面可以看到 class BtMulticast 的定义中的那一组 using，把 alias 抄了个十足十，啧啧，借鉴得不错。</p>
+<p>BtMulticast 类的实现和测试用例代码见<a href="https://gist.github.com/mc-gulu/ae73eb94e005fcf720c6" target="_blank" rel="noopener">这里</a>。</p>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C++</a>
+          
+            <a href="/tags/回调函数/" rel="tag"># 回调函数</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/03/C-基础系列/" rel="next" title="C++基础系列">
+                <i class="fa fa-chevron-left"></i> C++基础系列
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -329,6 +510,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -429,7 +614,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#About-Me"><span class="nav-number">1.</span> <span class="nav-text">About Me</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#About-Blog"><span class="nav-number">2.</span> <span class="nav-text">About Blog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Copyright"><span class="nav-number">3.</span> <span class="nav-text">Copyright</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一个可注销的通用多路回调列表"><span class="nav-number">1.</span> <span class="nav-text">一个可注销的通用多路回调列表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#好处"><span class="nav-number">1.2.</span> <span class="nav-text">好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口"><span class="nav-number">1.3.</span> <span class="nav-text">接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用法"><span class="nav-number">1.4.</span> <span class="nav-text">用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">1.5.</span> <span class="nav-text">实现</span></a></li></ol></li></ol></div>
             
 
           </div>
