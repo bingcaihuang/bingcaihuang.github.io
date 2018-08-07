@@ -293,6 +293,182 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/" itemprop="url">UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-07T18:40:21+08:00">
+                2018-08-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/" class="leancloud_visitors" data-flag-title="UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现"><a href="#UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现" class="headerlink" title="UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现"></a>UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>在UML类图中，类之间的关系可以分成：关联(association)、聚合(aggregation)、组合(composition)、依赖(dependency)、泛化(generalization)/继承(inheritance)和实现(realization)。这六种关系如下图所描绘：</p>
+<p><img src="/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/1533638525606.png" alt=""></p>
+<p>上面的关系可以解读如下:</p>
+<ul>
+<li>(关联)Association：A类有B类有逻辑上的连接</li>
+<li>(聚合)Aggregation : A类有一个B类</li>
+<li>(组合)Composition : A类拥有一个B类</li>
+<li>(依赖)Dependency : A类使用了B类</li>
+<li>(继承)Inheritance : B类是一个A类  (或者B类扩展A类)</li>
+<li>(实现)Realization : B类实现了接口A</li>
+</ul>
+<p>本篇文章主要是展示在Java中如何表示这些关系 ,以便我们可以更好地理解这些关系并且知道如何以及何时使用每一种关系。</p>
+<h3 id="关联-association"><a href="#关联-association" class="headerlink" title="关联(association)"></a>关联(association)</h3><p>关联描述两个类之间行为的一般二元关系。例如，一个学生选修一门特定的课程是学生类Student和课程类Course之间的一个关联，而一个教师教授一门课程是师资类Faculty和课程类Course之间的一个关联。Java代码中，关联可以用属性和方法来实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class Student &#123;</span><br><span class="line">    private Course[] courses;</span><br><span class="line"></span><br><span class="line">    public void addCourse(Course s) &#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Course &#123;</span><br><span class="line">    private Strudent[] students;</span><br><span class="line">    private Faculty faculty;</span><br><span class="line"></span><br><span class="line">    public void addStudent(Student s) &#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setFaculty(Faculty faculty) &#123;</span><br><span class="line">        this.faculty = faculty;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Faculty &#123;</span><br><span class="line">    private Course[] courses;</span><br><span class="line"></span><br><span class="line">    public void addCourse(Course s) &#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="聚合-Aggregation"><a href="#聚合-Aggregation" class="headerlink" title="聚合(Aggregation)"></a>聚合(Aggregation)</h3><p>聚合是一种特殊的关联(Association)形式，表示两个对象之间的所属(has-a)关系。所有者对象称为聚合对象，它的类称为聚合类；从属对象称为被聚合对象，它的类称为被聚合类。例如，一个公司有很多员工就是公司类Company和员工类Employee之间的一种聚合关系。被聚合对象和聚合对象有着各自的生命周期，即如果公司倒闭并不影响员工的存在。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> public class Company &#123;</span><br><span class="line">    private List&lt;Employee&gt; employees;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Employee &#123;</span><br><span class="line">    private String name;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="组合-Composition"><a href="#组合-Composition" class="headerlink" title="组合(Composition)"></a>组合(Composition)</h3><p>聚合是一种较弱形式的对象包含(一个对象包含另一个对象)关系。较强形式是组合(Composition). 在组合关系中包含对象负责被包含对象的创建以及生命周期，即当包含对象被销毁时被包含对象也会不复存在。例如一辆汽车拥有一个引擎是汽车类Car与引擎类Engine的组合关系。下面是组合的一些例子。</p>
+<p>(1)通过成员变量初始化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Car &#123;</span><br><span class="line">    private final Engine engine = new Engine();       </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Engine &#123;</span><br><span class="line">    private String type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>(2)通过构造函数初始化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class Car &#123;</span><br><span class="line">    private final Engine engine;  </span><br><span class="line"></span><br><span class="line">    public Car()&#123;</span><br><span class="line">       engine  = new Engine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Engine &#123;</span><br><span class="line">    private String type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>(3)通过延迟初始化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class Car &#123;</span><br><span class="line">    private final Engine engine;  </span><br><span class="line">    public Engine getEngine() &#123;</span><br><span class="line">        if (null == engine) &#123;</span><br><span class="line">            engine = new Engine();</span><br><span class="line">        &#125;</span><br><span class="line">        return engine;</span><br><span class="line">    &#125;     </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Engine &#123;</span><br><span class="line">    private String type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="依赖-Dependency"><a href="#依赖-Dependency" class="headerlink" title="依赖(Dependency)"></a>依赖(Dependency)</h3><p>依赖(Dependency)描述的是一个类的引用用作另一个类的方法的参数。例如，可以使用Calendar类中的setTime(Date date)方法设置日历，所以Calendar和Date之间的关系可以用依赖描述。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Calendar implements Serializable, Cloneable, Comparable&lt;Calendar&gt; &#123;</span><br><span class="line"></span><br><span class="line">    public final void setTime(Date date) &#123;</span><br><span class="line">        setTimeInMillis(date.getTime());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    . . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在依赖关系中，类之间是松耦合的。</p>
+<h3 id="继承-Inheritance"><a href="#继承-Inheritance" class="headerlink" title="继承(Inheritance)"></a>继承(Inheritance)</h3><p>继承(Inheritance)模拟两个类之间的is-a关系。强是(strong is-a)关系描述两个类之间的直接继承关系。弱是(weak is-a)关系描述一个类具有某个属性。强是关系可以用类的继承表示。例如，Spring的ApplicationEvent是一个EventObject，ApplicationEvent和EventObject间就是一种强是关系，可以用继承描述。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public abstract class ApplicationEvent extends EventObject &#123;</span><br><span class="line">    . . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="实现-Realization"><a href="#实现-Realization" class="headerlink" title="实现(Realization)"></a>实现(Realization)</h3><p>实现(Realization)描述的是一个类实现了接口（可以是多个）。上面描述的弱是(weak is-a)关系就可以用接口表示。例如字符串是可以被序列化的，这就可以用实现来描述。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public final class String  implements java.io.Serializable, Comparable&lt;String&gt;, CharSequence &#123;</span><br><span class="line">    . . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/06/一个可注销的通用多路回调列表/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1486,184 +1662,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/31/SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/31/SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT/" itemprop="url">SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-31T09:39:32+08:00">
-                2018-07-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index">
-                    <span itemprop="name">SQL</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/07/31/SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT/" class="leancloud_visitors" data-flag-title="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT"><a href="#SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT" class="headerlink" title="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT"></a>SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT</h2><blockquote>
-<p>参考文章：<a href="https://www.cnblogs.com/russellluo/p/3186786.html" target="_blank" rel="noopener">SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT</a></p>
-</blockquote>
-<h3 id="SQLite不支持关键字AUTO-INCREMENT"><a href="#SQLite不支持关键字AUTO-INCREMENT" class="headerlink" title="SQLite不支持关键字AUTO_INCREMENT"></a>SQLite不支持关键字AUTO_INCREMENT</h3><h4 id="AUTO-INCREMENT不生效的问题"><a href="#AUTO-INCREMENT不生效的问题" class="headerlink" title="AUTO_INCREMENT不生效的问题"></a>AUTO_INCREMENT不生效的问题</h4><p>SQL语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER AUTO_INCREMENT,</span><br><span class="line">    title TEXT,</span><br><span class="line">    PRIMARY KEY (id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>问题描述：按照上述SQL语句创建表todo，用INSERT INTO todo (title) VALUES (‘xxx’)插入记录，但查询该记录后得到的id为NULL（即Python中的None）</p>
-<p>实验脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- encoding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import sqlite3</span><br><span class="line">con = sqlite3.connect(&quot;:memory:&quot;)</span><br><span class="line"></span><br><span class="line"># 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER AUTO_INCREMENT,</span><br><span class="line">    title TEXT,</span><br><span class="line">    PRIMARY KEY (id)</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"></span><br><span class="line"># 插入记录</span><br><span class="line">con.execute(&quot;INSERT INTO todo (title) VALUES (&apos;shopping&apos;);&quot;)</span><br><span class="line"></span><br><span class="line"># 查询记录</span><br><span class="line">for row in con.execute(&quot;SELECT * FROM todo&quot;):</span><br><span class="line">    print row</span><br></pre></td></tr></table></figure></p>
-<p>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ python auto_increment_null.py</span><br><span class="line">(None, u&apos;shopping&apos;)</span><br></pre></td></tr></table></figure></p>
-<h4 id="AUTO-INCREMENT导致语法错误的问题"><a href="#AUTO-INCREMENT导致语法错误的问题" class="headerlink" title="AUTO_INCREMENT导致语法错误的问题"></a>AUTO_INCREMENT导致语法错误的问题</h4><p>SQL语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY AUTO_INCREMENT,</span><br><span class="line">    title TEXT</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>问题描述：根据SQL的语法，<strong>按理说上述SQL语句应该与1）中的SQL语句等效</strong>，但运行结果却是语法错误</p>
-<p>实验脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- encoding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import sqlite3</span><br><span class="line">con = sqlite3.connect(&quot;:memory:&quot;)</span><br><span class="line"></span><br><span class="line"># 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY AUTO_INCREMENT,</span><br><span class="line">    title TEXT</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"></span><br><span class="line"># 插入记录</span><br><span class="line">con.execute(&quot;INSERT INTO todo (title) VALUES (&apos;shopping&apos;);&quot;)</span><br><span class="line"></span><br><span class="line"># 查询记录</span><br><span class="line">for row in con.execute(&quot;SELECT * FROM todo&quot;):</span><br><span class="line">    print row</span><br></pre></td></tr></table></figure></p>
-<p>运行结果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ python auto_increment_error.py</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;auto_increment_error.py&quot;, line 14, in &lt;module&gt;</span><br><span class="line">    );&quot;&quot;&quot;)</span><br><span class="line">sqlite3.OperationalError: near &quot;AUTO_INCREMENT&quot;: syntax error</span><br></pre></td></tr></table></figure>
-<p>上述两个问题在<a href="http://stackoverflow.com/questions/508627/auto-increment-in-sqlite-problem-with-python" target="_blank" rel="noopener">《AUTO_INCREMENT in sqlite problem with python》</a>中得到了解释和解答：在SQLite中，自增字段需要使用关键字INTEGER PRIMARY KEY。</p>
-<h3 id="自增关键字INTEGER-PRIMARY-KEY"><a href="#自增关键字INTEGER-PRIMARY-KEY" class="headerlink" title="自增关键字INTEGER PRIMARY KEY"></a>自增关键字INTEGER PRIMARY KEY</h3><p>SQL语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY,</span><br><span class="line">    title TEXT</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>或者<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY NOT NULL,</span><br><span class="line">    title TEXT</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>按照上述SQL语句创建表todo，用INSERT INTO todo (title) VALUES (‘xxx’)或者INSERT INTO todo (id, title) VALUES (NULL, ‘xxx’)插入记录，查询记录后得到的id为自增的整型值。</p>
-<p>实验脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- encoding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import sqlite3</span><br><span class="line">con = sqlite3.connect(&quot;:memory:&quot;)</span><br><span class="line"></span><br><span class="line"># 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY,</span><br><span class="line">    title TEXT</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"></span><br><span class="line"># 创建表：效果相同</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY NOT NULL,</span><br><span class="line">    title TEXT</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line"></span><br><span class="line"># 插入记录：shopping</span><br><span class="line">con.execute(&quot;INSERT INTO todo (title) VALUES (&apos;shopping&apos;);&quot;)</span><br><span class="line"></span><br><span class="line"># 插入记录：working</span><br><span class="line">con.execute(&quot;INSERT INTO todo (id, title) VALUES (NULL, &apos;working&apos;);&quot;)</span><br><span class="line"></span><br><span class="line"># 查询记录</span><br><span class="line">for row in con.execute(&quot;SELECT * FROM todo&quot;):</span><br><span class="line">    print row</span><br></pre></td></tr></table></figure></p>
-<p>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ python integer_primary_key_ok.py</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(2, u&apos;working&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>注意：之前看<a href="http://stackoverflow.com/questions/11490100/no-autoincrement-for-integer-primary-key-in-sqlite3" target="_blank" rel="noopener">《No autoincrement for Integer Primary key in sqlite3》</a>中有提到“SQLite的自增字段定义为NULL或NOT NULL是有区别的”，根据上面的实验，这个问题好像已经不存在了。</p>
-<h3 id="关键字AUTOINCREMENT与内部表sqlite-sequence"><a href="#关键字AUTOINCREMENT与内部表sqlite-sequence" class="headerlink" title="关键字AUTOINCREMENT与内部表sqlite_sequence"></a>关键字AUTOINCREMENT与内部表sqlite_sequence</h3><p>SQLite中，在INTEGER PRIMARY KEY的基础上添加AUTOINCREMENT后（即INTEGER PRIMARY KEY AUTOINCREMENT），可以在表的整个生命周期内保证“自增字段”的唯一性（create keys that are unique over the lifetime of the table）。</p>
-<p>SQLite内部用一个叫作sqlite_sequence的表来保存所有表的自增字段的取值基准（the largest ROWID），如果清空sqlite_sequence的记录，可以实现将所有表的自增字段的取值归零的效果（这种行为具有破坏性，请谨慎使用）。</p>
-<p>关于这一主题，更详细的介绍可以参考<a href="http://www.sqlite.org/faq.html#q1" target="_blank" rel="noopener">《How do I create an AUTOINCREMENT field》</a>和<a href="http://www.sqlite.org/autoinc.html" target="_blank" rel="noopener">《SQLite Autoincrement》</a></p>
-<p>实验脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- encoding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import sqlite3</span><br><span class="line">con = sqlite3.connect(&quot;:memory:&quot;)</span><br><span class="line"></span><br><span class="line">def new_and_show(tbl_name):</span><br><span class="line">    &quot;&quot;&quot;插入并显示记录&quot;&quot;&quot;</span><br><span class="line">    # 插入记录到表</span><br><span class="line">    con.execute(&quot;INSERT INTO &quot; + tbl_name + &quot; (title) VALUES (&apos;shopping&apos;);&quot;)</span><br><span class="line">    # 查询表记录</span><br><span class="line">    for row in con.execute(&quot;SELECT * FROM &quot; + tbl_name):</span><br><span class="line">        print row</span><br><span class="line"></span><br><span class="line">def clr(tbl_name):</span><br><span class="line">    &quot;&quot;&quot;清除表记录&quot;&quot;&quot;</span><br><span class="line">    con.execute(&quot;DELETE FROM &quot; + tbl_name)</span><br><span class="line"></span><br><span class="line">print &quot;--表todo--&quot;</span><br><span class="line"># 1. 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY,</span><br><span class="line">    title TEXT</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"># 2. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo&quot;)</span><br><span class="line"># 3. 清除表记录</span><br><span class="line">clr(&quot;todo&quot;)</span><br><span class="line"># 4. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo&quot;)</span><br><span class="line"># 5. 清除表记录</span><br><span class="line">clr(&quot;todo&quot;)</span><br><span class="line"># 6. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print &quot;--表todo_auto--&quot;</span><br><span class="line"># 1. 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo_auto</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY AUTOINCREMENT,</span><br><span class="line">    title TEXT</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"># 2. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo_auto&quot;)</span><br><span class="line"># 3. 清除表记录</span><br><span class="line">clr(&quot;todo_auto&quot;)</span><br><span class="line"># 4. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo_auto&quot;)</span><br><span class="line"></span><br><span class="line"># 将所有表的自增列都归零</span><br><span class="line">#clr(&quot;sqlite_sequence&quot;)</span><br><span class="line"></span><br><span class="line"># 5. 清除表记录</span><br><span class="line">clr(&quot;todo_auto&quot;)</span><br><span class="line"># 6. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo_auto&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ python autoincrement_diff.py</span><br><span class="line">--表todo--</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">--表todo_auto--</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(2, u&apos;shopping&apos;)</span><br><span class="line">(3, u&apos;shopping&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>如果去掉clr(“sqlite_sequence”)这一行的注释，则运行结果会变成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ python autoincrement_diff.py</span><br><span class="line">--表todo--</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">--表todo_auto--</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(2, u&apos;shopping&apos;)</span><br><span class="line">(1, u&apos;shopping&apos;)    ## 由于clr(&quot;sqlite_sequence&quot;)将表todo_auto的自增字段的取值归零，因此这一行又变成了1</span><br></pre></td></tr></table></figure></p>
-<p>另外，SQLite不支持SQL标准语句“TRUNCATE TABLE tbl_name”，只能使用“DELETE FROM tbl_name”来删除表记录，具体可以参考<a href="http://zhuyanfeng.com/archives/516" target="_blank" rel="noopener">《SQLite清空表并将自增列归零》</a> 。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1714,7 +1712,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1736,7 +1734,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
