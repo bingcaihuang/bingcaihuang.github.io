@@ -400,8 +400,8 @@
             <h2 id="C-进阶系列"><a href="#C-进阶系列" class="headerlink" title="C++进阶系列"></a>C++进阶系列</h2><h3 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h3><blockquote>
 <p>文章：<a href="http://www.cnblogs.com/balingybj/p/4771916.html" target="_blank" rel="noopener">抽象类</a></p>
 </blockquote>
-<h4 id="纯虚函数定义"><a href="#纯虚函数定义" class="headerlink" title="纯虚函数定义"></a>纯虚函数定义</h4><pre><code>纯虚函数是在基类中声明的虚函数，它在基类中没有定义，但要求任何派生类都要定义自己的实现方法。在基类中实现纯虚函数的方法是在函数原型后加“=0”
-</code></pre><h4 id="引入原因："><a href="#引入原因：" class="headerlink" title="引入原因："></a>引入原因：</h4><ol>
+<h4 id="纯虚函数定义"><a href="#纯虚函数定义" class="headerlink" title="纯虚函数定义"></a>纯虚函数定义</h4><p>纯虚函数是在基类中声明的虚函数，它在基类中没有定义，但要求任何派生类都要定义自己的实现方法。在基类中实现纯虚函数的方法是在函数原型后加“=0”</p>
+<h4 id="引入原因："><a href="#引入原因：" class="headerlink" title="引入原因："></a>引入原因：</h4><ol>
 <li>为了方便使用多态特性，我们常常需要在基类中定义虚拟函数。</li>
 <li>在很多情况下，基类本身生成对象是不合情理的。例如，动物作为一个基类可以派生出老虎、孔雀等子类，但动物本身生成对象明显不合常理。</li>
 </ol>
