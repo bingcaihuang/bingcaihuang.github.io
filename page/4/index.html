@@ -293,6 +293,223 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/01/C-新特性学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/01/C-新特性学习/" itemprop="url">C++新特性学习</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-01T17:09:33+08:00">
+                2018-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/01/C-新特性学习/" class="leancloud_visitors" data-flag-title="C++新特性学习">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="C-新特性学习"><a href="#C-新特性学习" class="headerlink" title="C++新特性学习"></a>C++新特性学习</h2><h3 id="c-Lambda表达式"><a href="#c-Lambda表达式" class="headerlink" title="c++ Lambda表达式"></a>c++ Lambda表达式</h3><blockquote>
+<p><a href="https://www.cnblogs.com/jin521/p/5710559.html" target="_blank" rel="noopener">c++ Lambda表达式待修改</a></p>
+</blockquote>
+<p>C++11引入了lambda表达式，使得程序员可以定义匿名函数，该函数是一次性执行的，既方便了编程，又能防止别人的访问。<br>Lambda表达式的语法通过下图来介绍：</p>
+<p><img src="/2018/08/01/C-新特性学习/1533114695717.png" alt=""></p>
+<p>这里假设我们定义了一个如上图的lambda表达式。现在来介绍途中标有编号的各个部分是什么意思。</p>
+<ol>
+<li>Lambda表达式的引入标志，在‘[]’里面可以填入‘=’或‘&amp;’表示该lambda表达式“捕获”（lambda表达式在一定的scope可以访问的数据）的数据时以什么方式捕获的，‘&amp;’表示一引用的方式；‘=’表明以值传递的方式捕获，除非专门指出。</li>
+<li>Lambda表达式的参数列表</li>
+<li>Mutable 标识</li>
+<li>异常标识</li>
+<li>返回值</li>
+<li>“函数”体，也就是lambda表达式需要进行的实际操作</li>
+</ol>
+<p>将上图的代码片段补充完整：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int x = 10;</span><br><span class="line">int y = 3;</span><br><span class="line">int z ;</span><br><span class="line">z = [=]()mutable throw() -&gt; int &#123; int n = x + y; x = y ; y = n; return n;&#125;();</span><br><span class="line">cout&lt;&lt;z&lt;&lt;endl;</span><br><span class="line">cout&lt;&lt;&quot;x:&quot;&lt;&lt;x&lt;&lt;&quot;\t&quot;&lt;&lt;&quot;y:&quot;&lt;&lt;y&lt;&lt;endl;</span><br></pre></td></tr></table></figure>
+<h3 id="std-function的用法"><a href="#std-function的用法" class="headerlink" title="std::function的用法"></a>std::function的用法</h3><blockquote>
+<p><a href="https://blog.csdn.net/zeqi1991/article/details/73727458?locationNum=8&amp;fps=1" target="_blank" rel="noopener">std::function的用法</a></p>
+</blockquote>
+<p>类模版<code>std::function</code>是一种通用、多态的函数封装。<code>std::function</code>的实例可以对任何可以调用的目标实体进行存储、复制、和调用操作，这些目标实体包括普通函数、Lambda表达式、函数指针、以及其它函数对象等。<code>std::function</code>对象是对C++中现有的可调用实体的一种类型安全的包裹（我们知道像函数指针这类可调用实体，是类型不安全的）。</p>
+<p>通常<code>std::function</code>是一个函数对象类，它包装其它任意的函数对象，被包装的函数对象具有类型为T1, …,TN的N个参数，并且返回一个可转换到R类型的值。std::function使用 模板转换构造函数接收被包装的函数对象；特别是，闭包类型可以隐式地转换为<code>std::function</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;list&gt;</span><br><span class="line">#include &lt;map&gt;</span><br><span class="line">#include &lt;set&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;functional&gt;</span><br><span class="line">#include &lt;memory&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">//声明一个模板</span><br><span class="line">typedef std::function&lt;int(int)&gt; Functional;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//normal function</span><br><span class="line">int TestFunc(int a)</span><br><span class="line">&#123;</span><br><span class="line">    return a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//lambda expression</span><br><span class="line">auto lambda = [](int a)-&gt;int&#123;return a;&#125;;</span><br><span class="line"></span><br><span class="line">//functor仿函数</span><br><span class="line">class Functor</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    int operator() (int a)</span><br><span class="line">    &#123;</span><br><span class="line">        return a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//类的成员函数和类的静态成员函数</span><br><span class="line">class CTest</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    int Func(int a)</span><br><span class="line">    &#123;</span><br><span class="line">        return a;</span><br><span class="line">    &#125;</span><br><span class="line">    static int SFunc(int a)</span><br><span class="line">    &#123;</span><br><span class="line">        return a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    //封装普通函数</span><br><span class="line">    Functional obj = TestFunc;</span><br><span class="line">    int res = obj(0);</span><br><span class="line">    cout &lt;&lt; &quot;normal function : &quot; &lt;&lt; res &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    //封装lambda表达式</span><br><span class="line">    obj = lambda;</span><br><span class="line">    res = obj(1);</span><br><span class="line">    cout &lt;&lt; &quot;lambda expression : &quot; &lt;&lt; res &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    //封装仿函数</span><br><span class="line">    Functor functorObj;</span><br><span class="line">    obj = functorObj;</span><br><span class="line">    res = obj(2);</span><br><span class="line">    cout &lt;&lt; &quot;functor : &quot; &lt;&lt; res &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    //封装类的成员函数和static成员函数</span><br><span class="line">    CTest t;</span><br><span class="line">    obj = std::bind(&amp;CTest::Func, &amp;t, std::placeholders::_1);</span><br><span class="line">    res = obj(3);</span><br><span class="line">    cout &lt;&lt; &quot;member function : &quot; &lt;&lt; res &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    obj = CTest::SFunc;</span><br><span class="line">    res = obj(4);</span><br><span class="line">    cout &lt;&lt; &quot;static member function : &quot; &lt;&lt; res &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2018/08/01/C-新特性学习/1533114713752.png" alt=""></p>
+<p>对于各个可调用实体转换成std::function类型的对象，上面的代码都有，运行一下代码，阅读一下上面那段简单的代码。总结了简单的用法以后，来看看一些需要注意的事项：</p>
+<ul>
+<li>关于可调用实体转换为<code>std::function</code>对象需要遵守以下两条原则：<ul>
+<li>转换后的<code>std::function</code>对象的参数能转换为可调用实体的参数；</li>
+<li>可调用实体的返回值能转换为<code>std::function</code>对象的返回值。</li>
+</ul>
+</li>
+<li><code>std::function</code>对象最大的用处就是在实现函数回调，使用者需要注意，它不能被用来检查相等或者不相等，但是可以与NULL或者nullptr进行比较。</li>
+</ul>
+<p><strong>为什么要用std::function</strong><br>好用并实用的东西才会加入标准的。因为好用，实用，我们才在项目中使用它。std::function实现了一套类型消除机制，可以统一处理不同的函数对象类型。以前我们使用函数指针来完成这些；现在我们可以使用更安全的std::function来完成这些任务。</p>
+<h3 id="C-11新特性之-CALLBACKS"><a href="#C-11新特性之-CALLBACKS" class="headerlink" title="C++11新特性之 CALLBACKS"></a>C++11新特性之 CALLBACKS</h3><blockquote>
+<p>文章链接：<a href="https://blog.csdn.net/wangshubo1989/article/details/49644543" target="_blank" rel="noopener">C++11新特性之 CALLBACKS</a></p>
+</blockquote>
+<h4 id="使用回调"><a href="#使用回调" class="headerlink" title="使用回调"></a>使用回调</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;functional&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">namespace &#123;</span><br><span class="line">using cb1_t = std::function&lt;void()&gt;;</span><br><span class="line">using cb2_t = std::function&lt;void(int)&gt;;</span><br><span class="line"></span><br><span class="line">void foo1()</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo1 is called\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void foo2(int i)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo2 is called with: &quot; &lt;&lt; i &lt;&lt; &quot;\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">struct S &#123;</span><br><span class="line">    void foo3()</span><br><span class="line">    &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;foo3 is called.\n&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    // Bind a free function.</span><br><span class="line">    cb1_t f1 = std::bind(&amp;foo1);</span><br><span class="line">    // Invoke the function foo1.</span><br><span class="line">    f1();</span><br><span class="line"></span><br><span class="line">    // Bind a free function with an int argument.</span><br><span class="line">    // Note that the argument can be specified with bind directly.</span><br><span class="line">    cb1_t f2 = std::bind(&amp;foo2, 5);</span><br><span class="line">    // Invoke the function foo2.</span><br><span class="line">    f2();</span><br><span class="line"></span><br><span class="line">    // Bind a function with a placeholder.</span><br><span class="line">    cb2_t f3 = std::bind(&amp;foo2, std::placeholders::_1);</span><br><span class="line">    // Invoke the function with an argument.</span><br><span class="line">    f3(42);</span><br><span class="line"></span><br><span class="line">    // Bind a member function.</span><br><span class="line">    S s;</span><br><span class="line">    cb1_t   f4 = std::bind(&amp;S::foo3, &amp;s);</span><br><span class="line">    // Invoke the method foo3.</span><br><span class="line">    f4();</span><br><span class="line"></span><br><span class="line">    // Bind a lambda.</span><br><span class="line">    cb1_t f5 = std::bind([] &#123; std::cout &lt;&lt; &quot;lambda is called\n&quot;; &#125;);</span><br><span class="line">    f5();</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="存储回调"><a href="#存储回调" class="headerlink" title="存储回调"></a>存储回调</h4><p>使用回调是非常好的，但是更多的情况下，我们往往需要存储一些回调函数，并稍后使用。例如，注册一个客户端到某个事件上。（也许注册和事件是C Sharp的词汇）</p>
+<p>我们经常使用std::vector来完成任务。<br>缺点就是，我们不能再vector中存储不同的类型 。<br>但是，大多数情况下，一种类型就可以满足我们了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;functional&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">namespace &#123;</span><br><span class="line"></span><br><span class="line">using cb1_t = std::function&lt;void()&gt;;</span><br><span class="line">using callbacks_t = std::vector&lt;cb1_t&gt;;</span><br><span class="line"></span><br><span class="line">callbacks_t callbacks;</span><br><span class="line"></span><br><span class="line">void foo1()</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo1 is called\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void foo2(int i)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo2 is called with: &quot; &lt;&lt; i &lt;&lt; &quot;\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125; // end anonymous namespace</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    // Bind a free function.</span><br><span class="line">    cb1_t f1 = std::bind(&amp;foo1);</span><br><span class="line">    callbacks.push_back(f1);</span><br><span class="line"></span><br><span class="line">    // Bind a free function with an int argument.</span><br><span class="line">    // Here the argument is statically known.</span><br><span class="line">    cb1_t f2 = std::bind(&amp;foo2, 5);</span><br><span class="line">    callbacks.push_back(f2);</span><br><span class="line"></span><br><span class="line">    // Bind a free function with an int argument.</span><br><span class="line">    // Here the argument is bound and can be changed at runtime.</span><br><span class="line">    int n = 15;</span><br><span class="line">    cb1_t f3 = std::bind(&amp;foo2, std::cref(n));</span><br><span class="line">    callbacks.push_back(f3);</span><br><span class="line"></span><br><span class="line">    // Invoke the functions</span><br><span class="line">    for(auto&amp; fun : callbacks) &#123;</span><br><span class="line">        fun();</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="包装函数"><a href="#包装函数" class="headerlink" title="包装函数"></a>包装函数</h4><p>上面提到都不是重点，个人觉得特别重要的就是std::function作为函数的参数使用。<br>下面一个例子就将展示一个函数被copy不同的参数。</p>
+<p>Note that we always produce an std::function, even though in some cases we could invoke the target directly. Whether this is required depends on the use case. If all the function does is invoking the target, then directly doing it is more efficient. The reason is that std::function does have some overhead, because it is a polymorphic class.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;functional&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">namespace &#123;</span><br><span class="line"></span><br><span class="line">using cb1_t = std::function&lt;void()&gt;;</span><br><span class="line">using cb2_t = std::function&lt;void(int)&gt;;</span><br><span class="line"></span><br><span class="line">// Wrapper function with std::function without arguments.</span><br><span class="line">template&lt;typename R&gt;</span><br><span class="line">void call(std::function&lt;R(void)&gt; f)</span><br><span class="line">&#123;</span><br><span class="line">    f();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Wrapper function with std::function with arguments.</span><br><span class="line">template&lt;typename R, typename ...A&gt;</span><br><span class="line">void call(std::function&lt;R(A...)&gt; f, A... args)</span><br><span class="line">&#123;</span><br><span class="line">    f(args...);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Wrapper function for generic callable object without arguments.</span><br><span class="line">// Delegates to the std::function call.</span><br><span class="line">template&lt;typename R&gt;</span><br><span class="line">void call(R f(void))</span><br><span class="line">&#123;</span><br><span class="line">    call(std::function&lt;R(void)&gt;(f));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Wrapper function for generic callable object with arguments.</span><br><span class="line">// Delegates to the std::function call.</span><br><span class="line">template&lt;typename R, typename ...A&gt;</span><br><span class="line">void call(R f(A...), A... args)</span><br><span class="line">&#123;</span><br><span class="line">    call(std::function&lt;R(A...)&gt;(f), args...);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Wrapper for a function pointer (e.g. a lambda without capture) without</span><br><span class="line">// arguments.</span><br><span class="line">using fp = void (*)(void);</span><br><span class="line">void call(fp f)</span><br><span class="line">&#123;</span><br><span class="line">    call(std::function&lt;void()&gt;(f));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void foo1()</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo1 is called\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void foo2(int i)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo2 is called with: &quot; &lt;&lt; i &lt;&lt; &quot;\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125; // end anonymous namespace</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    // Call function 1.</span><br><span class="line">    call(&amp;foo1);</span><br><span class="line"></span><br><span class="line">    // Alternative to call function 1.</span><br><span class="line">    cb1_t f1 = std::bind(&amp;foo1);</span><br><span class="line">    call(f1);</span><br><span class="line"></span><br><span class="line">    // Call function 2.</span><br><span class="line">    call(&amp;foo2, 5);</span><br><span class="line"></span><br><span class="line">    // Alternative to call function 2.</span><br><span class="line">    cb2_t f2 = std::bind(&amp;foo2, std::placeholders::_1);</span><br><span class="line">    call(f2, 5);</span><br><span class="line"></span><br><span class="line">    // Here is an example with a lambda. It calls the function that takes a</span><br><span class="line">    // function pointer.</span><br><span class="line">    call([] &#123; std::cout &lt;&lt; &quot;lambda called\n&quot;; &#125;);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="C-11-STL-functional-标准库"><a href="#C-11-STL-functional-标准库" class="headerlink" title="C++ 11 STL | functional 标准库"></a>C++ 11 STL | functional 标准库</h3><blockquote>
+<p>文章链接：<a href="https://www.sczyh30.com/posts/C-C/cpp-stl-functional/" target="_blank" rel="noopener">C++ 11 STL | functional 标准库</a></p>
+</blockquote>
+<p>最近正好用到了这个，就顺便总结下吧。</p>
+<p>C++ 11引入了函数对象标准库<functional>，里面包含各种内建的函数对象以及相关的操作函数，非常方便。这里总结一下std::function和std::bind的相关用法。</functional></p>
+<h4 id="Callable-type"><a href="#Callable-type" class="headerlink" title="Callable type"></a>Callable type</h4><p>Callable type指可以像调用函数一样被调用的对象或函数，包括：</p>
+<ul>
+<li>std::function</li>
+<li>std::bind</li>
+<li>std::result_of</li>
+<li>std::thread::thread</li>
+<li>std::call_once</li>
+<li>std::async</li>
+<li>std::packaged_task</li>
+<li>std::reference_wrapper</li>
+</ul>
+<p>根据C++ 17 Standard，所有Callable type都可以通过std::invoke方法进行显式调用。</p>
+<h4 id="std-function"><a href="#std-function" class="headerlink" title="std::function"></a>std::function</h4><p><code>std::function</code>类模板是一种通用的函数包装器，它可以容纳所有可以调用的对象（Callable），包括 <strong>函数、函数指针、Lambda表达式、bind表达式、成员函数及成员变量或者其他函数对象</strong>。通过std::function可以储存、拷贝或调用Callable对象。它的模板参数如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">template&lt; class R, class... Args &gt;</span><br><span class="line">class function&lt;R(Args...)&gt;</span><br></pre></td></tr></table></figure></p>
+<p>使用时，模板参数与要存储的函数参数一致即可，下面是一些例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;functional&gt;</span><br><span class="line">double f(int x, char y, double z) &#123;</span><br><span class="line">    return x + y + z;</span><br><span class="line">&#125;</span><br><span class="line">void print_num(int num) &#123;</span><br><span class="line">    std::cout &lt;&lt; num &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line">struct Dog &#123;</span><br><span class="line">    int id;</span><br><span class="line">    explicit Dog(int id): id(id) &#123;&#125;</span><br><span class="line">    void print_add(int i) const &#123;</span><br><span class="line">        std::cout &lt;&lt; id + i &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">class PrintString &#123;</span><br><span class="line">public:</span><br><span class="line">    void operator()(std::string&amp;&amp; s) const &#123;</span><br><span class="line">        std::cout &lt;&lt; s &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">int main(int argc, char **argv) &#123;</span><br><span class="line">    // common function</span><br><span class="line">    std::function&lt;void(int)&gt; func_display_num = print_num;</span><br><span class="line">    func_display_num(9);</span><br><span class="line">    // common function</span><br><span class="line">    std::function&lt;double(int, char, double)&gt; func_display = f;</span><br><span class="line">    std::cout &lt;&lt; func_display(3, &apos;a&apos;, 1.7) &lt;&lt; &quot;\n&quot;;</span><br><span class="line">    // lambda expression</span><br><span class="line">    std::function&lt;void(const char*)&gt; lbd_dsp_str = [](const char *s) &#123;std::cout &lt;&lt; s &lt;&lt; std::endl;&#125;;   </span><br><span class="line">    lbd_dsp_str(&quot;Scala&quot;);</span><br><span class="line">    // bind expression</span><br><span class="line">    auto func_num_bind = std::bind(&amp;f, std::placeholders::_1, &apos;c&apos;, 2.4);</span><br><span class="line">    std::cout &lt;&lt; func_num_bind(24) &lt;&lt; &quot;\n&quot;;</span><br><span class="line">    // function object</span><br><span class="line">    std::function&lt;void(std::string&amp;&amp;)&gt; func_obj_print = PrintString();</span><br><span class="line">    func_obj_print(&quot;C++ 17 Nice!&quot;);</span><br><span class="line">    // member function</span><br><span class="line">    const Dog dog(2424);</span><br><span class="line">    std::function&lt;void(const Dog&amp;, int)&gt; func_mem_display_num = &amp;Dog::print_add;</span><br><span class="line">    func_mem_display_num(dog, 24);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意声明时可用 <code>auto</code> 进行自动类型推导，这样可以节约时间，不过这样会牺牲代码的可读性，因此需要根据情况合理使用 <code>auto</code> 。</p>
+<h4 id="std-bind"><a href="#std-bind" class="headerlink" title="std::bind"></a>std::bind</h4><p>顾名思义，<code>std::bind</code> 函数用来绑定函数的某些参数并生成一个新的 <code>function</code> 对象。<br> <code>bind</code> 用于实现偏函数（Partial Function），相当于实现了函数式编程中的 Currying（柯里化）。<br>比如有一函数的定义为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void func_muti(int a, std::string&amp;&amp; b, const char* c, double d, char e) &#123;</span><br><span class="line">    std::cout &lt;&lt; a &lt;&lt; &quot;, &quot; &lt;&lt; b &lt;&lt; &quot;, &quot; &lt;&lt; c &lt;&lt; &quot;, &quot; &lt;&lt; d &lt;&lt; &quot;, &quot; &lt;&lt; e &lt;&lt; &quot;\n&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>现在将此函数的一些参数绑定上值，其余部分用占位符对象（std::placeholders）表示。占位符是有序号的，代表调用此函数对象时参数在参数列表中的位置。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto f = std::bind(&amp;func_muti, 24, std::placeholders::_1, &quot;Haha&quot;, std::placeholders::_2, &apos;P&apos;);  </span><br><span class="line">f(&quot;Hehe&quot;, 24.24);</span><br></pre></td></tr></table></figure></p>
+<p>调用这个函数对象相当于调用以下函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void f(std::string&amp;&amp; b, double d) &#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;24&quot; &lt;&lt; &quot;, &quot; &lt;&lt; b &lt;&lt; &quot;, &quot; &lt;&lt; &quot;Haha&quot; &lt;&lt; &quot;, &quot; &lt;&lt; d &lt;&lt; &quot;, &quot; &lt;&lt; &apos;P&apos; &lt;&lt; &quot;\n&quot;;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/31/SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1069,194 +1286,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/26/Git-cherry-pick用法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/26/Git-cherry-pick用法/" itemprop="url">Git cherry-pick用法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-26T13:48:11+08:00">
-                2018-07-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TortoiseGit/" itemprop="url" rel="index">
-                    <span itemprop="name">TortoiseGit</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/07/26/Git-cherry-pick用法/" class="leancloud_visitors" data-flag-title="Git cherry-pick用法">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="TortoiseGit之cherry-pick使用"><a href="#TortoiseGit之cherry-pick使用" class="headerlink" title="TortoiseGit之cherry-pick使用"></a>TortoiseGit之cherry-pick使用</h2><p>有这么一个需求，分支节点A作为dev分支，分支节点B和C作为功能分支，某天在B节点上爆发出一个bug，经研究发现该bug是根节点带出的，意味着C上也会有该bug，此时正确的修复手段是从B和C的共同根节点A中拉出分支，对该bug进行修复，而不是分别在B和C上进行代码修改。于此同时也许在A节点上有新的功能增加，此时不能直接把修复bug对应的commit合并到B和C上，而需要用到cherry-pick。参考以下文章：</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/liu0808/article/details/79158980" target="_blank" rel="noopener">git cherry-pick 把提交到A分支的部分commit 再提交到B分支上</a></p>
-</blockquote>
-<blockquote>
-<p>应用环境:<br>有一个主分支 <code>master</code> (这个分支只是用来合并其他通过测试的分支,及上线打版本)<br>另一个分支 <code>dev</code> (开发提交的分支)<br> 当你通过一番挣扎终于搞定一个bug,顺手提交到 git 服务器,心里一阵暗爽. 这时发现你当前所在的分支是 master !!!<br>这个分支不是开发者用来提交代码的,可惜现在剁手也晚了。<br>怎么办?<br>于是你想到,合并分支……<br>合并分支通常会带来各种各样的冲突，而且当前 <code>dev</code> 分支还在开发中,没有进过测试,所以就算合并也是 <code>dev</code> 合并 <code>master</code> 分支。但是车根本太大。<br>这时最好的解决方案就是用 <code>cherry-pick</code>。</p>
-</blockquote>
-<p>使用方法:</p>
-<ol>
-<li><p>先切换到刚才你误操作的分支下 <code>master</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout master</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>然后找到你的提交信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git log</span><br><span class="line">commit 424037d22c5830ba39b7c46bacd4abcb2abe072d</span><br><span class="line">Author: bingcaihuang &lt;bingcaihuang@gmail.com&gt;</span><br><span class="line">Date:   Thu Jul 26 13:31:33 2018 +0800</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>从提交日志中找到 <code>commitID</code>  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">424037d22c5830ba39b7c46bacd4abcb2abe072d</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>切换到 <code>dev</code> 分支下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout dev</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>把 <code>master</code> 下的 bug fixed! 提交重新提交的 <code>dev</code> 分支下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git cherry-pick &apos;424037d22c5830ba39b7c46bacd4abcb2abe072d&apos;</span><br><span class="line">Finished one cherry-pick.</span><br><span class="line">On branch dev</span><br><span class="line">Your branch is ahead of &apos;origin/dev&apos; by 1 commits.</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>上面的提示信息告诉我们这个 commit 已经重新提交到了 dev 分支下。<br>注意,这个操作也行会报错,这时需要你手动去合并冲突,然后重新提交。<br>最后  git push</p>
-<h2 id="Cherry-picking"><a href="#Cherry-picking" class="headerlink" title="Cherry picking"></a>Cherry picking</h2><p>TortoiseGit官方说明书：<br>Cherry-picking in TortoiseGit is invoked from the Revision Log Dialog. Within this dialog, select the commit(s) to cherry-pick, then right-click on one of the selected commits to pop up the context menu. Select Cherry Pick this commit… (or Cherry Pick select commits… if more than one commit is selected).</p>
-<p>The Cherry Pick dialog will be shown.<br>Cherry-picking in TortoiseGit is invoked from the Revision Log Dialog. Within this dialog, select the commit(s) to cherry-pick, then right-click on one of the selected commits to pop up the context menu. Select Cherry Pick this commit… (or Cherry Pick select commits… if more than one commit is selected).</p>
-<p>The Cherry Pick dialog will be shown.<br>Cherry-picking in TortoiseGit is invoked from the Revision Log Dialog. Within this dialog, select the commit(s) to cherry-pick, then right-click on one of the selected commits to pop up the context menu. Select Cherry Pick this commit… (or Cherry Pick select commits… if more than one commit is selected).</p>
-<p>The Cherry Pick dialog will be shown.</p>
-<p><img src="/2018/07/26/Git-cherry-pick用法/1532586900831.png" alt=""></p>
-<p>The Cherry Pick dialog is similar to the Rebase dialog. The top table displays one line for each selected commit to cherry-pick. Buttons below it control the actions (Pick, Squash, Edit, Skip) and the order in which multiple commits are picked. Selecting a line shows the files affected by the commit.</p>
-<h2 id="git-cherry-pick-从其他分支检出指定的commit到当前分支"><a href="#git-cherry-pick-从其他分支检出指定的commit到当前分支" class="headerlink" title="git cherry-pick 从其他分支检出指定的commit到当前分支"></a>git cherry-pick 从其他分支检出指定的commit到当前分支</h2><blockquote>
-<p>参考文章：<a href="https://www.cnblogs.com/chucklu/p/4707108.html" target="_blank" rel="noopener">git cherry-pick 从其他分支检出指定的commit到当前分支</a></p>
-</blockquote>
-<p><img src="/2018/07/26/Git-cherry-pick用法/1532587081566.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1307,7 +1336,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1318,7 +1347,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1329,7 +1358,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
