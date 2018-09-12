@@ -293,6 +293,241 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/QTransform类/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/12/QTransform类/" itemprop="url">QTransform类</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-12T09:35:48+08:00">
+                2018-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/09/12/QTransform类/" class="leancloud_visitors" data-flag-title="QTransform类">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="QTransform类"><a href="#QTransform类" class="headerlink" title="QTransform类"></a>QTransform类</h2><blockquote>
+<p><a href="https://blog.csdn.net/founderznd/article/details/51533777" target="_blank" rel="noopener">QTransform类</a></p>
+</blockquote>
+<p>QTransform类用于控制二维坐标系之间的转换<br>包含：位移、缩放、扭曲、旋转还有映射<br>首先看它的核心内容：</p>
+<p><img src="/2018/09/12/QTransform类/1536716220481.png" alt=""></p>
+<p>这是一个仿射变换矩阵(affine transformation)，它包含了坐标系转换所需要的所有信息</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">element</th>
+<th style="text-align:left">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">m11</td>
+<td style="text-align:left">水平缩放</td>
+</tr>
+<tr>
+<td style="text-align:left">m22</td>
+<td style="text-align:left">垂直缩放</td>
+</tr>
+<tr>
+<td style="text-align:left">m21</td>
+<td style="text-align:left">水平扭曲</td>
+</tr>
+<tr>
+<td style="text-align:left">m12</td>
+<td style="text-align:left">垂直扭曲</td>
+</tr>
+<tr>
+<td style="text-align:left">m31(dx)</td>
+<td style="text-align:left">水平位移</td>
+</tr>
+<tr>
+<td style="text-align:left">m32(dy)</td>
+<td style="text-align:left">垂直位移</td>
+</tr>
+<tr>
+<td style="text-align:left">m13</td>
+<td style="text-align:left">水平映射</td>
+</tr>
+<tr>
+<td style="text-align:left">m23</td>
+<td style="text-align:left">垂直映射</td>
+</tr>
+<tr>
+<td style="text-align:left">m33</td>
+<td style="text-align:left">额外的映射因子</td>
+</tr>
+</tbody>
+</table>
+<p>他们具体的功能可以看下图：</p>
+<p><img src="/2018/09/12/QTransform类/1536716518172.png" alt=""></p>
+<p>你可以直接使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void setMatrix(qreal m11, qreal m12, qreal m13, qreal m21, qreal m22, qreal m23, qreal m31, qreal m32, qreal m33)</span><br></pre></td></tr></table></figure></p>
+<p>来设置这些元素</p>
+<p>当然，QTransform也提供了很多方法来方便你使用</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">method</th>
+<th style="text-align:left">descripiton</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">QTransform.translate(qreal dx, qreal dy)</td>
+<td style="text-align:left">dx,dy为任意大小的实数，保存到m31(dx)和m32(dy)中</td>
+</tr>
+<tr>
+<td style="text-align:left">QTransform.scale(qreal sx, qreal sy)</td>
+<td style="text-align:left">sx，sy为任意大小的实数，保存到m11和m22中</td>
+</tr>
+<tr>
+<td style="text-align:left">QTransform.rotate(qreal angle)</td>
+<td style="text-align:left">angle为任意大小的实数，不过为了便于阅读，最好是0到360之间</td>
+</tr>
+<tr>
+<td style="text-align:left">QTransform.shear(qreal sh, qreal sv)</td>
+<td style="text-align:left">sh，sv为任意大小的实数，保存到m12和m21中</td>
+</tr>
+</tbody>
+</table>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/07/Effective-C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -457,6 +692,37 @@
 <li>调用 <code>operator[](size_t) const</code>，得到的返回值类型为 <code>const char&amp;</code>。</li>
 <li>把返回值去掉 <code>const</code> 属性，得到类型为 <code>char&amp;</code> 的返回值。</li>
 </ol>
+<h3 id="Item-4：确保变量的初始化"><a href="#Item-4：确保变量的初始化" class="headerlink" title="Item 4：确保变量的初始化"></a>Item 4：确保变量的初始化</h3><blockquote>
+<p><a href="https://harttle.land/2015/07/22/effective-cpp-4.html" target="_blank" rel="noopener">Item 4：确保变量的初始化</a></p>
+</blockquote>
+<blockquote>
+<p>Item 4: Make sure that objects are initialized before they’re used.</p>
+</blockquote>
+<p>出于效率原因，C++不保证内置类型数据成员的初始化。对于成员变量的内置类型， 会在构造函数进入之前进行初始化。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class C&#123;</span><br><span class="line">    int a;</span><br><span class="line">    B b;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>其中数据成员a是基本数据类型，b是成员对象。有些情况下C++会初始化a，有些情况下则不会。 对象类型的b却是总会被初始化的，它的无参数的构造函数将被调用。</p>
+<blockquote>
+<p>有成员对象的类称为封闭类（C就是一个），如果B没有不带参数的构造函数，则必须在C的构造函数中进行b的初始化。</p>
+</blockquote>
+<p>C++中变量的初始化规则较为复杂，大致的规则是这样的：</p>
+<ul>
+<li>对于C风格的C++：如果初始化会产生额外的负担，则不会初始化。</li>
+<li>对于面向对象风格的C++：类的构造函数中一般都会进行所有成员的初始化（所以你也应该这样做！）。</li>
+<li>全局/静态变量会自动初始化，自动变量（栈里面的）不会自动初始化。</li>
+</ul>
+<h4 id="构造函数中初始化所有成员"><a href="#构造函数中初始化所有成员" class="headerlink" title="构造函数中初始化所有成员"></a>构造函数中初始化所有成员</h4><p>在C++程序设计中的绝大多数场景下，由构造函数上进行变量的初始化。于是规则很简单：在构造函数中初始化所有成员。 值得注意的是，在构造函数进入之前成员已经进行了初始化。下面的代码会使得成员对象构造两次：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class C&#123;</span><br><span class="line">   B b;</span><br><span class="line">public:</span><br><span class="line">   C()&#123; b = B(); &#125;  // 这个是赋值啦</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>正确的做法是在构造函数前给出初始化列表：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class C&#123;</span><br><span class="line">    B b;</span><br><span class="line">    int i;</span><br><span class="line">public:</span><br><span class="line">    C():b(), i()&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line">// 或者</span><br><span class="line">C::C() : b(), i(1)&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>在构造函数前总是列出所有成员变量，以免遗漏。</p>
+</blockquote>
+<h4 id="类静态变量的初始化"><a href="#类静态变量的初始化" class="headerlink" title="类静态变量的初始化"></a>类静态变量的初始化</h4><p>类的静态变量除了在类声明中进行声明外，还需要在类声明外进行定义。 （static const int是个例外，参见：<a href="https://harttle.land/2015/07/21/effective-cpp-2.html" target="_blank" rel="noopener">Effective C++笔记：避免使用define</a>）</p>
+<blockquote>
+<p>静态变量的生命周期不同于栈或者堆中的对象，从它被构造开始一直存在，直到程序结束。 包括全局变量、命名空间下的变量、类中和函数中定义的static对象。 其中，定义在函数中的称为 local static，其他的称为 non-local static。</p>
+</blockquote>
+<p>多个编译单元的 non-local static 对象初始化次序是不确定的。因此可能会在使用时造成未初始化的问题， 解决办法便是把它变成一个 local static，C++保证了在第一次函数调用遇到该 local static 声明时， 它会被初始化。这也是Singleton(local static) 的典型实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class FileSystem&#123;...&#125;;</span><br><span class="line">FileSystem&amp; tfs()&#123;</span><br><span class="line">		//将在首次进入函数时构造</span><br><span class="line">		static FileSystem fs;</span><br><span class="line">		return fs;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以下提供较完整的Signleton C++实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Singleton&#123;</span><br><span class="line">private:</span><br><span class="line">    Singleton()&#123;&#125;</span><br><span class="line">    Singleton(const Singleton&amp;);</span><br><span class="line">    Singleton&amp; operator=(const Singleton&amp; rhs);</span><br><span class="line">public:</span><br><span class="line">    static Singleton&amp; getInstance()&#123;</span><br><span class="line">        static Singleton instance;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>一旦声明了任何形式的构造函数（包括拷贝构造函数），编译器将不会生成默认的无参构造函数。所以上述的无参数的构造函数可以省略。</p>
+</blockquote>
 
           
         
@@ -1129,232 +1395,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/Qt-Plugin框架结构/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/13/Qt-Plugin框架结构/" itemprop="url">Qt Plugin框架结构</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-13T17:08:10+08:00">
-                2018-08-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Qt/" itemprop="url" rel="index">
-                    <span itemprop="name">Qt</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/08/13/Qt-Plugin框架结构/" class="leancloud_visitors" data-flag-title="Qt Plugin框架结构">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Qt-Plugin框架结构"><a href="#Qt-Plugin框架结构" class="headerlink" title="Qt Plugin框架结构"></a>Qt Plugin框架结构</h2><blockquote>
-<p>参考文章：<br><a href="http://yleesun.blog.163.com/blog/static/2941340220093246562218/" target="_blank" rel="noopener">基于QT Plugin框架结构</a></p>
-</blockquote>
-<h3 id="qt-plugin-介绍"><a href="#qt-plugin-介绍" class="headerlink" title="qt plugin 介绍"></a>qt plugin 介绍</h3><pre><code>Qt Plugin和其他类型的插件一样，是一种计算机应用程序，它和主应用程序(host application)互相交互，以提供特定的功能。应用程序支持Plugin有许多原因，一些主要原因包括：使得第三方开发者有能力扩展应用程序，以提供无法先期预料的特色；减小应用程序的大小；由于软件版权之间的不兼容性将源代码和应用程序分享。Qt Plugin 分动态插件和静态插件两种。
-</code></pre><h3 id="qt-plugin-创建和使用方法"><a href="#qt-plugin-创建和使用方法" class="headerlink" title="qt plugin 创建和使用方法"></a>qt plugin 创建和使用方法</h3><p>Qt有两种与插件有关的API。一种用来扩展Qt本身的功能，如自定义数据库驱动，图像格式，文本编解码，自定义分格，等等，称为Higher-Level API。另一种用于应用程序的功能扩展，称为Lower-Level API。前一种是建立在后一种的基础之上的。这里讨论的是后一种，即用来扩展应用程序的Lower-level API。</p>
-<p>让应用程序支持插件扩展的步骤：</p>
-<ol>
-<li><p>定义一个接口集(只有纯虚函数的类)，用来与插件交流。</p>
-</li>
-<li><p>用宏Q_DECLARE_INTERFACE()将该接口告诉Qt元对象系统。</p>
-<p>Q_DECLARE_INTERFACE(BrushInterface,”com.trolltech.PlugAndPaint.BrushInterface/1.0”)</p>
-</li>
-<li><p>应用程序中用QPluginLoader来装载插件。</p>
-</li>
-<li><p>用宏qobject_cast()来确定一个插件是否实现了接口。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">QObject *obj = new QTimer;</span><br><span class="line">QTimer *timer = qobject_cast&lt;QTimer *&gt;(obj);</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>写一个插件的步骤：</p>
-<ol>
-<li><p>声明插件类，该类从QObject和该插件希望实现的接口继承而来。</p>
-</li>
-<li><p>用宏Q_INTERFACES()将该接口告诉Qt元对象系统。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class BasicToolsPlugin : public QObject,</span><br><span class="line">                         public BrushInterface,</span><br><span class="line">                         public ShapeInterface,</span><br><span class="line">                         public FilterInterface</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">    Q_INTERFACES(BrushInterface ShapeInterface FilterInterface)</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>用宏Q_EXPORT_PLUGIN2()导出插件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Q_EXPORT_PLUGIN2 ( PluginName, ClassName )</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>用适当的.pro文件构建插件。</p>
-</li>
-</ol>
-<p>下面的代码声明了一个接口类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class FilterInterface</span><br><span class="line">&#123;</span><br><span class="line"> public:</span><br><span class="line">        virtual ~FilterInterface() &#123;&#125;</span><br><span class="line">        virtual QStringList filters() const = 0;</span><br><span class="line">        virtual QImage filterImage(const QString &amp;filter, const QImage &amp;image, QWidget* parent)=0;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Q_DECLARE_INTERFACE(FilterInterface, &quot;com.trolltech.PlugAndPaint.FilterInterface/1.0&quot;)</span><br></pre></td></tr></table></figure>
-<p>这里是实现该接口的插件类的定义：</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QObject&gt;</span><br><span class="line">#include &lt;QStringList&gt;</span><br><span class="line">#include &lt;QImage&gt;</span><br><span class="line">#include &lt;plugandpaint/interfaces.h&gt;</span><br><span class="line"></span><br><span class="line">class ExtraFiltersPlugin : public QObject, public FilterInterface</span><br><span class="line">&#123;</span><br><span class="line">Q_OBJECT</span><br><span class="line">Q_INTERFACES(FilterInterface)</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    QStringList filters() const;</span><br><span class="line">    QImage filterImage(const QString &amp;filter, const QImage &amp;image,</span><br><span class="line">    QWidget *parent);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>根据插件的类型不同，pro文件中配置上有不同。下面是pro文件分析：</p>
-<p>TEMPLATE      = lib                                  // 声明为lib，动态和静态插件一样。</p>
-<p>CONFIG       += plugin static                // 声明为plugin，带static表面为静态，否则为动态。</p>
-<p>INCLUDEPATH  += ../..</p>
-<p>HEADERS       = basictoolsplugin.h</p>
-<p>SOURCES       = basictoolsplugin.cpp</p>
-<p>TARGET        = $$qtLibraryTarget(pnp_basictools)           // 指明插件的名称</p>
-<p>DESTDIR       = ../../plugandpaint/plugins</p>
-<p>加载插件的主应用程序默认在当前目录下的plugins文件夹中寻找可用插件，如果是动态插件，则直接放在plugins文件夹中便可，如果是静态，则需要在主应用程序的main函数的开始的地方用宏：Q_IMPORT_PLUGIN(pluginname(和pro文件中声明的一致))声明需要加载的插件并在工程配置中指明插件的lib位置。</p>
-<h3 id="基于qt-plugin-技术的框架结构设想"><a href="#基于qt-plugin-技术的框架结构设想" class="headerlink" title="基于qt plugin 技术的框架结构设想"></a>基于qt plugin 技术的框架结构设想</h3><ol>
-<li><p>愿景<br>由于我们目前系统功能多，模块多，缺乏系统的整体性。我们想借助Qt Plugin技术，把各个独立的功能模块实现为一个个插件，统一在主体框架中，并能根据不同地方的用户的不同需求，在主框架中加载不同的功能模块，以实现整个系统的功能集中，体现出系统的整体性。</p>
-</li>
-<li><p>plugin 接口<br>通过技术验证得出，目前我们采用动态插件，各个功能的插件实现定义的统一接口，具体功能放在插件界面中实现，此部分就像开发独立的应用程序，只是需要注意的是：</p>
-<ul>
-<li>功能部分的主界面需要继承至插件界面基类：PluginWidget，插件接口中用具体的实现类指针给插件界面基类指针赋值，在加载插件的主框架中通过插件接口中定义的基类指针统一调用，利用C++动态技术动态识别具体指向的实现类。</li>
-<li>插件界面类必须实现基类的虚函数：CreateActions()用于创建Action</li>
-<li>创建Action需要使用基类的方法newAction创建，在此函数中加入了保存创建的Action功能。</li>
-</ul>
-</li>
-</ol>
-<p>插件接口定义如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class QPluginInterface</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    // 析构函数</span><br><span class="line">    virtual ~QPluginInterface() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    // 插件名称</span><br><span class="line">    virtual QString PluginName() = 0;</span><br><span class="line"></span><br><span class="line">    // 插件显示在主框架中的图标文件路径</span><br><span class="line">    virtual QString PluginIconurl() = 0;</span><br><span class="line"></span><br><span class="line">    //　插件提供的对外操作接口集</span><br><span class="line">    virtual QList&lt;QAction*&gt;* Actions() = 0;</span><br><span class="line"></span><br><span class="line">    // 创建插件提供的操作方法</span><br><span class="line">    virtual void CreateActions()=0;</span><br><span class="line"></span><br><span class="line">    // 插件的主界面</span><br><span class="line">    virtual QWidget* Widget() = 0;</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    // 插件的主界面基类</span><br><span class="line">    PluginWidget *pluginWidget;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>插件界面基类定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class PluginWidget :public QMainWindow</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">public:</span><br><span class="line">    PluginWidget(QWidget*parent=0);</span><br><span class="line">    ~PluginWidget();</span><br><span class="line">    QList&lt;QAction*&gt;* Actions();</span><br><span class="line">    virtual void CreateActions()&#123;&#125;</span><br><span class="line">    QAction *newAction(const QIcon &amp;icon,const QString &amp;text,QObject*parent);</span><br><span class="line">    QAction *newAction(const QString &amp;text,QObject*parent);</span><br><span class="line">    void AppendAction(QAction*act);</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    // action链表</span><br><span class="line">    QList&lt;QAction*&gt; *m_actlist;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>下图是一个实现案例中各类之间的关系图：</p>
-<p><img src="/2018/08/13/Qt-Plugin框架结构/1534151586951.png" alt=""></p>
-<ol start="3">
-<li>插件调用</li>
-</ol>
-<p>插件在主框架中动态加载，目前考虑主框架基本结构是继承至QMainWindow，工具栏上显示当前加载的插件的功能键，并留有返回键可以回退到上一级。主工作区是一个QStackWidget,保存插件的界面，并把插件序号和插件对应的界面建立映射，保存在QMap&lt;int,QWidget&gt;中。通过序号到QStackWidget中切换界面。</p>
-<p>下图是把DBManager做成插件加载到主框架的运行界面：</p>
-<p><img src="/2018/08/13/Qt-Plugin框架结构/1534151601388.png" alt=""></p>
-<p>下图是把一个简单的绘图程序做成了插件，加载到主框架的运行界面：</p>
-<p><img src="/2018/08/13/Qt-Plugin框架结构/1534151609060.png" alt=""></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>目前只是通过实现两个动态插件在主框架中运行，基本算是功能性的验证，离具体实施还有很多工作需要进一步的研究，比如主框架的风格，插件的管理等等。由于本人的能力有限，可能有很多认识不够的地方，请指正。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1400,7 +1445,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1422,7 +1467,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

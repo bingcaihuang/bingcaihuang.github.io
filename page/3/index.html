@@ -293,6 +293,224 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/C-智能指针系列/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/07/C-智能指针系列/" itemprop="url">C++智能指针系列</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-07T19:02:22+08:00">
+                2018-08-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/07/C-智能指针系列/" class="leancloud_visitors" data-flag-title="C++智能指针系列">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="C-智能指针系列"><a href="#C-智能指针系列" class="headerlink" title="C++智能指针系列"></a>C++智能指针系列</h2><h3 id="智能指针shared-ptr的用法"><a href="#智能指针shared-ptr的用法" class="headerlink" title="智能指针shared_ptr的用法"></a>智能指针shared_ptr的用法</h3><blockquote>
+<p><a href="https://www.cnblogs.com/jiayayao/p/6128877.html" target="_blank" rel="noopener">智能指针shared_ptr的用法</a></p>
+</blockquote>
+<p>为了解决C++内存泄漏的问题，C++11引入了智能指针（Smart Pointer）。</p>
+<p>智能指针的原理是，接受一个申请好的内存地址，构造一个保存在栈上的智能指针对象，当程序退出栈的作用域范围后，由于栈上的变量自动被销毁，智能指针内部保存的内存也就被释放掉了（除非将智能指针保存起来）。</p>
+<p>C++11提供了三种智能指针：std::shared_ptr, std::unique_ptr, std::weak_ptr，使用时需添加头文件<memory>。</memory></p>
+<p>shared_ptr使用引用计数，每一个shared_ptr的拷贝都指向相同的内存。每使用他一次，内部的引用计数加1，每析构一次，内部的引用计数减1，减为0时，删除所指向的堆内存。shared_ptr内部的引用计数是安全的，但是对象的读取需要加锁。</p>
+<h4 id="shared-ptr的基本用法"><a href="#shared-ptr的基本用法" class="headerlink" title="shared_ptr的基本用法"></a>shared_ptr的基本用法</h4><h5 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h5><p>可以通过构造函数、std::make_shared<t>辅助函数和reset方法来初始化shared_ptr：</t></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;future&gt;</span><br><span class="line">#include &lt;thread&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line">class Person</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    Person(int v) &#123;</span><br><span class="line">        value = v;</span><br><span class="line">        std::cout &lt;&lt; &quot;Cons&quot; &lt;&lt;value&lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">    ~Person() &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;Des&quot; &lt;&lt;value&lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    int value;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    std::shared_ptr&lt;Person&gt; p1(new Person(1));// Person(1)的引用计数为1</span><br><span class="line"></span><br><span class="line">    std::shared_ptr&lt;Person&gt; p2 = std::make_shared&lt;Person&gt;(2);</span><br><span class="line"></span><br><span class="line">    p1.reset(new Person(3));// 首先生成新对象，然后引用计数减1，引用计数为0，故析构Person(1)</span><br><span class="line">                            // 最后将新对象的指针交给智能指针</span><br><span class="line"></span><br><span class="line">    std::shared_ptr&lt;Person&gt; p3 = p1;//现在p1和p3同时指向Person(3)，Person(3)的引用计数为2</span><br><span class="line"></span><br><span class="line">    p1.reset();//Person(3)的引用计数为1</span><br><span class="line">    p3.reset();//Person(3)的引用计数为0，析构Person(3)</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意，不能将一个原始指针直接赋值给一个智能指针，如下所示，原因是一个是类，一个是指针。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::shared_ptr&lt;int&gt; p4 = new int(1);// error</span><br></pre></td></tr></table></figure>
+<p><strong>reset()包含两个操作。当智能指针中有值的时候，调用reset()会使引用计数减1.当调用reset（new xxx())重新赋值时，智能指针首先是生成新对象，然后将就对象的引用计数减1（当然，如果发现引用计数为0时，则析构旧对象），然后将新对象的指针交给智能指针保管。</strong></p>
+<h5 id="获取原始指针"><a href="#获取原始指针" class="headerlink" title="获取原始指针"></a>获取原始指针</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::shared_ptr&lt;int&gt; p4(new int(5));</span><br><span class="line">int *pInt = p4.get();</span><br></pre></td></tr></table></figure>
+<h5 id="指定删除器"><a href="#指定删除器" class="headerlink" title="指定删除器"></a>指定删除器</h5><p>智能指针可以指定删除器，当智能指针的引用计数为0时，自动调用指定的删除器来释放内存。std::shared_ptr可以指定删除器的一个原因是其默认删除器不支持数组对象，这一点需要注意。</p>
+<h4 id="使用shared-ptr需要注意的问题"><a href="#使用shared-ptr需要注意的问题" class="headerlink" title="使用shared_ptr需要注意的问题"></a>使用shared_ptr需要注意的问题</h4><p>但凡一些高级的用法，使用时都有不少陷阱。<br><strong>不要用一个原始指针初始化多个shared_ptr，原因在于，会造成二次销毁，如下所示：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">int *p5 = new int;</span><br><span class="line">std::shared_ptr&lt;int&gt; p6(p5);</span><br><span class="line">std::shared_ptr&lt;int&gt; p7(p5);// logic error</span><br></pre></td></tr></table></figure>
+<p><strong>不要在函数实参中创建shared_ptr。因为C++的函数参数的计算顺序在不同的编译器下是不同的。正确的做法是先创建好，然后再传入。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function(shared_ptr&lt;int&gt;(new int), g());</span><br></pre></td></tr></table></figure>
+<p><strong>禁止通过shared_from_this()返回this指针，这样做可能也会造成二次析构。</strong></p>
+<p><strong>避免循环引用。智能指针最大的一个陷阱是循环引用，循环引用会导致内存泄漏。解决方法是AStruct或BStruct改为weak_ptr。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">struct AStruct;</span><br><span class="line">struct BStruct;</span><br><span class="line"></span><br><span class="line">struct AStruct &#123;</span><br><span class="line">    std::shared_ptr&lt;BStruct&gt; bPtr;</span><br><span class="line">    ~AStruct() &#123; cout &lt;&lt; &quot;AStruct is deleted!&quot;&lt;&lt;endl; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct BStruct &#123;</span><br><span class="line">    std::shared_ptr&lt;AStruct&gt; APtr;</span><br><span class="line">    ~BStruct() &#123; cout &lt;&lt; &quot;BStruct is deleted!&quot; &lt;&lt; endl; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void TestLoopReference()</span><br><span class="line">&#123;</span><br><span class="line">    std::shared_ptr&lt;AStruct&gt; ap(new AStruct);</span><br><span class="line">    std::shared_ptr&lt;BStruct&gt; bp(new BStruct);</span><br><span class="line">    ap-&gt;bPtr = bp;</span><br><span class="line">    bp-&gt;APtr = ap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="shared-ptr-使用注意事项"><a href="#shared-ptr-使用注意事项" class="headerlink" title="shared_ptr 使用注意事项"></a>shared_ptr 使用注意事项</h3><blockquote>
+<p><a href="https://www.cnblogs.com/daihanlong/p/4716009.html" target="_blank" rel="noopener">c++ shared_ptr 使用注意事项</a></p>
+</blockquote>
+<h4 id="条款1：不要把一个原生指针给多个shared-ptr管理"><a href="#条款1：不要把一个原生指针给多个shared-ptr管理" class="headerlink" title="条款1：不要把一个原生指针给多个shared_ptr管理"></a>条款1：不要把一个原生指针给多个shared_ptr管理</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">int* ptr = new int;</span><br><span class="line">shared_ptr&lt;int&gt; p1(ptr);</span><br><span class="line">shared_ptr&lt;int&gt; p2(ptr); //logic error</span><br></pre></td></tr></table></figure>
+<p>ptr对象被删除了2次<br>这种问题比喻成“二龙治水”，在原生指针中也同样可能发生。</p>
+<h4 id="条款2：不要把this指针给shared-ptr"><a href="#条款2：不要把this指针给shared-ptr" class="headerlink" title="条款2：不要把this指针给shared_ptr"></a>条款2：不要把this指针给shared_ptr</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Test&#123;</span><br><span class="line">public:</span><br><span class="line">    void Do()&#123;  m_member_sp =  shared_ptr&lt;Test&gt;(this);  &#125;</span><br><span class="line">private:</span><br><span class="line">    shared_ptr&lt;Test&gt; m_member_sp;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Test* t = new Test;</span><br><span class="line">shared_ptr&lt;Test&gt; local_sp(t);</span><br><span class="line">p-&gt;Do();</span><br></pre></td></tr></table></figure>
+<p>发生什么事呢，t对象被删除了2次！<br>t对象给了local_sp管理，然后在m_member_sp =  shared_ptr<test>(this)这句里又请了一尊神来管理t。<br>这就发生了条款1里“二龙治水”错误。</test></p>
+<h4 id="条款3：不要让shared-ptr的循环引用"><a href="#条款3：不要让shared-ptr的循环引用" class="headerlink" title="条款3：不要让shared_ptr的循环引用"></a>条款3：不要让shared_ptr的循环引用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">//---------------------------------------------</span><br><span class="line">class Dog;</span><br><span class="line">class Animal&#123;</span><br><span class="line">public:</span><br><span class="line">    ~Animal()&#123;</span><br><span class="line">        cout &lt;&lt; &quot;Animal Deconstructor&quot; &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    shared_ptr&lt;Dog&gt; _dog;</span><br><span class="line">&#125;;</span><br><span class="line">//---------------------------------------------</span><br><span class="line">class Dog&#123;</span><br><span class="line">public:</span><br><span class="line">    ~Dog()&#123;</span><br><span class="line">        cout &lt;&lt; &quot;Dog Deconstructor&quot; &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    shared_ptr&lt;Animal&gt; _animal;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">//---------------------------------------------</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line"></span><br><span class="line">    shared_ptr&lt;Dog&gt; dog = make_shared&lt;Dog&gt;();</span><br><span class="line">    shared_ptr&lt;Animal&gt; animal = make_shared&lt;Animal&gt;();</span><br><span class="line"></span><br><span class="line">    dog-&gt;_animal = animal;</span><br><span class="line">    animal-&gt;_dog = dog;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;--------------------------&quot; &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样 Animal 和 Dog 都不会被回收.<br>解决办法,将 shared_ptr<dog> _dog  或   shared_ptr&lt;Animal&gt; _animal 其中的一个换成  weak_ptr.</dog></p>
+<h4 id="条款4：不要在函数实参里创建shared-ptr"><a href="#条款4：不要在函数实参里创建shared-ptr" class="headerlink" title="条款4：不要在函数实参里创建shared_ptr"></a>条款4：不要在函数实参里创建shared_ptr</h4><p>function ( shared_ptr<int>(new int), g( ) );  //有缺陷<br>可能的过程是先new int，然后调g( )，g( )发生异常，shared_ptr<int>没有创建，int内存泄露</int></int></p>
+<p>shared_ptr<int> p(new int());<br>f(p, g());  //Boost推荐写法</int></p>
+<h4 id="条款5：对象内部生成shared-ptr"><a href="#条款5：对象内部生成shared-ptr" class="headerlink" title="条款5：对象内部生成shared_ptr"></a>条款5：对象内部生成shared_ptr</h4><p>前面说过，不能把this指针直接扔给shared_ptr. 但是没有禁止在对象内部生成自己的shared_ptr</p>
+<p>//这是Boost的例子改的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Y: public boost::enable_shared_from_this&lt;Y&gt;</span><br><span class="line">&#123;</span><br><span class="line">    boost::shared_ptr&lt;Y&gt; GetSelf()</span><br><span class="line">    &#123;</span><br><span class="line">        return shared_from_this();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>原理是这样的。普通的（没有继承enable_shared_from_this）类T的shared_ptr<t> p(new T).<br>p作为栈对象占8个字节，为了记录（new T）对象的引用计数，p会在堆上分配16个字节以保存<br>引用计数等“智能信息”。share_ptr没有“嵌入(intrusive)”到T对象，或者说T对象对share_ptr毫不知<br>情。Y对象则不同，Y对象已经被“嵌入”了一些share_ptr相关的信息，目的是为了找到“全局性”的<br>那16字节的本对象的“智能信息”。</t></p>
+<p>原理说完了，就是陷阱<br>Y y;<br>boost::shared_ptr<y> p=  y.GetSelf(); //无知的代码，y根本就不是new出来的</y></p>
+<p>Y* y = new Y;<br>boost::shared_ptr<y> p=  y-&gt;GetSelf(); //似是而非，仍旧程序崩盘。<br>Boost文档说，在调用shared_from_this()之前，必须存在一个正常途径创建的shared_ptr</y></p>
+<p>boost::shared_ptr<y> spy(new Y)<br>boost::shared_ptr<y> p =  spy-&gt;GetSelf(); //OK</y></y></p>
+<h4 id="条款6-：处理不是new的对象要小心"><a href="#条款6-：处理不是new的对象要小心" class="headerlink" title="条款6 ：处理不是new的对象要小心"></a>条款6 ：处理不是new的对象要小心</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int* pi = (int*)malloc(4)</span><br><span class="line">shared_ptr&lt;int&gt; sp( pi ) ; //delete马嘴不对malloc驴头。</span><br></pre></td></tr></table></figure>
+<h4 id="条款7：多线程对引用计数的影响"><a href="#条款7：多线程对引用计数的影响" class="headerlink" title="条款7：多线程对引用计数的影响"></a>条款7：多线程对引用计数的影响</h4><p>如果是轻量级的锁，比如InterLockIncrement等，对程序影响不大<br>如果是重量级的锁，就要考虑因为share_ptr维护引用计数而造成的上下文切换开销。<br>1.33版本以后的shared_ptr对引用计数的操作使用的是Lock-Free（类似InterLockIncrement函数族）<br>的操作，应该效率不错，而且能保证线程安全（库必须保证其安全，程序员都没有干预这些隐藏事物的机会）。<br>Boost文档说read，write同时对shared_ptr操作时，行为不确定。这是因为shared_ptr本身有两个成员px，pi。<br>多线程同时对px读写是要出问题的。与一个int的全局变量多线程读写会出问题的原因一样。</p>
+<h4 id="条款8：对象数组用shared-array"><a href="#条款8：对象数组用shared-array" class="headerlink" title="条款8：对象数组用shared_array"></a>条款8：对象数组用shared_array</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int* pint = new int[100];</span><br><span class="line">shared_array&lt;int&gt; p (pint );</span><br></pre></td></tr></table></figure>
+<p>既然shared_ptr对应着delete；显然需要一个delete[]对应物shared_array</p>
+<h4 id="条款9：学会用删除器"><a href="#条款9：学会用删除器" class="headerlink" title="条款9：学会用删除器"></a>条款9：学会用删除器</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct Test_Deleter</span><br><span class="line">&#123;   </span><br><span class="line">    void  operator ()( Test* p)&#123;   ::free(p);   &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Test* t = (Test*)malloc(sizeof(Test));</span><br><span class="line">new (t) Test;</span><br></pre></td></tr></table></figure>
+<p>shared_ptr<test> sp( t ,  Test_Deleter() ); //删除器可以改变share_ptr销毁对象行为</test></p>
+<p>有了删除器，shared_array无用武之地了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class T&gt;</span><br><span class="line">struct Array_Deleter</span><br><span class="line">&#123;   </span><br><span class="line">    void  operator ()( T*)&#123;   delete[] p;   &#125;</span><br><span class="line">&#125;;</span><br><span class="line">int* pint = new int[100];</span><br><span class="line">shared_ptr&lt;int&gt; p (pint, Array_Deleter&lt;int&gt;() );</span><br></pre></td></tr></table></figure>
+<h4 id="条款10：学会用分配器"><a href="#条款10：学会用分配器" class="headerlink" title="条款10：学会用分配器"></a>条款10：学会用分配器</h4><p>存放引用计数的地方是堆内存，需要16-20字节的开销。<br>如果大量使用shared_ptr会造成大量内存碎片。<br>shared_ptr构造函数的第3个参数是分配器，可以解决这个问题。</p>
+<p>shared_ptr<test> p( (new Test), Test_Deleter(), Mallocator<test>() );<br>注意删除器Test_Deleter是针对Test类的。分配器是针对shared_ptr内部数据的。</test></test></p>
+<p>Mallocator<test>()是个临时对象（无状态的），符合STL分配器规约。</test></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename T&gt;</span><br><span class="line">class Mallocator &#123;</span><br><span class="line">    //略。。。。。。</span><br><span class="line">    T * allocate(const size_t n) const &#123;</span><br><span class="line">        return singleton_pool&lt;T,sizeof(T)&gt;::malloc();</span><br><span class="line">    &#125;</span><br><span class="line">    //略。。。。。。</span><br></pre></td></tr></table></figure>
+<p>Mallocator传入Test，实际分配的类型确是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class boost::detail::sp_counted_impl_pda&lt;class Test *,</span><br><span class="line">                                         struct Test_Deleter,</span><br><span class="line">                                         class Mallocator&lt;class Test&gt; &gt;</span><br></pre></td></tr></table></figure>
+<p>这是用typeid(T).name()打印出来的。可能和rebind相关。</p>
+<h4 id="条款11-weak-ptr在使用前需要检查合法性"><a href="#条款11-weak-ptr在使用前需要检查合法性" class="headerlink" title="条款11 weak_ptr在使用前需要检查合法性"></a>条款11 weak_ptr在使用前需要检查合法性</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">weak_ptr&lt;K&gt; wp;</span><br><span class="line">&#123;</span><br><span class="line">shared_ptr&lt;K&gt;  sp(new K);  //sp.use_count()==1</span><br><span class="line">wp = sp; //wp不会改变引用计数，所以sp.use_count()==1</span><br><span class="line">shared_ptr&lt;K&gt; sp_ok = wp.lock(); //wp没有重载-&gt;操作符。只能这样取所指向的对象</span><br><span class="line">&#125;</span><br><span class="line">shared_ptr&lt;K&gt; sp_null = wp.lock(); //sp_null .use_count()==0;</span><br></pre></td></tr></table></figure>
+<p>因为上述代码中sp和sp_ok离开了作用域，其容纳的K对象已经被释放了。<br>得到了一个容纳NULL指针的sp_null对象。在使用wp前需要调用wp.expired()函数判断一下。<br>因为wp还仍旧存在，虽然引用计数等于0，仍有某处“全局”性的存储块保存着这个计数信息。<br>直到最后一个weak_ptr对象被析构，这块“堆”存储块才能被回收。否则weak_ptr无法知道自己<br>所容纳的那个指针资源的当前状态。</p>
+<h4 id="条款12-不要new-shared-ptr-lt-T-gt"><a href="#条款12-不要new-shared-ptr-lt-T-gt" class="headerlink" title="条款12 不要new shared_ptr&lt;T&gt;"></a>条款12 不要new shared_ptr&lt;T&gt;</h4><p>本来shared_ptr就是为了管理指针资源的，不要又引入一个需要管理的指针资源shared_ptr<t>*</t></p>
+<h4 id="条款13-尽量不要get"><a href="#条款13-尽量不要get" class="headerlink" title="条款13  尽量不要get"></a>条款13  尽量不要get</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class B&#123;...&#125;;</span><br><span class="line">class D : public B&#123; ...&#125;;  //继承层次关系</span><br><span class="line"></span><br><span class="line">shared_ptr&lt;B&gt; sp (new D);    //通过隐式转换，储存D的指针。</span><br><span class="line">B* b = sp.get();             //shared_ptr辛辛苦苦隐藏的原生指针就这么被刨出来了。</span><br><span class="line">D* d = dynamic_cast&lt;D*&gt;(b);  //这是使用get的正当理由吗？</span><br></pre></td></tr></table></figure>
+<p>正确的做法<br>shared_ptr&lt;B&gt; spb (new D)  ;<br>shared_ptr&lt;D&gt; spd = shared_dynamic_cast&lt;D&gt;(spb); //变成子类的指针<br>shared_ptr在竭尽全力表演的像一个原生指针，原生指针能干的事，它也基本上能干。</p>
+<p>另一个同get相关的错误<br>shared_ptr&lt;T&gt; sp(new T);<br>shared_ptr&lt;T&gt; sp2( sp.get() ) ;//又一个“二龙治水”实例，指针会删2次而错误。</p>
+<h4 id="条款14-不要memcpy-shared-ptr"><a href="#条款14-不要memcpy-shared-ptr" class="headerlink" title="条款14 不要memcpy shared_ptr"></a>条款14 不要memcpy shared_ptr</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;B&gt; sp1 (new B)  ;</span><br><span class="line">shared_ptr&lt;B&gt; sp2;</span><br><span class="line">memcpy(&amp;sp2,&amp;sp1,sizeof(shared_ptr&lt;B&gt;)); //sp2.use_count()==1</span><br></pre></td></tr></table></figure>
+<p>很显然，不是通过正常途径（拷贝构造，赋值运算），引用计数是不会正确增长的。</p>
+<h4 id="条款15-使用BOOST预定义的宏去改变shared-ptr行为。"><a href="#条款15-使用BOOST预定义的宏去改变shared-ptr行为。" class="headerlink" title="条款15 使用BOOST预定义的宏去改变shared_ptr行为。"></a>条款15 使用BOOST预定义的宏去改变shared_ptr行为。</h4><p>shared_ptr行为由类似BOOST_SP_DISABLE_THREADS这样的宏控制。需要去学习他们到底是干什么的。<br>大师Andrei Alexandrescu设计了一种基于模板策略设计模式的智能指针，通过几个模板参数去定制化<br>智能指针的行为。Boost却不以为然，官方解释是：需要统一的接口，这样利于大规模书写。<br>smart_ptr&lt;T,OwnershipPolicy,ConversionPolicy,CheckingPolicy,StoragePolicy&gt; sp(new T);<br>上述接口缺点是外形复杂，看上去像个大花脸。优点是客户程序员可以轻易的定制行为。</p>
+<h4 id="条款17-构造函数里调用shared-from-this抛例外"><a href="#条款17-构造函数里调用shared-from-this抛例外" class="headerlink" title="条款17 构造函数里调用shared_from_this抛例外"></a>条款17 构造函数里调用shared_from_this抛例外</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Holder:public enable_shared_from_this&lt;Holder&gt;&#123;</span><br><span class="line">public:</span><br><span class="line">    Holder() &#123;</span><br><span class="line">        shared_ptr&lt;Holder&gt; sp = shared_from_this();</span><br><span class="line">        int x = sp.use_count();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>同前面条款5，不符合enable_shared_from_this使用前提。</p>
+<p>总结：<br>学习了一天就总结出10多条条款，长期研究一下恐怕就出现条款100了。为什么还要使用shared_ptr呢？<br>有很多开源库用shared_ptr，而且shared_ptr具有“传染性”（某网友语：像毒品沾上就甩不掉），<br>抛开它就会有更严重的多龙治水现象。shared_ptr作为原生指针的替代品，能解决一定的内存泄露问题。<br>实际上初学原生指针时，每个人都遇到过野指针，删两次，忘记删除等问题。学习shared_ptr也会遇到。<br>shared_ptr的确能改善上述问题，并不能完全解决问题。shared_ptr可能在将来占主流，它最可能号令江湖，<br>否则一大堆auto_ptr,weak_ptr,原生指针，scoped_ptr共存就把人搞糊涂了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/针对范围对的高效查找算法设计/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1487,198 +1705,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/02/Qt程序启动画面QSplashScreen/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/02/Qt程序启动画面QSplashScreen/" itemprop="url">Qt程序启动画面QSplashScreen</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-02T08:24:17+08:00">
-                2018-08-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Qt/" itemprop="url" rel="index">
-                    <span itemprop="name">Qt</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/08/02/Qt程序启动画面QSplashScreen/" class="leancloud_visitors" data-flag-title="Qt程序启动画面QSplashScreen">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Qt程序启动画面QSplashScreen"><a href="#Qt程序启动画面QSplashScreen" class="headerlink" title="Qt程序启动画面QSplashScreen"></a>Qt程序启动画面QSplashScreen</h2><p>关于Qt程序启动画面QSplashScreen类的使用，Qt官方文档给出的例子是用于显示静态图片的，帮助文档中有这样一段话：</p>
-<blockquote>
-<p>The user can hide the splash screen by clicking on it with the mouse. Since the splash screen is typically displayed before the event loop has started running, it is necessary to periodically call QApplication::processEvents() to receive the mouse clicks.</p>
-</blockquote>
-<p>翻译成中文意思是：用户可以点击隐藏启动画面，但由于启动界面在系统事件循环开始之前已经显示，需要周期性的调用QApplication::processEvents()，强制事件循环投递事件，达到接受并处理鼠标事件的目的。<br>意思是QSplashScreen启动时，系统事件循环还没有真正跑起来，用户需要手动强制事件循环，对于需要在启动界面中显示进度条、显示动画、或者显示QMovie的操作，这个处理就显得非常有必要，否则上述的几项操作，在缺少事件循环投递的情况下，只会显示成静态图片或者根本没效果。<br>查询资料只有stackoverflow上有比较详细的例子，参考以下两文章</p>
-<blockquote>
-<p><a href="https://stackoverflow.com/questions/18334499/showing-a-qmovie-in-qsplashscreen" target="_blank" rel="noopener">Showing a QMovie in QSplashScreen</a><br><a href="https://stackoverflow.com/questions/12682888/qt-c-aligning-qprogressbar-inside-a-qsplashscreen" target="_blank" rel="noopener">Qt C++ - Aligning QProgressBar inside a QSplashScreen</a></p>
-</blockquote>
-<p>第一篇文章作者通过代码调试，发现只显示了一帧画面，就是时间循环没启动导致的。往下有个给出了解决方案，摘录有用的部分如下：</p>
-<blockquote>
-<p>Problem is quite profound. To have animation working you have to allow process events in main thread. On other hand initialization process is also performed on main thread.<br>First approach is add those app.processEvents() as often as possible but this will limit frame rate so badly that it is useless.</p>
-</blockquote>
-<p>翻译如下：要使动画正常播放，必须令主线程的事件正常投递，另一方面初始化处理依然在主线程中执行，常用的方法是主动调用app.processEvents()，但这种方法极大的限制了帧率。</p>
-<blockquote>
-<p>To fix it properly you have answer two important question:</p>
-<ul>
-<li>what are you doing during initialization?</li>
-<li>and can this initialization be moved to separate thread?</li>
-</ul>
-</blockquote>
-<p>翻译如下：要正确地处理必须回答以下两个问题：</p>
-<ul>
-<li>在初始化期间做了什么？</li>
-<li>这个初始化处理是否能够通过独立的线程处理？</li>
-</ul>
-<blockquote>
-<p>Once I’ve had application where during initialization large index was build. This took about 40 seconds so quite a lot. I’ve moved building index to separate thread using QtConcurrent::run(this, &amp;MyClass::MyMethodToBuildIndex) and showing some progress by emitting signals periodically from MyClass::MyMethodToBuildIndex (default automatic connection did the whole trick).<br>If you have similar log time initialization this solution will enable animation of your QMovie out of the box, problem will be just smart connection of signal and slots so windows will be shown and hidden with proper timings.</p>
-</blockquote>
-<p>翻译如下：一旦需要做耗时操作，例如建立索引等耗时超过40s的初始化，应通过QtConcurrent::run(this, &amp;MyClass::MyMethodToBuildIndex)把处理转移到子线程中执行，并通过周期性的信号方式通知前台UI显示进度。</p>
-<p>示例代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    QApplication app(argc, argv);</span><br><span class="line">    SplashScreen splash();</span><br><span class="line">    splash.show();</span><br><span class="line">    app.processEvents(); // need to process events manually</span><br><span class="line"></span><br><span class="line">    QMainWindow window;</span><br><span class="line">    SomeLogicClass data;</span><br><span class="line">    window.setData(&amp;data);</span><br><span class="line"></span><br><span class="line">    connect(&amp;data, SIGNAL(initializationProgressChanged(int)),</span><br><span class="line">            &amp;spash, SLOT(setProgress(int)));</span><br><span class="line"></span><br><span class="line">    // show main window when initialization is finished</span><br><span class="line">    connect(&amp;data, SIGNAL(initializationFinished()),</span><br><span class="line">            &amp;window, SLOT(show()));</span><br><span class="line"></span><br><span class="line">    // close splash when initialization is finished</span><br><span class="line">    connect(&amp;data, SIGNAL(initializationFinished()),</span><br><span class="line">            &amp;spash, SLOT(close()));</span><br><span class="line"></span><br><span class="line">    // this line I usually hide behind some method like: startBackgroundInitialization</span><br><span class="line">    QtCuncurent::run(&amp;data, &amp;SomeLogicClass::heavyInitialization);</span><br><span class="line"></span><br><span class="line">    return app.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>If you need to use QSplashScreen::finish instead close then QSignalMapper can help.<br>Note that last argument of connect is default value Qt::AutoConnection which will enforce slots to be run in main thread.</p>
-</blockquote>
-<p>文章二提供了一种在启动界面中绘制进度条，并提供一接口设置进度条数值的方法：<br>sp.h:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">#ifndef SPLASHSCREEN_H</span><br><span class="line">#define SPLASHSCREEN_H</span><br><span class="line"></span><br><span class="line">#include &lt;QSplashScreen&gt;</span><br><span class="line">#include &lt;QApplication&gt;</span><br><span class="line"></span><br><span class="line">class SplashScreen : public QSplashScreen</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">public:</span><br><span class="line">    explicit SplashScreen(QApplication *app, QWidget *parent = 0);</span><br><span class="line">    int m_progress;</span><br><span class="line">    QApplication *app;</span><br><span class="line"></span><br><span class="line">public slots:</span><br><span class="line">    void setProgress(int value)</span><br><span class="line">    &#123;</span><br><span class="line">      m_progress = value;</span><br><span class="line">      if (m_progress &gt; 100)</span><br><span class="line">        m_progress = 100;</span><br><span class="line">      if (m_progress &lt; 0)</span><br><span class="line">        m_progress = 0;</span><br><span class="line">      update();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    void drawContents(QPainter *painter);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">#endif // SPLASHSCREEN_H</span><br></pre></td></tr></table></figure></p>
-<p>sp.cpp<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;sp.h&quot;</span><br><span class="line"></span><br><span class="line">SplashScreen::SplashScreen(QApplication *aApp, QWidget *parent) :</span><br><span class="line">    QSplashScreen(parent), app(aApp), m_progress(0)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    this-&gt;setPixmap(QPixmap(&quot;:/images/splashscreen.png&quot;));</span><br><span class="line">    this-&gt;setCursor(Qt::BusyCursor);</span><br><span class="line"></span><br><span class="line">    this-&gt;showMessage(&quot;Hello&quot;, Qt::AlignBottom);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void SplashScreen::drawContents(QPainter *painter)</span><br><span class="line">&#123;</span><br><span class="line">  QSplashScreen::drawContents(painter);</span><br><span class="line"></span><br><span class="line">  // Set style for progressbar...</span><br><span class="line">  QStyleOptionProgressBarV2 pbstyle;</span><br><span class="line">  pbstyle.initFrom(this);</span><br><span class="line">  pbstyle.state = QStyle::State_Enabled;</span><br><span class="line">  pbstyle.textVisible = false;</span><br><span class="line">  pbstyle.minimum = 0;</span><br><span class="line">  pbstyle.maximum = 100;</span><br><span class="line">  pbstyle.progress = m_progress;</span><br><span class="line">  pbstyle.invertedAppearance = false;</span><br><span class="line">  pbstyle.rect = QRect(0, 265, 380, 19); // Where is it.</span><br><span class="line"></span><br><span class="line">  // Draw it...</span><br><span class="line">  style()-&gt;drawControl(QStyle::CE_ProgressBar, &amp;pbstyle, painter, this);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1724,7 +1755,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1746,7 +1777,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
