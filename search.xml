@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[QDateTime本地时间和UTC时间转换问题]]></title>
+    <url>%2F2018%2F11%2F13%2FQDateTime%E6%9C%AC%E5%9C%B0%E6%97%B6%E9%97%B4%E5%92%8CUTC%E6%97%B6%E9%97%B4%E8%BD%AC%E6%8D%A2%E9%97%AE%E9%A2%98%2F</url>
+    <content type="text"><![CDATA[QDateTime本地时间和UTC时间转换问题 QDateTime 本地时间和UTC时间转换问题 先说一下UTC，搜索360百科： 协调世界时，又称世界统一时间、世界标准时间、国际协调时间，简称UTC，是以原子时秒长为基础，在时刻上尽量接近于世界时的一种时间计量系统。1979年12月3日在内瓦举行的世界无线电行政大会通过决议，确定用“世界协调时间”取代“格林威治时间”，作为无线电通信领域内的国际标准时间。应用于天文学及天体，是测绘学上的一类用语。 UTC时间同本地时间关系UTC +时间差=本地时间 时间差根据时区定，东边为正，西边为负，如北京东八区，时间差0800,8小时。如果UTC时间是 2014-04-03 00:00:00 那么北京时间就是 2014-04-03 08:00:00。 好，UTC时间介绍到此，继续关于QDateTime与UTC时间转换： 将QDateTime 本地时间转换成UTC时间QDateTime 提供toUTC（）函数，可将QDateTime 代表的时间转换成UTC时间，还以北京时间为例，如果当前时间1970-01-01 08:00:00, 则转换成UTC时间应该是 1970-01-01 00:00:00 ,测试代码如下： 123QDateTime testTime = QDateTime::fromString(&quot;1970-01-01 08:00:00&quot;,&quot;yyyy-MM-dd hh:mm:ss&quot;);QDateTime utcTime = testTime::toUTC();QString sUTCTime = utcTime.toString(&quot;yyyy-MM-dd hh:mm:ss&quot;); 则sUTCTime 为yyyy-MM-dd hh:mm:ss QDateTime 的 toTime_t()函数，QT帮助大致意思是将当前时间转换成距1970-1-1 0:0：0的秒数。时间坐标是UTC时间。 QDateTime::toTime_t()QT 帮助告诉我们，toTime_t 是将QDateTime 表示的转换为距1970-01-01 00:00:00 的秒数，转换时间坐标是UTC时间。关键就是最后这句话：UTC时间坐标。这句话的意思就是，toTime_t()，转换的是QDateTime时间对应的UTC时间距1970-01-01 00:00:00 的秒数。我们知道，一般情况下，QDateTime，表示的是本地时间Qt::LocalTime,特殊情况下会设置成Qt::UTC,表示时间直接表示的就是UTC时间。对应于LocalTime，toTime_t()转换时，首先会将QDateTime的时间转换成UTC时间(toUTC),然后计算秒数。对于Qt::UTC,则直接计算QDateTime距 1970-01-01 00:00:00]]></content>
+      <categories>
+        <category>Qt</category>
+      </categories>
+      <tags>
+        <tag>Qt</tag>
+        <tag>QDateTime</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[QTransform类]]></title>
     <url>%2F2018%2F09%2F12%2FQTransform%E7%B1%BB%2F</url>
     <content type="text"><![CDATA[QTransform类 QTransform类 QTransform类用于控制二维坐标系之间的转换包含：位移、缩放、扭曲、旋转还有映射首先看它的核心内容： 这是一个仿射变换矩阵(affine transformation)，它包含了坐标系转换所需要的所有信息 element description m11 水平缩放 m22 垂直缩放 m21 水平扭曲 m12 垂直扭曲 m31(dx) 水平位移 m32(dy) 垂直位移 m13 水平映射 m23 垂直映射 m33 额外的映射因子 他们具体的功能可以看下图： 你可以直接使用1void setMatrix(qreal m11, qreal m12, qreal m13, qreal m21, qreal m22, qreal m23, qreal m31, qreal m32, qreal m33) 来设置这些元素 当然，QTransform也提供了很多方法来方便你使用 method descripiton QTransform.translate(qreal dx, qreal dy) dx,dy为任意大小的实数，保存到m31(dx)和m32(dy)中 QTransform.scale(qreal sx, qreal sy) sx，sy为任意大小的实数，保存到m11和m22中 QTransform.rotate(qreal angle) angle为任意大小的实数，不过为了便于阅读，最好是0到360之间 QTransform.shear(qreal sh, qreal sv) sh，sv为任意大小的实数，保存到m12和m21中]]></content>
@@ -284,8 +296,8 @@
         <category>Qt - Gui</category>
       </categories>
       <tags>
-        <tag>QFileSystemModel</tag>
         <tag>Qt</tag>
+        <tag>QFileSystemModel</tag>
       </tags>
   </entry>
   <entry>
