@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="C++," />
 
 
 
@@ -79,13 +79,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="BingcaiHuang&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/tags/C/index.html">
+<meta name="description" content="for循环用效率分析（++和–时效率的差异分析） for循环用效率分析（++和–时效率的差异分析）   （听别人说的面试中问过的一个问题，记不清了，如有偏差希望大家补充纠正）问题：完成相同的功能，for循环使用++和–哪个效率更高？  通常我们在编写需要for循环实现的程序时有两种实现方法：  for(int i = 0;i&amp;lt;arr.length;i++) for(int i = arr.l">
+<meta name="keywords" content="C++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="for循环用效率分析（++和--时效率的差异分析）">
+<meta property="og:url" content="http://yoursite.com/2018/11/23/for循环用效率分析（-和-时效率的差异分析）/index.html">
 <meta property="og:site_name" content="BingcaiHuang&#39;s Blog">
+<meta property="og:description" content="for循环用效率分析（++和–时效率的差异分析） for循环用效率分析（++和–时效率的差异分析）   （听别人说的面试中问过的一个问题，记不清了，如有偏差希望大家补充纠正）问题：完成相同的功能，for循环使用++和–哪个效率更高？  通常我们在编写需要for循环实现的程序时有两种实现方法：  for(int i = 0;i&amp;lt;arr.length;i++) for(int i = arr.l">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-23T06:26:04.014Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BingcaiHuang&#39;s Blog">
+<meta name="twitter:title" content="for循环用效率分析（++和--时效率的差异分析）">
+<meta name="twitter:description" content="for循环用效率分析（++和–时效率的差异分析） for循环用效率分析（++和–时效率的差异分析）   （听别人说的面试中问过的一个问题，记不清了，如有偏差希望大家补充纠正）问题：完成相同的功能，for循环使用++和–哪个效率更高？  通常我们在编写需要for循环实现的程序时有两种实现方法：  for(int i = 0;i&amp;lt;arr.length;i++) for(int i = arr.l">
 
 
 
@@ -115,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/C/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/11/23/for循环用效率分析（-和-时效率的差异分析）/"/>
 
 
 
 
 
-  <title>标签: C++ | BingcaiHuang's Blog</title>
+  <title>for循环用效率分析（++和--时效率的差异分析） | BingcaiHuang's Blog</title>
   
 
 
@@ -140,7 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -278,310 +283,223 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block tag">
-
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>C++<small>标签</small>
-        </h1>
-      </div>
-
-      
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/for循环用效率分析（-和-时效率的差异分析）/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/11/23/for循环用效率分析（-和-时效率的差异分析）/" itemprop="url">
-              
-                <span itemprop="name">for循环用效率分析（++和--时效率的差异分析）</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">for循环用效率分析（++和--时效率的差异分析）</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-11-23T14:19:44+08:00"
-              content="2018-11-23" >
-          11-23
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T14:19:44+08:00">
+                2018-11-23
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/23/for循环用效率分析（-和-时效率的差异分析）/" class="leancloud_visitors" data-flag-title="for循环用效率分析（++和--时效率的差异分析）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/09/07/C-进阶系列/" itemprop="url">
-              
-                <span itemprop="name">C++进阶系列</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-07T11:43:41+08:00"
-              content="2018-09-07" >
-          09-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/20/开源库/" itemprop="url">
-              
-                <span itemprop="name">开源库</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-20T22:50:16+08:00"
-              content="2018-08-20" >
-          08-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/13/模式PK/" itemprop="url">
-              
-                <span itemprop="name">模式PK</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-13T08:54:42+08:00"
-              content="2018-08-13" >
-          08-13
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/13/C-编译器知识/" itemprop="url">
-              
-                <span itemprop="name">C++编译器知识</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-13T00:41:26+08:00"
-              content="2018-08-13" >
-          08-13
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/09/我所理解的设计模式（C-实现）/" itemprop="url">
-              
-                <span itemprop="name">我所理解的设计模式（C++实现）</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-09T12:37:53+08:00"
-              content="2018-08-09" >
-          08-09
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/07/boost系列/" itemprop="url">
-              
-                <span itemprop="name">boost系列</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-07T19:09:19+08:00"
-              content="2018-08-07" >
-          08-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/07/C-智能指针系列/" itemprop="url">
-              
-                <span itemprop="name">C++智能指针系列</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-07T19:02:22+08:00"
-              content="2018-08-07" >
-          08-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/07/针对范围对的高效查找算法设计/" itemprop="url">
-              
-                <span itemprop="name">针对范围对的高效查找算法设计</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-07T18:57:53+08:00"
-              content="2018-08-07" >
-          08-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/" itemprop="url">
-              
-                <span itemprop="name">UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-07T18:40:21+08:00"
-              content="2018-08-07" >
-          08-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+        <h2 id="for循环用效率分析（-和–时效率的差异分析）"><a href="#for循环用效率分析（-和–时效率的差异分析）" class="headerlink" title="for循环用效率分析（++和–时效率的差异分析）"></a>for循环用效率分析（++和–时效率的差异分析）</h2><blockquote>
+<p><a href="https://blog.csdn.net/hyqsong/article/details/49632795" target="_blank" rel="noopener">for循环用效率分析（++和–时效率的差异分析）</a></p>
+</blockquote>
+<blockquote>
+<p>（听别人说的面试中问过的一个问题，记不清了，如有偏差希望大家补充纠正）<br>问题：完成相同的功能，for循环使用++和–哪个效率更高？</p>
+</blockquote>
+<p>通常我们在编写需要for循环实现的程序时有两种实现方法：</p>
+<ol>
+<li>for(int i = 0;i&lt;arr.length;i++)</li>
+<li>for(int i = arr.length-1;i&gt;=0;i–)</li>
+</ol>
+<p>分析：</p>
+<blockquote>
+<p>结论：通常来讲第2种用–的方法效率更高<br>原因如下：</p>
+</blockquote>
+<ul>
+<li>在循环中，循环条件会被反复计算，如果不使用复杂表达式，而使循环条件值不变的话，程序将会运行的更快。</li>
+<li>第2种方法和0比较作为判读，很多cpu和0比较可以减少1个指令.</li>
+</ul>
+<blockquote>
+<p>参考：<br>i–操作本身会影响CPSR(当前程序状态寄存器)，CPSR常见的标志有N(结果为负), Z(结果为0)，C（有进位），O（有溢出）。i &gt; 0，可以直接通过Z标志判断出来。<br>i++操作也会影响CPSR(当前程序状态寄存器)，但只影响O（有溢出）标志，这对于i &lt; n的判断没有任何帮助。所以还需要一条额外的比较指令，也就是说每个循环要多执行一条指令。</p>
+</blockquote>
+<ul>
+<li>考虑使用情况的话：arr.length可能会变化, 所以有可能比较时每次都要从arr里面取length的值.是一个问题。</li>
+</ul>
+<p>所以有：</p>
+<ol>
+<li>for(int i = 0;i&lt;arr.length;i++) 最耗时，</li>
+<li>for(int i=0,len=list.size();i&lt;len;i++) 次之，</li>
+<li>for(int i = arr.length-1;i&gt;=0;i–) 最快</li>
+</ol>
+<blockquote>
+<p>1，最耗时不需多言，<br>2与3 基本上差距在10%之内</p>
+</blockquote>
+<p>总结：(针对上边三种方法)</p>
+<ul>
+<li>如果arr.length需要变化则使用++，否则使用–。</li>
+<li>至于把arr.length保存到静态变量，前一种情况下不可能，后一种情况下则没必要</li>
+</ul>
+<h3 id="如何提高for循环效率"><a href="#如何提高for循环效率" class="headerlink" title="如何提高for循环效率"></a>如何提高for循环效率</h3><p>在我们所写的程序中，几乎没有不用到for循环的，但是，对于for循环，很多人确实效率很低的，包括我看得很多代码，for循环的执行效率非常低，下面我就举个例子来说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for(i=0;i&lt;strlen(string);i++)</span><br></pre></td></tr></table></figure></p>
+<p>这个上边的程序程序我想大家都明白，那我问问读者，你知道这个程序的效率是多少吗？<br>你肯定不屑的说，不就是n吗？其实，你错了，你说的n只是在算法层面上的优化，其实对于底层的优化还没做好，这段代码的效率是n^2（n的平方），为什么？是这样的，我们在每次循环的时候，都会调用strlen函数，这个函数的效率也是n，所以，我们要再加一个变量，比如下边所看到的，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int k=strlen(string);</span><br><span class="line">for(i=0;i&lt;k;i++)</span><br></pre></td></tr></table></figure></p>
+<p>这个程序的效率是2n，当n很大时，我就不说了。<br>再看这个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int i, m, k1，k2, k3, k4, k5, k6, k7, k8;</span><br><span class="line">m = 10000000;</span><br><span class="line">for (i = 0; i &lt; m; i++)</span><br><span class="line">&#123;</span><br><span class="line">	k1++;  k5++;</span><br><span class="line">	k2++;  k6++;</span><br><span class="line">	k3++;  k7++;</span><br><span class="line">	k4++;  k8++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们再看这个for循环，我们是让这些数每次循环都加1，这个效率也不是达到了最优，是这样的，在每次for循环的时候，编译器会给变量i，变量m每个独占一个寄存器，因为是循环嘛，编译器给i和m也是为了效率考虑，不用再向寄存器加载每次循环的判断变量了，但是，一般基于Intel的处理器都只有8个通用寄存器，这样，我们就剩下了6个寄存器给for循环里的内容中的变量使用，但是，我们的变量有8个，我们这时会在把其他的变量入栈，这样，我们的效率变低了，每次出战或者入栈都会消耗两个CPU时钟周期，这样，我们就总共满了8个周期，但是，如果更多呢？呵呵！<br>我们可以这样该我们的程序；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int i, m, k1，k2, k3, k4, k5, k6, k7, k8;</span><br><span class="line">m = 10000000;</span><br><span class="line"></span><br><span class="line">for (i = 0; i &lt; m; i++) &#123;</span><br><span class="line">	k1++;  k5++;</span><br><span class="line">	k2++;  k6++;</span><br><span class="line">&#125;</span><br><span class="line">for (i = 0; i &lt; m; i++) &#123;</span><br><span class="line">	k3++;  k7++;</span><br><span class="line">	k4++;  k8++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样的效率就得到了很大改善！</p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C++</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/23/QtableView-刷新行数/" rel="next" title="QtableView 刷新行数">
+                <i class="fa fa-chevron-left"></i> QtableView 刷新行数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/tags/C/page/2/">2</a><a class="extend next" rel="next" href="/tags/C/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -589,6 +507,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -609,8 +531,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -670,6 +601,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#for循环用效率分析（-和–时效率的差异分析）"><span class="nav-number">1.</span> <span class="nav-text">for循环用效率分析（++和–时效率的差异分析）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何提高for循环效率"><span class="nav-number">1.1.</span> <span class="nav-text">如何提高for循环效率</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -803,6 +750,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

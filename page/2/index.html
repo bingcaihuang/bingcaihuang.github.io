@@ -293,6 +293,518 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/QT线程池实验研究与分析（QThread与和QThreadPool-QRunnable使用上的区别）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/23/QT线程池实验研究与分析（QThread与和QThreadPool-QRunnable使用上的区别）/" itemprop="url">QT线程池实验研究与分析（QThread与和QThreadPool + QRunnable使用上的区别）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T13:37:38+08:00">
+                2018-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt-多线程/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt - 多线程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/23/QT线程池实验研究与分析（QThread与和QThreadPool-QRunnable使用上的区别）/" class="leancloud_visitors" data-flag-title="QT线程池实验研究与分析（QThread与和QThreadPool + QRunnable使用上的区别）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="QT线程池实验研究与分析（QThread与和QThreadPool-QRunnable使用上的区别）"><a href="#QT线程池实验研究与分析（QThread与和QThreadPool-QRunnable使用上的区别）" class="headerlink" title="QT线程池实验研究与分析（QThread与和QThreadPool + QRunnable使用上的区别）"></a>QT线程池实验研究与分析（QThread与和QThreadPool + QRunnable使用上的区别）</h2><blockquote>
+<p><a href="https://blog.csdn.net/qinpanke/article/details/51705283" target="_blank" rel="noopener">QT线程池实验研究与分析（QThread与和QThreadPool + QRunnable使用上的区别）</a></p>
+</blockquote>
+<h3 id="QT线程池的构建与使用"><a href="#QT线程池的构建与使用" class="headerlink" title="QT线程池的构建与使用"></a>QT线程池的构建与使用</h3><p>网上关于QT线程池QThreadPool的文章很多，而且大都千篇一律，基本上都是参考QT的帮助文档介绍QT全局线程池的用法。这样就往往会使人产生误解，QT是不是推荐大家使用其全局线程池，而不推荐使用自定义构造的线程池？ 实际情况并不是这样的。而且在实际的项目当中我们通常并不希望仅仅使用一个全局的线程池，而是在需要线程池的工程中都构建和维护自己一个小小的线程池（我们知道一个良好架构的项目通常是由多个工程组成的）。综上，我们来分析以下两个问题：</p>
+<p>(1)非全局的线程池如果构建与使用呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QObject&gt;</span><br><span class="line">#include &lt;QRunnable&gt;</span><br><span class="line">#include &lt;QThread&gt;</span><br><span class="line">#include &lt;QThreadPool&gt;</span><br><span class="line">#include &lt;QDebug&gt;</span><br><span class="line">class HelloWorldTask : public QRunnable</span><br><span class="line">&#123;</span><br><span class="line">     // 线程执行任务：每间隔1s打印出线程的信息</span><br><span class="line">	void run()</span><br><span class="line">	&#123;</span><br><span class="line">	    for (int nCount = 0; nCount &lt; 5; nCount++)</span><br><span class="line">	    &#123;</span><br><span class="line">		qDebug() &lt;&lt; QThread::currentThread();</span><br><span class="line">		QThread::msleep(1000);</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">	QCoreApplication a(argc, argv);</span><br><span class="line"></span><br><span class="line">	QThreadPool	  threadpool;	           // 构建一个本地的线程池</span><br><span class="line">	threadpool.setMaxThreadCount(3);         // 线程池中最大的线程数</span><br><span class="line">      	for (int nNum = 0; nNum &lt; 100; nNum++)</span><br><span class="line">	&#123;</span><br><span class="line">	    HelloWorldTask	 *task;    // 循环构建可在线程池中运行的任务</span><br><span class="line">	    threadpool.start(task);      //线程池分配一个线程运行该任务</span><br><span class="line">	    QThread::msleep(1000);</span><br><span class="line">	&#125;</span><br><span class="line">	return a.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上述程序，构建了一个线程最大数量为3的本地线程池。每间隔1s的时间创建一个线程任务并置入到线程池的任务队列中（QT内部机制实现该队列，我们只需要调用QThreadPool的start函数置入即可）。每个线程任务的持续时间为5s。</p>
+<p>(2)程序当中QRunnable是以指针的形式创建的，该指针是需要程序员去释放，还是QThreadPool在运行完线程后自动释放？<br>解答：在上述例子当中，我们创建的QRunnable类型的指针 QRunnable *task 是不需要我们手动去回收内存的，QThreadPool在结束该任务的执行后会将对该内存进行清空。</p>
+<p>上述解答并不是凭空猜测，一方面根据是QT文档中的一句话：<br><strong>QThreadPool takes ownership and deletes ‘hello’automatically</strong></p>
+<p>用直白的话说就是：QThreadPool会占有这个指针的句柄并在运行结束后释放指针所占的内存。另一方面，我们也通过改进上面的例子进行验证。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;QObject&gt;</span><br><span class="line">#include &lt;QRunnable&gt;</span><br><span class="line">#include &lt;QThread&gt;</span><br><span class="line">#include &lt;QThreadPool&gt;</span><br><span class="line">#include &lt;QDebug&gt;</span><br><span class="line">class HelloWorldTask : public QRunnable</span><br><span class="line">&#123;</span><br><span class="line">     // 线程执行任务：每间隔1s打印出线程的信息</span><br><span class="line">	void run()</span><br><span class="line">	&#123;</span><br><span class="line">            int         m_dataMem[256*1000];		          // 占约 1MB内存空间</span><br><span class="line">	    for (int nCount = 0; nCount &lt; 5; nCount++)</span><br><span class="line">	    &#123;</span><br><span class="line">		qDebug() &lt;&lt; QThread::currentThread();</span><br><span class="line">		QThread::msleep(1000);</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">	QCoreApplication a(argc, argv);</span><br><span class="line"></span><br><span class="line">	QThreadPool	  threadpool;</span><br><span class="line">	threadpool.setMaxThreadCount(1);</span><br><span class="line">      	for (int nNum = 0; nNum &lt; 100; nNum++)</span><br><span class="line">	&#123;</span><br><span class="line">	    HelloWorldTask	 *task;</span><br><span class="line">	    threadpool.start(task);</span><br><span class="line">	    QThread::msleep(1000);</span><br><span class="line">	&#125;</span><br><span class="line">	return a.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在程序运行过程中，我们观察发现程序的进程一直仅占用约1MB的内存空间。如果在main函数中所创建的100个HelloWorldTask 指针对象没有被QThreadPool释放的话，随着程序的运行该程序所占内存空间应该逐步攀升到约100MB。然而实际情况是，该程序最高仅占用1MB的内存空间。</p>
+<p>综上两个方面可以得出以下结论：QRunnable创建的对象QThreadPool在执行完该对象后会帮助我们来清空内存，不需要我们手动回收内存。</p>
+<h3 id="QThread-与QRunnable-QThreadPool适用的应用场景"><a href="#QThread-与QRunnable-QThreadPool适用的应用场景" class="headerlink" title="QThread 与QRunnable + QThreadPool适用的应用场景"></a>QThread 与QRunnable + QThreadPool适用的应用场景</h3><p>QThread是QT的线程类，通过继承QThread然后重写run函数即可实现一个线程类。QThreadPool+ QRunnable配合构建线程池的方法也可以实现线程。我们通过以下问题对上述两种构建线程的方法进行分析和说明。</p>
+<p>(1) 既然QThread这么简单我们为什么还要使用QThreadPool + QRunnable创建线程池的方法来使用线程机制呢？<br>主要原因：当线程任务量非常大的时候，如果频繁的创建和释放QThread会带来比较大的内存开销，而线程池则可以有效避免该问题，相关的基础支持可以自行百度线程池的优点。</p>
+<p>(2)QThread与 QThreadPool + QRunnable分别适用于哪种应用场景？<br>QThread适用于那些常驻内存的任务。而且QThread可以通过信号/槽的方式与外界进行通信。而QRunnable则适用于那些不常驻内存，任务数量比较多的情况。</p>
+<h3 id="QRunnable-如何与外界进行通信"><a href="#QRunnable-如何与外界进行通信" class="headerlink" title="QRunnable 如何与外界进行通信"></a>QRunnable 如何与外界进行通信</h3><p>方法1：QRunnable并不继承自QObject类，因此无法使用信号/槽的方式与外界进行通信。我们就必须的使用其他方法，这里给大家介绍的是使用：QMetaObject::invokeMethod()函数。</p>
+<p>方法2：使用多重继承的方法，任务子类同时继承自QRunnable和QObject。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/20/Visual-Studio-同时配置Qt-32位和64位版本开发环境/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/20/Visual-Studio-同时配置Qt-32位和64位版本开发环境/" itemprop="url">Visual Studio 同时配置Qt 32位和64位版本开发环境</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-20T14:02:30+08:00">
+                2018-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/20/Visual-Studio-同时配置Qt-32位和64位版本开发环境/" class="leancloud_visitors" data-flag-title="Visual Studio 同时配置Qt 32位和64位版本开发环境">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Visual-Studio-同时配置Qt-32位和64位版本开发环境"><a href="#Visual-Studio-同时配置Qt-32位和64位版本开发环境" class="headerlink" title="Visual Studio 同时配置Qt 32位和64位版本开发环境"></a>Visual Studio 同时配置Qt 32位和64位版本开发环境</h2><blockquote>
+<p><a href="https://blog.csdn.net/wanhongluli/article/details/83781145" target="_blank" rel="noopener">Visual Studio 同时配置Qt 32位和64位版本开发环境</a></p>
+</blockquote>
+<p>本文章旨在给使用Visual Studio开发Qt程序的开发人员提供一套同时构建32位版本Qt和64位版本Qt开发环境的方案，因为我自己也遇到了这个问题，国内的网上好像并没有好的解决方案，希望能够帮到有同样需求的开发人员。</p>
+<p>Qt有32位版本的，同样也有64位版本的，在64位机器上可以同时安装32位版本的Qt和64位版本的Qt，但是做开发的时候编译64位程序只能用64位版本的Qt，32位程序只能用32位的Qt。这给使用Visual Studio 和Qt做集成环境开发的开发人员带来了不小的麻烦，在Visual Studio里对一个工程我们知道是可以编译32位程序，也可以编译64位程序的。如果我们的一个使用Qt并在Visual Studio下开发的程序既要发布32位版本又要发布64位版本，这给开发人员带来了不小的挑战：</p>
+<ol>
+<li>通过Qt VS Tools我们可以将Qt版本切换到32位或者64位，但QTDIR环境变量不会变，所以工程配置里关于Qt的相关路径只会是你环境变量里配置的路径；</li>
+<li>搞定了环境变量的问题，还有一个棘手的问题，就是Qt调试时需要plugins\platforms目录的支持，我们一般发布程序时是直接将platforms拷贝到exe文件同级目录下，我们调试的时候也可以这样做，但这样做并不好，每次建立工程都要拷贝。</li>
+</ol>
+<p>解决问题1：取消系统环境变量里对QTDIR的设置，而在将QTDIR配置成Visual Studio工程里的用户自定义宏，像下面这样，在属性管理器中，找到Microsoft.Cpp.Win32.user和Microsoft.Cpp.x64.user点击，分别创建用户宏QTDIR，分别指向32位版本和64位版本Qt的路径（属性管理器：视图-其他窗口-属性管理器），这样当你切换X86和X64配置的时候对应Qt相关的库配置、调试路径配置就会改变到正确的Qt版本上：</p>
+<p><img src="/2018/11/20/Visual-Studio-同时配置Qt-32位和64位版本开发环境/1542693923649.png" alt=""></p>
+<p>解决问题2：问题1解决之后，在工程中切换x86和x64配置，就都可以正确编译和链接了，但是问题又来了，比如我的电脑上之前默认配置的x64版本的Qt，这是后调试x86版本的程序会提示下面的问题（这个问题大家都不陌生，但一般是在发布程序时会遇到）：</p>
+<p><img src="/2018/11/20/Visual-Studio-同时配置Qt-32位和64位版本开发环境/1542693946724.png" alt=""></p>
+<p>那么这个问题怎么解决呢，查了很多资料都没找到满意的解决办法，最后在外网找到国外的一个大牛利用Windows文件重定向算是完美解决了(<a href="https://superuser.com/questions/740323/qts-plugin-path-and-wow64)。" target="_blank" rel="noopener">https://superuser.com/questions/740323/qts-plugin-path-and-wow64)。</a></p>
+<p>(Windows文件重定向原理：<a href="https://docs.microsoft.com/zh-cn/windows/desktop/WinProg64/file-system-redirector" target="_blank" rel="noopener">https://docs.microsoft.com/zh-cn/windows/desktop/WinProg64/file-system-redirector</a>)</p>
+<p>解决方法：在系统环境变量中设置QT_PLUGIN_PATH = %windir%\system32\Qt-plugins ，将64位Qt下的msvc2015_64\plugins\platforms目录拷贝到C:\Windows\System32\Qt-plugins下，将32位Qt下的msvc2015\plugins\platforms拷贝到C:\Windows\SysWOW64\Qt-plugins下，重启之后就能在Visual Studio下正常编译调试32位Qt程序和64位Qt程序了，目录结构：</p>
+<p><img src="/2018/11/20/Visual-Studio-同时配置Qt-32位和64位版本开发环境/1542693980309.png" alt=""></p>
+<p><img src="/2018/11/20/Visual-Studio-同时配置Qt-32位和64位版本开发环境/1542693987985.png" alt=""></p>
+<p>注意:如果设置了QT_PLUGIN_PATH影响了系统里安全的第三方QT应用，可以这样设置QT_PLUGIN_PATH=./;%windir%\system32\Qt-plugins , 让第三方应用加载运行目录下的QT插件。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/QDateTime本地时间和UTC时间转换问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/13/QDateTime本地时间和UTC时间转换问题/" itemprop="url">QDateTime本地时间和UTC时间转换问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T16:19:08+08:00">
+                2018-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/13/QDateTime本地时间和UTC时间转换问题/" class="leancloud_visitors" data-flag-title="QDateTime本地时间和UTC时间转换问题">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="QDateTime本地时间和UTC时间转换问题"><a href="#QDateTime本地时间和UTC时间转换问题" class="headerlink" title="QDateTime本地时间和UTC时间转换问题"></a>QDateTime本地时间和UTC时间转换问题</h2><blockquote>
+<p><a href="https://blog.csdn.net/clp_csdnid/article/details/79050639" target="_blank" rel="noopener">QDateTime 本地时间和UTC时间转换问题</a></p>
+</blockquote>
+<p>先说一下UTC，搜索360百科： 协调世界时，又称世界统一时间、世界标准时间、国际协调时间，简称UTC，是以原子时秒长为基础，在时刻上尽量接近于世界时的一种时间计量系统。1979年12月3日在内瓦举行的世界无线电行政大会通过决议，确定用“世界协调时间”取代“格林威治时间”，作为无线电通信领域内的国际标准时间。应用于天文学及天体，是测绘学上的一类用语。</p>
+<h3 id="UTC时间同本地时间关系"><a href="#UTC时间同本地时间关系" class="headerlink" title="UTC时间同本地时间关系"></a>UTC时间同本地时间关系</h3><p>UTC +时间差=本地时间</p>
+<p>时间差根据时区定，东边为正，西边为负，如北京东八区，时间差0800,8小时。如果UTC时间是 2014-04-03 00:00:00 那么北京时间就是 2014-04-03 08:00:00。</p>
+<p>好，UTC时间介绍到此，继续关于QDateTime与UTC时间转换：</p>
+<h3 id="将QDateTime-本地时间转换成UTC时间"><a href="#将QDateTime-本地时间转换成UTC时间" class="headerlink" title="将QDateTime 本地时间转换成UTC时间"></a>将QDateTime 本地时间转换成UTC时间</h3><p>QDateTime 提供toUTC（）函数，可将QDateTime 代表的时间转换成UTC时间，还以北京时间为例，如果当前时间1970-01-01 08:00:00, 则转换成UTC时间应该是 1970-01-01 00:00:00 ,测试代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">QDateTime testTime = QDateTime::fromString(&quot;1970-01-01 08:00:00&quot;,&quot;yyyy-MM-dd hh:mm:ss&quot;);</span><br><span class="line">QDateTime utcTime = testTime::toUTC();</span><br><span class="line">QString sUTCTime = utcTime.toString(&quot;yyyy-MM-dd hh:mm:ss&quot;);</span><br></pre></td></tr></table></figure>
+<p>则sUTCTime 为yyyy-MM-dd hh:mm:ss</p>
+<p>QDateTime 的 toTime_t()函数，QT帮助大致意思是将当前时间转换成距1970-1-1 0:0：0的秒数。时间坐标是UTC时间。</p>
+<h3 id="QDateTime-toTime-t"><a href="#QDateTime-toTime-t" class="headerlink" title="QDateTime::toTime_t()"></a>QDateTime::toTime_t()</h3><p>QT 帮助告诉我们，toTime_t 是将QDateTime 表示的转换为距1970-01-01 00:00:00 的秒数，转换时间坐标是UTC时间。</p>
+<p>关键就是最后这句话：UTC时间坐标。这句话的意思就是，toTime_t()，转换的是QDateTime时间对应的UTC时间距1970-01-01 00:00:00 的秒数。</p>
+<p>我们知道，一般情况下，QDateTime，表示的是本地时间Qt::LocalTime,特殊情况下会设置成Qt::UTC,表示时间直接表示的就是UTC时间。对应于LocalTime，toTime_t()转换时，首先会将QDateTime的时间转换成UTC时间(toUTC),然后计算秒数。对于Qt::UTC,则直接计算QDateTime距 1970-01-01 00:00:00，例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">QDateTime dateTime = QDateTime::fromString(&quot;1970-01-01 08:00:00&quot;,&quot;yyyy-MM-dd hh:mm:ss&quot;);</span><br><span class="line">dateTime.setTimeSpec(Qt::LocalTime);</span><br><span class="line">uint secondsLocal= dateTime.toTime_t();  //secondsLocal =0;</span><br><span class="line">dateTime.setTimeSpec(Qt::UTC);</span><br><span class="line">uint secondsUTC = dateTime.toTime_t();   //secondsUTC = 28800;8小时</span><br></pre></td></tr></table></figure>
+<h3 id="QDateTime-fromTime-t-uint-seconds-static"><a href="#QDateTime-fromTime-t-uint-seconds-static" class="headerlink" title="QDateTime::fromTime_t(uint seconds)[static]"></a>QDateTime::fromTime_t(uint seconds)[static]</h3><p>查看帮助，是将距1970-01-01 00:00:00 秒数转换为QDateTime,时间坐标还是UTC。也就是说，seconds 表示的是UTC时间距 1970-01-01 00:00:00 的秒数。</p>
+<p>如果根据 toTime_t() 反向理解，应该是fromTime_t 函数在执行时，首先根据秒数计算出UtC时间，然后根据时间的QTimeSpec，判断，如果是Qt::LocalTime,则加时间差，计算出本地时间（如：北京时间加8小时），如果是Qt::UTC,则不变。</p>
+<p>但由于fromTime_t()是静态函数，返回QDateTime,缺省直接转换成Qt::LocalTime，即以下操作，不管如何，返回时间值都不变，例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QDateTime dateTime = QDateTime::fromTime_t(0);</span><br></pre></td></tr></table></figure></p>
+<p>如果dateTime为Qt::LocalTime,则 dateTime，表示的是1970-01-01 08:00:00<br>如果datetime 设为Qt::UTC, dateTime.SetTimeSpec(Qt:UTC);  dateTime代表的时间还是 1970-01-01 08:00:00</p>
+<h3 id="QDateTime-setTime-t-uint-seconds"><a href="#QDateTime-setTime-t-uint-seconds" class="headerlink" title="QDateTime::setTime_t(uint seconds)"></a>QDateTime::setTime_t(uint seconds)</h3><p>不同于 fromTime_t，可区分出LocalTime 和 UTC。例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">QDateTime time ;</span><br><span class="line">time.setTime_t(0);</span><br><span class="line">QString strLocal =time.toString(&quot;yyyy-MM-dd hh:mm:ss&quot;);//strLocal =&quot;1970-01-01 08:00:00&quot;</span><br><span class="line"></span><br><span class="line">QDateTime timeUTC;</span><br><span class="line">timeUTC.setTimeSpec(Qt::UTC);</span><br><span class="line">timeUTC.setTime_t(0);</span><br><span class="line">QString strUTC = timeUTC.toString(&quot;yyyy-MM-dd hh:mm:ss&quot;); //strUTC = &quot;1970-01-01 00:00:00&quot;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/QTransform类/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -758,644 +1270,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/07/C-进阶系列/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/07/C-进阶系列/" itemprop="url">C++进阶系列</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-07T11:43:41+08:00">
-                2018-09-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/09/07/C-进阶系列/" class="leancloud_visitors" data-flag-title="C++进阶系列">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="C-进阶系列"><a href="#C-进阶系列" class="headerlink" title="C++进阶系列"></a>C++进阶系列</h2><h3 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h3><blockquote>
-<p>文章：<a href="http://www.cnblogs.com/balingybj/p/4771916.html" target="_blank" rel="noopener">抽象类</a></p>
-</blockquote>
-<h4 id="纯虚函数定义"><a href="#纯虚函数定义" class="headerlink" title="纯虚函数定义"></a>纯虚函数定义</h4><p>纯虚函数是在基类中声明的虚函数，它在基类中没有定义，但要求任何派生类都要定义自己的实现方法。在基类中实现纯虚函数的方法是在函数原型后加“=0”</p>
-<h4 id="引入原因："><a href="#引入原因：" class="headerlink" title="引入原因："></a>引入原因：</h4><ol>
-<li>为了方便使用多态特性，我们常常需要在基类中定义虚拟函数。</li>
-<li>在很多情况下，基类本身生成对象是不合情理的。例如，动物作为一个基类可以派生出老虎、孔雀等子类，但动物本身生成对象明显不合常理。</li>
-</ol>
-<p>为了解决上述问题，引入了纯虚函数的概念，将函数定义为纯虚函数（方法：virtual ReturnType Function()= 0;），则编译器要求在派生类中必须予以重载以实现多态性。同时含有纯虚拟函数的类称为抽象类，它不能生成对象。这样就很好地解决了上述两个问题。</p>
-<p>带有纯虚函数的类称为抽象类。抽象类是一种特殊的类，它是为了抽象和设计的目的而建立的，它处于继承层次结构的较上层。抽象类是不能定义对象的，在实际中为了强调一个类是抽象类，可将该类的构造函数说明为保护的访问控制权限。</p>
-<p>抽象类的主要作用是将有关的组织在一个继承层次结构中，由它来为它们提供一个公共的根，相关的子类是从这个根派生出来的。</p>
-<p>抽象类刻画了一组子类的操作接口的通用语义，这些语义也传给子类。一般而言，抽象类只描述这组子类共同的操作接口，而完整的实现留给子类。</p>
-<p>抽象类只能作为基类来使用，其纯虚函数的实现由派生类给出。如果派生类没有重新定义纯虚函数，而派生类只是继承基类的纯虚函数，则这个派生类仍然还是一个 抽象类。如果派生类中给出了基类纯虚函数的实现，则该派生类就不再是抽象类了，它是一个可以建立对象的具体类了。</p>
-<p><strong>抽象类的规定</strong></p>
-<ol>
-<li><p>抽象类只能用作其他类的基类，不能建立抽象类对象。</p>
-</li>
-<li><p>抽象类不能用作参数类型、函数返回类型或显式转换的类型。</p>
-</li>
-<li><p>可以定义指向抽象类的指针和引用，此指针可以指向它的派生类，进而实现多态性。</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">const double PI=3.14159;</span><br><span class="line"></span><br><span class="line">class Shapes   //抽象类</span><br><span class="line">&#123;</span><br><span class="line">protected:</span><br><span class="line">    int x, y;</span><br><span class="line">public:</span><br><span class="line">    void setvalue(int d, int w=0)&#123;x=d;y=w;&#125;</span><br><span class="line">    virtual void disp()=0;//纯虚函数</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class Square:public Shapes</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    void disp()&#123;</span><br><span class="line">        cout&lt;&lt;&quot;矩形面积:&quot;&lt;&lt;x*y&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class Circle:public Shapes&#123;</span><br><span class="line">public:</span><br><span class="line">    void disp()&#123;</span><br><span class="line">        cout&lt;&lt;&quot;圆面积:&quot;&lt;&lt;PI*x*x&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    Shapes *ptr[2]; //定义对象指针数组</span><br><span class="line">    Square s1;</span><br><span class="line">    Circle c1;</span><br><span class="line">    ptr[0] = &amp;s1;</span><br><span class="line">    ptr[0]-&gt;setvalue(10, 5);</span><br><span class="line">    ptr[0]-&gt;disp();</span><br><span class="line">    ptr[1] = &amp;c1;</span><br><span class="line">    ptr[1]-&gt;setvalue(10);</span><br><span class="line">    ptr[1]-&gt;disp();</span><br><span class="line">    return 0;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="相似概念："><a href="#相似概念：" class="headerlink" title="相似概念："></a>相似概念：</h4><ol>
-<li><p>多态性<br>指相同对象收到不同消息或不同对象收到相同消息时产生不同的实现动作。C++支持两种多态性：编译时多态性，运行时多态性。<br>a.编译时多态性： 通过函数重载和运算符重载来实现的。<br>b.运行时多态性：通过继承和虚函数来实现的。</p>
-</li>
-<li><p>虚函数<br>虚函数是在基类中被声明为virtual，并在派生类中重新定义的成员函数，可实现成员函数的动态重载<br>纯虚函数的声明有着特殊的语法格式：virtual 返回值类型成员函数名（参数表）=0；<br>请注意，纯虚函数应该只有声明，没有具体的定义，即使给出了纯虚函数的定义也会被编译器忽略。</p>
-</li>
-<li><p>抽象类<br>包含纯虚函数的类称为抽象类。由于抽象类包含了没有定义的纯虚函数，所以不能定义抽象类的对象。<br>在C++中，我们可以把只能用于被继承而不能直接创建对象的类设置为抽象类（Abstract Class）。</p>
-</li>
-</ol>
-<p>之所以要存在抽象类，最主要是因为它具有不确定因素。我们把那些类中的确存在，但是在父类中无法确定具体实现的成员函数称为纯虚函数。纯虚函数是一种特殊的虚函数，它只有声明，没有具体的定义。抽象类中至少存在一个纯虚函数；存在纯虚函数的类一定是抽象类。存在纯虚函数是成为抽象类的充要条件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">//基类:</span><br><span class="line">class A</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    A();</span><br><span class="line">    void f1();</span><br><span class="line">    virtual void f2();</span><br><span class="line">    virtual void f3()=0;</span><br><span class="line">    virtual ~A();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">//子类:</span><br><span class="line">class B : public A</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    B();</span><br><span class="line">    void f1();</span><br><span class="line">    void f2();</span><br><span class="line">    void f3();</span><br><span class="line">    virtual ~B();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">//主函数:</span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    A *m_j=new B();</span><br><span class="line">    m_j-&gt;f1();</span><br><span class="line">    m_j-&gt;f2();</span><br><span class="line">    m_j-&gt;f3();</span><br><span class="line">    delete m_j;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line">/*</span><br><span class="line">f1()是一个普通的重载.</span><br><span class="line">调用m_j-&gt;f1();会去调用A类中的f1(),它是在我们写好代码的时候就会定好的.因为f1()不是虚函数，不会动态绑定</span><br><span class="line">也就是根据它是由A类定义的,这样就调用这个类的函数.</span><br><span class="line">f2()是虚函数.</span><br><span class="line">调用m_j-&gt;f2();会调用m_j中保存的对象中,对应的这个函数.这是由于new的B对象.</span><br><span class="line">f3()与f2()一样,只是在基类中不需要写函数实现.</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
-<p><strong>虚函数和纯虚函数有以下所示方面的区别：</strong></p>
-<ol>
-<li>类里如果声明了虚函数，这个函数是实现的，哪怕是空实现，它的作用就是为了能让这个函数在它的子类里面可以被覆盖，这样的话，这样编译器就可以使用后期绑定来达到多态了。纯虚函数只是一个接口，是个函数的声明而已，它要留到子类里去实现。</li>
-<li>虚函数在子类里面也可以不重载的；但纯虚函数必须在子类去实现，这就像Java的接口一样。通常把很多函数加上virtual，是一个好的习惯，<strong>虽然牺牲了一些性能，但是增加了面向对象的多态性</strong>，因为很难预料到父类里面的这个函数不在子类里面不去修改它的实现。</li>
-<li>带纯虚函数的类叫虚基类，这种基类不能直接生成对象，而只有被继承，并重写其虚函数后，才能使用。这样的类也叫抽象类。抽象类和大家口头常说的虚基类还是有区别的，在C#中用abstract定义抽象类，而在C++中有抽象类的概念，但是没有这个关键字。抽象类被继承后，子类可以继续是抽象类，也可以是普通类，而虚基类，是含有纯虚函数的类，它如果被继承，那么子类就必须实现虚基类里面的所有纯虚函数，其子类不能是抽象类。</li>
-</ol>
-<p>四、抽象类和接口的区别：</p>
-<ol>
-<li>类是对对象的抽象，可以把抽象类理解为把类当作对象，抽象成的类叫做抽象类.而接口只是一个行为的规范或规定，微软的自定义接口总是后带able字段，证明其是表述一类类“我能做。。。”.抽象类更多的是定义在一系列紧密相关的类间，而接口大多数是关系疏松但都实现某一功能的类中.</li>
-<li>接口基本上不具备继承的任何具体特点,它仅仅承诺了能够调用的方法;     </li>
-<li>一个类一次可以实现若干个接口,但是只能扩展一个父类     </li>
-<li>接口可以用于支持回调,而继承并不具备这个特点.     </li>
-<li>抽象类不能被密封。   </li>
-<li>抽象类实现的具体方法默认为虚的，但实现接口的类中的接口方法却默认为非虚的，当然您也可以声明为虚的.</li>
-<li>（接口）与非抽象类类似，抽象类也必须为在该类的基类列表中列出的接口的所有成员提供它自己的实现。但是，允许抽象类将接口方法映射到抽象方法上。   </li>
-<li>抽象类实现了oop中的一个原则，把可变的与不可变的分离。抽象类和接口就是定义为不可变的，而把可变的座位子类去实现。   </li>
-<li>好的接口定义应该是具有专一功能性的，而不是多功能的，否则造成接口污染。如果一个类只是实现了这个接口的中一个功能，而不得不去实现接口中的其他方法，就叫接口污染。   </li>
-<li>尽量避免使用继承来实现组建功能，而是使用黑箱复用，即对象组合。因为继承的层次增多，造成最直接的后果就是当你调用这个类群中某一类，就必须把他们全部加载到栈中！后果可想而知.（结合堆栈原理理解）。同时，有心的朋友可以留意到微软在构建一个类时，很多时候用到了对象组合的方法。比如asp.net中，Page类，有Server Request等属性，但其实他们都是某个类的对象。使用Page类的这个对象来调用另外的类的方法和属性，这个是非常基本的一个设计原则。   </li>
-<li>如果抽象类实现接口，则可以把接口中方法映射到抽象类中作为抽象方法而不必实现，而在抽象类的子类中实现接口中方法.</li>
-</ol>
-<h3 id="C-虚重载操作符-virtual-operator-使用方法"><a href="#C-虚重载操作符-virtual-operator-使用方法" class="headerlink" title="C++ 虚重载操作符 virtual operator= 使用方法"></a>C++ 虚重载操作符 virtual operator= 使用方法</h3><ul>
-<li>C++中虚操作符和其他虚函数的规则一样，操作符可以为虚函数，进行动态绑定， 虽然这种情况并不多见。本文以赋值操作符operator=举例。</li>
-<li>派生类中要重定义基类虚函数，要注意参数必须为基类引用类型，否则与基类中虚函数是完全不同的，无法进行预期的动态绑定。</li>
-<li>派生类除了重定义基类的虚操作符，还要定义自身的操作符重载。即派生层次每增加一层，理论上派生类就需要多定义一个操作符重载。</li>
-</ul>
-<p>以下程序使用引用reference，通过指针调用赋值操作符（例：*p = value）情况是一样的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;   </span><br><span class="line">using namespace std;   </span><br><span class="line"></span><br><span class="line">class Base   </span><br><span class="line">&#123;   </span><br><span class="line">public:   </span><br><span class="line">    virtual Base&amp; operator=(const Base&amp; rhs)  //重载操作符可设为virtual   </span><br><span class="line">    &#123;   </span><br><span class="line">        cout &lt;&lt; &quot;Base&quot; &lt;&lt; endl;   </span><br><span class="line">        return *this;   </span><br><span class="line">    &#125;   </span><br><span class="line">&#125;;   </span><br><span class="line"></span><br><span class="line">class Derived : public Base   </span><br><span class="line">&#123;   </span><br><span class="line">public:   </span><br><span class="line">    //与基类的operator=完全不同，不是重新定义，不会动态绑定。   </span><br><span class="line">    //如果不定义该操作符，会自动合成一个，并自动调用基类的operator=，不会动态绑定   </span><br><span class="line">    Derived&amp; operator=(const Derived&amp; rhs)     </span><br><span class="line">    &#123;   </span><br><span class="line">        cout &lt;&lt; &quot;Derived_D&quot; &lt;&lt; endl;   </span><br><span class="line">        return *this;   </span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">    //重新定义基类的operator=，会动态绑定   </span><br><span class="line">    //virtual Base&amp; operator=(const Base&amp; rhs)  //返回值两种都可以   </span><br><span class="line">    virtual Derived&amp; operator=(const Base&amp; rhs)     </span><br><span class="line">    &#123;   </span><br><span class="line">        cout &lt;&lt; &quot;Derived_B&quot; &lt;&lt; endl;   </span><br><span class="line">        return *this;   </span><br><span class="line">    &#125;   </span><br><span class="line">&#125;;   </span><br><span class="line"></span><br><span class="line">class Derived2 : public Derived   </span><br><span class="line">&#123;   </span><br><span class="line">    //此类需要3个operator=   </span><br><span class="line">    //可定义private的copy函数，由3个operator=调用   </span><br><span class="line">    //可使用dynamic_cast将基类引用参数转为子类，并捕获异常。   </span><br><span class="line">    //如果未发生异常，则调用copy，发生异常则不需赋值   </span><br><span class="line">&#125;;   </span><br><span class="line"></span><br><span class="line">int main()   </span><br><span class="line">&#123;   </span><br><span class="line">    Base b1, b2;   </span><br><span class="line">    Derived d1, d2;   </span><br><span class="line"></span><br><span class="line">    Derived &amp;rd = d1;   </span><br><span class="line"></span><br><span class="line">    Base &amp;rb1 = b1;  //动态类型为Base   </span><br><span class="line">    Base &amp;rb2 = d2;  //动态类型为Derived   </span><br><span class="line"></span><br><span class="line">    rb1 = d1;  //输出&quot;Base&quot;   </span><br><span class="line">    rb2 = d2;  //输出&quot;Derived_B&quot;   </span><br><span class="line"></span><br><span class="line">    rb1 = rb2;  //输出&quot;Base&quot;   </span><br><span class="line">    rb2 = rb1;  //输出&quot;Derived_B&quot;   </span><br><span class="line"></span><br><span class="line">    rd = d1;  //输出&quot;Derived_D&quot;   </span><br><span class="line">    rd = b1;  //输出&quot;Derived_B&quot;   </span><br><span class="line"></span><br><span class="line">    getchar();   </span><br><span class="line">    return 0;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/20/开源库/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/20/开源库/" itemprop="url">开源库</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-20T22:50:16+08:00">
-                2018-08-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/08/20/开源库/" class="leancloud_visitors" data-flag-title="开源库">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="基于C-或者Qt的开源库"><a href="#基于C-或者Qt的开源库" class="headerlink" title="基于C++或者Qt的开源库"></a>基于C++或者Qt的开源库</h2><h3 id="Asynchronous-programming-in-Qt-C-using-tasks-and-continuations"><a href="#Asynchronous-programming-in-Qt-C-using-tasks-and-continuations" class="headerlink" title="Asynchronous programming in Qt/C++ using tasks and continuations"></a><a href="https://github.com/mhogomchungu/tasks" target="_blank" rel="noopener">Asynchronous programming in Qt/C++ using tasks and continuations</a></h3><p>基于Qt/C++的异步库</p>
-<h3 id="Poly2Tri"><a href="#Poly2Tri" class="headerlink" title="Poly2Tri"></a><a href="http://sites-final.uclouvain.be/mema/Poly2Tri/" target="_blank" rel="noopener">Poly2Tri</a></h3><p>基于C++的多边形三角化库</p>
-<p><img src="/2018/08/20/开源库/1534776864383.png" alt="a. Six types of Vertex:Start vertex(5,7,14) End vertex(1,3,11) Split vertex(2,10,12) Merge vertex(6,9,13) Regular Up Vertex(4), polygon internal on its left Regular Down Vertex(8), polygon internal on its right"></p>
-<p><img src="/2018/08/20/开源库/1534777422535.png" alt="b. Monotone polygons with an additional auxiliary diagonal"></p>
-<p><img src="/2018/08/20/开源库/1534777483127.png" alt="c. Final Triangulation"></p>
-<h3 id="Game-Math-and-Geometry-Library"><a href="#Game-Math-and-Geometry-Library" class="headerlink" title="Game Math and Geometry Library"></a><a href="http://clb.demon.fi/MathGeoLib/nightly/" target="_blank" rel="noopener">Game Math and Geometry Library</a></h3><p>游戏、数学、几何库</p>
-<p><img src="/2018/08/20/开源库/1534777558332.png" alt="几何库"></p>
-<h3 id="ternary-search-tree查找树"><a href="#ternary-search-tree查找树" class="headerlink" title="ternary_search_tree查找树"></a><a href="https://github.com/kingsamchen/Eureka/blob/master/TernarySearchTree/src/ternary_search_tree.cpp" target="_blank" rel="noopener">ternary_search_tree查找树</a></h3><p>包含ternary_search_tre的源码文件</p>
-<h3 id="binary-search-tree-in-qt"><a href="#binary-search-tree-in-qt" class="headerlink" title="binary-search-tree-in-qt"></a><a href="https://github.com/thiagodnf/binary-search-tree-in-qt" target="_blank" rel="noopener">binary-search-tree-in-qt</a></h3><p>基于Qt的二叉树</p>
-<h3 id="x3py"><a href="#x3py" class="headerlink" title="x3py"></a><a href="https://github.com/rhcad/x3py" target="_blank" rel="noopener">x3py</a></h3><p>可与Python等集成的轻量级C++插件框架</p>
-<h3 id="Qt-PluginManager"><a href="#Qt-PluginManager" class="headerlink" title="Qt PluginManager"></a><a href="https://github.com/bidachon/PluginManager" target="_blank" rel="noopener">Qt PluginManager</a></h3><p>Plugin manager library using Qt framework to create Qt applications based on custom loadable plugins.</p>
-<h3 id="nodeeditor"><a href="#nodeeditor" class="headerlink" title="nodeeditor"></a><a href="https://github.com/paceholder/nodeeditor" target="_blank" rel="noopener">nodeeditor</a></h3><p>Qt节点编辑器</p>
-<h3 id="chigraph"><a href="#chigraph" class="headerlink" title="chigraph"></a><a href="https://github.com/chigraph/chigraph" target="_blank" rel="noopener">chigraph</a></h3><p>图形化编程<br><img src="/2018/08/20/开源库/1534777908673.png" alt=""></p>
-<h3 id="imageutilities"><a href="#imageutilities" class="headerlink" title="imageutilities"></a><a href="https://github.com/ankurhanda/imageutilities/tree/master/src/iuio" target="_blank" rel="noopener">imageutilities</a></h3><p>工业相机取图片刷新例子代码</p>
-<h3 id="mars"><a href="#mars" class="headerlink" title="mars"></a><a href="https://github.com/rock-simulation/mars/tree/master/common/gui/main_gui/src/qtpropertybrowser" target="_blank" rel="noopener">mars</a></h3><p>一个应用软件，里面部分代码用到Qt属性表，可以参考该软件的使用</p>
-<h3 id="qt-solutions"><a href="#qt-solutions" class="headerlink" title="qt-solutions"></a><a href="https://github.com/qtproject/qt-solutions" target="_blank" rel="noopener">qt-solutions</a></h3><p>一个Qt的类库包，里面包含属性表，单例程序使用，还有其他库的GitHub库</p>
-<h3 id="QtXlsxWriter"><a href="#QtXlsxWriter" class="headerlink" title="QtXlsxWriter"></a><a href="https://github.com/dbzhang800/QtXlsxWriter" target="_blank" rel="noopener">QtXlsxWriter</a></h3><p>Qt读写Excel库</p>
-<h3 id="qt-serialport-arduino"><a href="#qt-serialport-arduino" class="headerlink" title="qt-serialport-arduino"></a><a href="https://github.com/peteristhegreat/qt-serialport-arduino" target="_blank" rel="noopener">qt-serialport-arduino</a></h3><p>Qt串口通信</p>
-<h3 id="dunnart"><a href="#dunnart" class="headerlink" title="dunnart"></a><a href="https://github.com/mjwybrow/dunnart" target="_blank" rel="noopener">dunnart</a></h3><p>Qt写的一个节点编辑器</p>
-<p><img src="/2018/08/20/开源库/1534778271535.png" alt=""></p>
-<p><img src="/2018/08/20/开源库/1534778277231.png" alt=""></p>
-<h3 id="CS-Offer"><a href="#CS-Offer" class="headerlink" title="CS_Offer"></a><a href="https://github.com/xuelangZF/CS_Offer/blob/master/C%2B%2B/Class.md" target="_blank" rel="noopener">CS_Offer</a></h3><p>有时间值得一看的C++教程</p>
-<h3 id="madplotlib"><a href="#madplotlib" class="headerlink" title="madplotlib"></a><a href="https://github.com/madplotlib/madplotlib" target="_blank" rel="noopener">madplotlib</a></h3><p>A C++ wrapper of Qt Charts that looks, tastes and smells like matplotlib but isn’t.<br><img src="/2018/08/20/开源库/1534778445585.png" alt=""></p>
-<h3 id="cppfbp"><a href="#cppfbp" class="headerlink" title="cppfbp"></a><a href="https://github.com/jpaulm/cppfbp" target="_blank" rel="noopener">cppfbp</a></h3><p>C++流式编程库，结合lua</p>
-<h3 id="QFlow"><a href="#QFlow" class="headerlink" title="QFlow"></a><a href="https://github.com/chezgi/QFlow" target="_blank" rel="noopener">QFlow</a></h3><p>C++流式编程库<br><img src="/2018/08/20/开源库/1534778591844.png" alt=""></p>
-<h3 id="libgitlmvc"><a href="#libgitlmvc" class="headerlink" title="libgitlmvc"></a><a href="https://github.com/lheric/libgitlmvc" target="_blank" rel="noopener">libgitlmvc</a></h3><p>C++ MVC 框架，Qt5</p>
-<h3 id="QBox2D"><a href="#QBox2D" class="headerlink" title="QBox2D"></a><a href="https://github.com/Code-ReaQtor/QBox2D" target="_blank" rel="noopener">QBox2D</a></h3><p>An attempt to use Erin Catto’s Box2D (<a href="http://www.box2d.org" target="_blank" rel="noopener">http://www.box2d.org</a>) API with Qt/C++ Graphics VIew Framework</p>
-<h3 id="QtnProperty"><a href="#QtnProperty" class="headerlink" title="QtnProperty"></a><a href="https://github.com/lexxmark/QtnProperty" target="_blank" rel="noopener">QtnProperty</a></h3><p>Qt属性表</p>
-<h3 id="Multi-Threaded-Image-Processing-using-Qt-Camera-with-Android-USB"><a href="#Multi-Threaded-Image-Processing-using-Qt-Camera-with-Android-USB" class="headerlink" title="Multi-Threaded-Image-Processing-using-Qt-Camera-with-Android-USB"></a><a href="https://github.com/lygstate/lygstate.github.com/blob/master/_posts/2014-03-10-Multi-Threaded-Image-Processing-using-Qt-Camera-with-Android-USB.md" target="_blank" rel="noopener">Multi-Threaded-Image-Processing-using-Qt-Camera-with-Android-USB</a></h3><p> Qt多线程使用相机处理</p>
-<h3 id="sa"><a href="#sa" class="headerlink" title="sa"></a><a href="https://github.com/czyt1988/sa" target="_blank" rel="noopener">sa</a></h3><p>这是一个数据预处理软件，主要负责数据挖掘的数据清洗工作，如对一些科研实验数据的清洗和预处理</p>
-<h3 id="LeksysINI"><a href="#LeksysINI" class="headerlink" title="LeksysINI"></a><a href="https://github.com/Lek-sys/LeksysINI" target="_blank" rel="noopener">LeksysINI</a></h3><p>开源读写INI配置文件库</p>
-<h3 id="tasks"><a href="#tasks" class="headerlink" title="tasks"></a><a href="https://github.com/mhogomchungu/tasks" target="_blank" rel="noopener">tasks</a></h3><p>Qt异步多任务执行类库</p>
-<h3 id="Qt-SyncWoker"><a href="#Qt-SyncWoker" class="headerlink" title="Qt-SyncWoker"></a><a href="https://github.com/JimmyJay2015/Qt-SyncWoker" target="_blank" rel="noopener">Qt-SyncWoker</a></h3><p>Qt同步、异步任务模型</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/Qt中文乱码问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/13/Qt中文乱码问题/" itemprop="url">Qt中文乱码问题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-13T17:47:26+08:00">
-                2018-08-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Qt/" itemprop="url" rel="index">
-                    <span itemprop="name">Qt</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/08/13/Qt中文乱码问题/" class="leancloud_visitors" data-flag-title="Qt中文乱码问题">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Qt中文乱码问题"><a href="#Qt中文乱码问题" class="headerlink" title="Qt中文乱码问题"></a>Qt中文乱码问题</h2><h3 id="VC2010下Qt5的中文乱码问题"><a href="#VC2010下Qt5的中文乱码问题" class="headerlink" title="VC2010下Qt5的中文乱码问题"></a>VC2010下Qt5的中文乱码问题</h3><blockquote>
-<p>参考文章：<br><a href="https://my.oschina.net/chai2010/blog/119833" target="_blank" rel="noopener">VC2010下Qt5的中文乱码问题</a></p>
-</blockquote>
-<p>要搞清楚这个问题，先要弄明白编码。但是编码问题实在太复杂，这里肯定讲不开。</p>
-<p>我先找一个例子，比如：”中文” 的 Unicode 码点/UTF8编码/GBK 分别是多少。</p>
-<p>先去这个网站，输入 “中文” 查询对应的 Unicode 码点/UTF8编码： <a href="http://www.mytju.com/classcode/tools/encode_utf8.asp" target="_blank" rel="noopener">http://www.mytju.com/classcode/tools/encode_utf8.asp</a></p>
-<p>Unicode的码点分别是(十进制)：中(20013)，文(25991)。 对应的UTF8编码分别(16进制): 中(E4B8AD)，文(E69687)。</p>
-<p>然后再去下面这个网站，输入 “中文” 查询对应的 GBK 编码： <a href="http://www.mytju.com/classcode/tools/encode_gb2312.asp" target="_blank" rel="noopener">http://www.mytju.com/classcode/tools/encode_gb2312.asp</a></p>
-<p>GBK编码16进制(GBK内码)分别是：中(D6D0)，文(CEC4)。</p>
-<p>现在已经知道了”中文”的UTF8和GBK编码的具体值。 我们再看看VC2010是怎么处理的。</p>
-<h4 id="先看无-BOM-的-UTF8-编码的代码-utf8-no-bom-cpp"><a href="#先看无-BOM-的-UTF8-编码的代码-utf8-no-bom-cpp" class="headerlink" title="先看无 BOM 的 UTF8 编码的代码 (utf8_no_bom.cpp)"></a>先看无 BOM 的 UTF8 编码的代码 (utf8_no_bom.cpp)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// utf8 no bom</span><br><span class="line">// 文件中包含不能在当前代码页（936）中表示的字符</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">	const char* str = &quot;中文&quot;;</span><br><span class="line">	for(int i = 0; i &lt; sizeof(str); ++i) &#123;</span><br><span class="line">		printf(&quot;0x%x &quot;, str[i]&amp;0xFF);</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">	// Output:</span><br><span class="line">	// 0xe4 0xb8 0xad 0xe6</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出是：0xe4 0xb8 0xad 0xe6。 感觉好像是对的。</p>
-<p>但是，先别急：VC编译时输出了一条警告信息： utf8_no_bom.cpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。 请将该文件保存为 Unicode 格式以防止数据丢失。</p>
-<p>潜台词就是，你这个代码有GBK不能表示的字符，请用Unicode方式保存。 VC根本就没把 代码(utf8_no_bom.cpp) 当作UTF8，VC只是把它作为GBK处理罢了。</p>
-<p>那为什么又输出了正确的结果呢？</p>
-<p>因为 VC 把 (utf8_no_bom.cpp) 当作 GBK，而编译时也要转换为本地编码(也是GBK)。 因此，UTF8编码的 “中文”，被VC当作编码为 “0xe4 0xb8 0xad 0xe6” 的其他中文处理了。 VC已经不知道 “0xe4 0xb8 0xad 0xe6” 是对应 “中文” 字面值了。</p>
-<p>但是在GBK(实际是无BOM的UTF8)转GBK的过程中，发现了一些UTF8编码的字符并不是 GBK能表达的合理方式，因此就出现了那个C4819编译警告。</p>
-<h4 id="再看带BOM的UTF8是怎么处理的-utf8-with-bom-cpp"><a href="#再看带BOM的UTF8是怎么处理的-utf8-with-bom-cpp" class="headerlink" title="再看带BOM的UTF8是怎么处理的 (utf8_with_bom.cpp)"></a>再看带BOM的UTF8是怎么处理的 (utf8_with_bom.cpp)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// utf8 with bom</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">	const char* str = &quot;中文&quot;;</span><br><span class="line">	for(int i = 0; i &lt; sizeof(str); ++i) &#123;</span><br><span class="line">		printf(&quot;0x%x &quot;, str[i]&amp;0xFF);</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">	// Output:</span><br><span class="line">	// 0xd6 0xd0 0xce 0xc4</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译没有警告，但是输出有问题：0xd6 0xd0 0xce 0xc4。</p>
-<p>源文件明明是 UTF8 编码的格式”0xe4 0xb8 0xad 0xe6”， 怎么变成了 “0xd6 0xd0 0xce 0xc4” (这个是GBK编码)？</p>
-<p>这就是VC私下干的好事：它自作聪明的将UTF8源代码转换为GBK处理了！</p>
-<p>VC为何要做这样蠢事？</p>
-<p>原因是为了兼容老的VC版本。 因为以前的VC不能处理UTF8，都是用本地编码处理的。</p>
-<h4 id="在看看真的GBK是怎么处理的-gbk-cpp"><a href="#在看看真的GBK是怎么处理的-gbk-cpp" class="headerlink" title="在看看真的GBK是怎么处理的 (gbk.cpp)"></a>在看看真的GBK是怎么处理的 (gbk.cpp)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// gbk</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">	const char* str = &quot;中文&quot;;</span><br><span class="line">	for(int i = 0; i &lt; sizeof(str); ++i) &#123;</span><br><span class="line">		printf(&quot;0x%x &quot;, str[i]&amp;0xFF);</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">	// Output:</span><br><span class="line">	// 0xd6 0xd0 0xce 0xc4</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>没有编译错误，输出也和源代码一致：”0xd6 0xd0 0xce 0xc4”。</p>
-<p>因为源文件就是GBK，cl在编译时GBK转化为GBK，没有改变字符串。</p>
-<p>只是，现在很多人不想用GBK了（因为只能在中国地区用，不能表示全球字符）。</p>
-<hr>
-<p>到这里，可以初步小结一下：</p>
-<ol>
-<li>VC编辑器和VC编译器是2个概念，VC编辑器支持UTF8并不能表示VC编译器也支持UTF8</li>
-<li>VC编辑器从2008?开始支持带BOM的UTF8(不带BOM的暂时没戏，因为会本地编码冲突)</li>
-<li>VC编译器从2010开始重要可以支持UTF8了(虽然支持方式很不优雅)</li>
-</ol>
-<hr>
-<h4 id="看看VC2010是怎么处理带BOM的UTF8的-utf8-with-bom-2010-cpp"><a href="#看看VC2010是怎么处理带BOM的UTF8的-utf8-with-bom-2010-cpp" class="headerlink" title="看看VC2010是怎么处理带BOM的UTF8的 (utf8_with_bom_2010.cpp)"></a>看看VC2010是怎么处理带BOM的UTF8的 (utf8_with_bom_2010.cpp)</h4><p>VC2010重要增加了UTF8的编译支持(#pragma execution_character_set(“utf-8”)), 具体查看:</p>
-<p><a href="http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/2f328917-4e99-40be-adfa-35cc17c9cdec" target="_blank" rel="noopener">http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/2f328917-4e99-40be-adfa-35cc17c9cdec</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// utf8 with bom (VC2010), 这句是重点！</span><br><span class="line">#pragma execution_character_set(&quot;utf-8&quot;)</span><br><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">	const char* str = &quot;中文&quot;;</span><br><span class="line">	for(int i = 0; i &lt; sizeof(str); ++i) &#123;</span><br><span class="line">		printf(&quot;0x%x &quot;, str[i]&amp;0xFF);</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">	// Output:</span><br><span class="line">	// 0xe4 0xb8 0xad 0xe6</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>没有编译错误，输出也和源代码一致：”0xe4 0xb8 0xad 0xe6”。</p>
-<p>UTF8编码，UTF8输出。完美!</p>
-<hr>
-<h4 id="回到-Qt5-的中文输出问题。"><a href="#回到-Qt5-的中文输出问题。" class="headerlink" title="回到 Qt5 的中文输出问题。"></a>回到 Qt5 的中文输出问题。</h4><p>Qt默认支持 VS2010/MinGW/Gcc 等编译器，而它们现在都已经真正支持UTF8了。</p>
-<p>当然，VS2010 对UTF8的支持会入侵代码(#pragma execution_character_set(“utf-8”))。</p>
-<p>看看Qt官方论坛别人是怎么说的： <a href="http://qt-project.org/forums/viewthread/17617" target="_blank" rel="noopener">http://qt-project.org/forums/viewthread/17617</a></p>
-<blockquote>
-<p>Nothing special need to do, it will works by default. If the exec-charset of your your compiler is UTF-8.</p>
-</blockquote>
-<p>简单的说，从Qt5开始，源代码就是默认UTF8编码的。</p>
-<p>当然，VC2010编辑器对带BOM的UTF8也是认识，只可惜VC2010编译器根本承认它是UTF8！</p>
-<p>在继续看官方论坛的回复：</p>
-<blockquote>
-<p>You can write a simple example like this</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QApplication&gt;</span><br><span class="line">#include &lt;QLabel&gt;</span><br><span class="line"></span><br><span class="line">  #if _MSC_VER &gt;= 1600</span><br><span class="line">  #pragma execution_character_set(&quot;utf-8&quot;)</span><br><span class="line">  #endif</span><br><span class="line"></span><br><span class="line">  int main(int argc, char *argv[])</span><br><span class="line">  &#123;</span><br><span class="line">      QApplication a(argc, argv);</span><br><span class="line">      QLabel label(&quot;ąśćółęńżź&quot;);</span><br><span class="line">      label.show();</span><br><span class="line"></span><br><span class="line">      return a.exec();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>If other people can reproduce your problem, you can file a bug.</p>
-</blockquote>
-<p>教完整的解决方案(增加了Qt4/Qt5和非VC环境的判断):</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">// Coding: UTF-8(BOM)</span><br><span class="line">#if defined(_MSC_VER) &amp;&amp; (_MSC_VER &gt;= 1600)</span><br><span class="line"># pragma execution_character_set(&quot;utf-8&quot;)</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#include &lt;QApplication&gt;</span><br><span class="line">#include &lt;QTextCodec&gt;</span><br><span class="line">#include &lt;QLabel&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	QApplication app(argc, argv);</span><br><span class="line"></span><br><span class="line">#if QT_VERSION &lt; QT_VERSION_CHECK(5,0,0)</span><br><span class="line">#if defined(_MSC_VER) &amp;&amp; (_MSC_VER &lt; 1600)</span><br><span class="line">	QTextCodec::setCodecForTr(QTextCodec::codecForName(&quot;GB18030-0&quot;));</span><br><span class="line">#else</span><br><span class="line">	QTextCodec::setCodecForTr(QTextCodec::codecForName(&quot;UTF-8&quot;));</span><br><span class="line">#endif</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">	QLabel *label = new QLabel(QObject::tr(&quot;你好！&quot;));</span><br><span class="line">	label-&gt;show();</span><br><span class="line"></span><br><span class="line">	return app.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>有以下几种类型(源代码必须是带BOM的UTF8):</p>
-<ul>
-<li>Qt5+/VC2010+: 包含了 # pragma execution_character_set(“utf-8”) 已经支持中文</li>
-<li>Qt5/VC2008-: 这个暂时误解(我还没找到方法)</li>
-<li>Qt4+/VC2008-: 采用以前老的方式, 指定代码为 “GB18030-0” 编码</li>
-<li>Qt4/Qt5/Linux: 只要是默认的UTF8环境, 应该都没问题</li>
-</ul>
-<p>其实这个问题不是Qt特有的, 追根溯源还是C/C++和编译器的问题.</p>
-<p>即使是支持UTF16的Java也同样难逃此问题.</p>
-<h3 id="Qt5中解决中文乱码的方法"><a href="#Qt5中解决中文乱码的方法" class="headerlink" title="Qt5中解决中文乱码的方法"></a>Qt5中解决中文乱码的方法</h3><blockquote>
-<p>文章：<a href="https://blog.csdn.net/liyuanbhu/article/details/72596952" target="_blank" rel="noopener">Qt5中解决中文乱码的方法</a></p>
-</blockquote>
-<p>在 Qt 4 的时代，解决中文乱码挺麻烦。要考虑用的是什么编译器，具体的可以参考下面这篇文章：<br><a href="http://blog.csdn.net/brave_heart_lxl/article/details/7186631" target="_blank" rel="noopener">http://blog.csdn.net/brave_heart_lxl/article/details/7186631</a></p>
-<p>到了 Qt 5 的年代，这个问题变得简单了些。因为根据 Qt 的文档：<br><a href="http://doc.qt.io/qt-5.6/qstring.html#QString-7" target="_blank" rel="noopener">http://doc.qt.io/qt-5.6/qstring.html#QString-7</a></p>
-<p>中规定 QString 的 const char* 构造函数是调用 fromUtf8() 构造的。所以要求字符串字面量是 UTF-8 编码的字节。</p>
-<p>这里先要解释一下下面两个概念：</p>
-<ul>
-<li>源码字符集(the source character set)：源码文件是使用何种编码保存的</li>
-<li>执行字符集(the execution character set)：可执行程序内保存的是何种编码(程序执行时内存中字符串编码)</li>
-</ul>
-<p>源码字符集很容易理解，就是我们源代码的编码。为了我们的代码能够跨平台，源文件要保存为带 BOM 的 utf-8。</p>
-<p>执行字符集就麻烦多了。比如我们下面的代码片段：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QString str(&quot;我是中文&quot;);</span><br></pre></td></tr></table></figure></p>
-<p>即使这个文件存为 utf-8 格式了，编译成 exe 文件时，编译器也可能对这个字符串常量进行转码，转为别的编码格式。</p>
-<p>在 gcc 中，控制这个转码操作的命令行参数是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-fexec-charset=charset</span><br></pre></td></tr></table></figure></p>
-<p>如果不指定的话默认是 utf-8。所以我们用 gcc 时很少关注这个问题。</p>
-<p>Viual Stdio 中就麻烦多了。这里先说 Visual stdio 2015，这个是我现在用的编译环境。VS2015 中如果源代码是 utf-8的，执行字符集默认是本地 Locale 字符集，对于简体中文的 windows 系统来说，这个 本地Locale字符集是 gb18030。所以直接显示汉字会全是乱码。解决这个乱码有三个办法，第一个办法是编译时加入命令行参数，在 Qt 的 pro 文件中可以这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msvc:QMAKE_CXXFLAGS += -execution-charset:utf-8</span><br></pre></td></tr></table></figure></p>
-<p>第二个办法是在源文件中加入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#pragma execution_character_set(&quot;utf-8&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>更好的办法是源代码写为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QString  str(u8&quot;我是中文&quot;);</span><br></pre></td></tr></table></figure></p>
-<p>当然，这里要求编译器支持 C++11，因此上面的代码在 VS2005、VS2008 上是无法编译通过的。</p>
-<p>另外，如果源代码保存为不带 BOM 的 utf-8。那需要告诉 VS2015 我们的编码格式是 utf-8，可以在 pro 文件中加入如下的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msvc:QMAKE_CXXFLAGS += -source-charset:utf-8</span><br></pre></td></tr></table></figure></p>
-<p>另外再说说 VS2005、VS2008 下该如何设置。首先这两个编译器都不支持 C++11，也不支持执行字符集的设置，执行字符集就是默认的本地 Locale 字符集。所以我们的代码只能写为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QString str = QString::fromLocal8Bit(&quot;我是中文&quot;);</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1446,7 +1320,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
