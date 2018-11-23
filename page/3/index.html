@@ -293,6 +293,700 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/C-编译器知识/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/13/C-编译器知识/" itemprop="url">C++编译器知识</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-13T00:41:26+08:00">
+                2018-08-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/13/C-编译器知识/" class="leancloud_visitors" data-flag-title="C++编译器知识">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="LLVM、Clang介绍"><a href="#LLVM、Clang介绍" class="headerlink" title="LLVM、Clang介绍"></a>LLVM、Clang介绍</h2><h3 id="编译与链接"><a href="#编译与链接" class="headerlink" title="编译与链接"></a>编译与链接</h3><p>在正式开始之前，插播一段编译器和链接器。<br>编译器主要用于将源代码从高级语言翻译成低级语言（汇编语言、目标代码、机器码），输出目标文件。<br>链接器主要用于将一个或多个目标文件（obj）与库文件（lib）合并成一个可执行文件（exe）或者库文件（lib、dll等）。</p>
+<p>编译器可分为前端（front end）和后端（back end），两者以中间代码（IR，Intermediate Representation）为分界。</p>
+<p>也可划分成前端、中端和后端，这里的中端主要完成对IR的优化工作，输出仍为IR。</p>
+<h3 id="LLVM与Clang"><a href="#LLVM与Clang" class="headerlink" title="LLVM与Clang"></a>LLVM与Clang</h3><p>LLVM全称为Low Level Virtual Machine，按wiki的说法，它是“a collection of modular and reusable compiler and toolchain technologies”，起初只支持C/C++，现已支持多种语言。提及LLVM可能指代的是LLVM project/infrastructure（框架，编译器各个环节对应项目的集合）、An LLVM-based compiler、LLVM libraries（库）、LLVM core（编译器的后端）、The LLVM IR，具体如下：</p>
+<blockquote>
+<ul>
+<li><strong>The LLVM project/infrastructure</strong>: This is an umbrella for several projects that, together, form a complete compiler: frontends, backends, optimizers, assemblers, linkers, libc++, compiler-rt, and a JIT engine. The word “LLVM” has this meaning, for example, in the following sentence: “LLVM is comprised of several projects”.</li>
+<li><strong>An LLVM-based compiler</strong>: This is a compiler built partially or completely with the LLVM infrastructure. For example, a compiler might use LLVM for the frontend and backend but use GCC and GNU system libraries to perform the final link. LLVM has this meaning in the following sentence, for example: “I used LLVM to compile C programs to a MIPS platform”.</li>
+<li><strong>LLVM libraries</strong>: This is the reusable code portion of the LLVM infrastructure. For example, LLVM has this meaning in the sentence: “My project uses LLVM to generate code through its Just-in-Time compilation framework”.</li>
+<li><strong>LLVM core</strong>: The optimizations that happen at the intermediate language level and the backend algorithms form the LLVM core where the project started. LLVM has this meaning in the following sentence: “LLVM and Clang are two different projects”.</li>
+<li><strong>The LLVM IR</strong>: This is the LLVM compiler intermediate representation. LLVM has this meaning when used in sentences such as “I built a frontend that translates my own language to LLVM”.<br>——What exactly is LLVM</li>
+</ul>
+</blockquote>
+<p>而Clang呢？Clang是a C language family frontend for LLVM，是C-like语言的编译器前端，支持C, C++, Objective C/C++, OpenCL C等。后端使用LLVM，现已兼容GCC——Clang.LLVM。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/09/我所理解的设计模式（C-实现）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/09/我所理解的设计模式（C-实现）/" itemprop="url">我所理解的设计模式（C++实现）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-09T12:37:53+08:00">
+                2018-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/09/我所理解的设计模式（C-实现）/" class="leancloud_visitors" data-flag-title="我所理解的设计模式（C++实现）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="我所理解的设计模式（C-实现）"><a href="#我所理解的设计模式（C-实现）" class="headerlink" title="我所理解的设计模式（C++实现）"></a>我所理解的设计模式（C++实现）</h2><p>###“一句话总结”和索引</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/lcl_data/article/details/12117349" target="_blank" rel="noopener">“一句话总结”和索引</a></p>
+</blockquote>
+<p>我所理解的设计模式系列已经全部完成，在写该系列的过程中收获很多。俗话说得好，好记性不如烂笔头，写出来不单单可以增加自己对知识的理解，也可以很好的分享给大家，大家共同学习。这里是最后一篇，来给所有的设计模式来个一句话总结，在让我们“过电影”般在过一遍。</p>
+<p><strong>按照目的来分，设计模式可以分为创建型模式、结构型模式和行为型模式。</strong></p>
+<p>创建型模式用来处理对象的创建过程；结构型模式用来处理类或者对象的组合；行为型模式用来对类或对象怎样交互和怎样分配职责进行描述。</p>
+<p><strong>创建型模式用来处理对象的创建过程，主要包含以下5种设计模式：</strong></p>
+<ol>
+<li>工厂方法模式（Factory Method Pattern）的用意是定义一个创建产品对象的工厂接口，将实际创建工作推迟到子类中。</li>
+<li>抽象工厂模式（Abstract Factory Pattern）的意图是提供一个创建一系列相关或者相互依赖的接口，而无需指定它们具体的类。</li>
+<li>建造者模式（Builder Pattern）的意图是将一个复杂的构建与其表示相分离，使得同样的构建过程可以创建不同的表示。</li>
+<li>原型模式（Prototype Pattern）是用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。</li>
+<li>单例模式（Singleton Pattern）是保证一个类仅有一个实例，并提供一个访问它的全局访问点。</li>
+</ol>
+<p><strong>结构型模式用来处理类或者对象的组合，主要包含以下7种设计模式：</strong></p>
+<ol start="6">
+<li>适配器模式（Adapter Pattern）是将一个类的接口转换成客户希望的另外一个接口。使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</li>
+<li>桥接模式（Bridge Pattern）是将抽象部分与实际部分分离，使它们都可以独立的变化。</li>
+<li>组合模式（Composite Pattern）是将对象组合成树形结构以表示“部分–整体”的层次结构。使得用户对单个对象和组合对象的使用具有一致性。</li>
+<li>装饰者模式（Decorator Pattern）动态的给一个对象添加一些额外的职责。就增加功能来说，此模式比生成子类更为灵活。</li>
+<li>外观模式（Facade Pattern）是为子系统中的一组接口提供一个一致的界面，此模式定义了一个高层接口，这个接口使得这一子系统更加容易使用。</li>
+<li>享元模式（Flyweight Pattern）是以共享的方式高效的支持大量的细粒度的对象。</li>
+<li>代理模式（Proxy Pattern）就是为其他对象提供一种代理以控制对这个对象的访问。</li>
+</ol>
+<p><strong>行为型模式用来对类或对象怎样交互和怎样分配职责进行描述，主要包含以下11种设计模式：</strong></p>
+<ol start="13">
+<li>责任链模式（Chain of Responsibility Pattern），在该模式里，很多对象由每一个对象对其下家的引用而连接起来形成一条链。请求在这个链上传递，直到链上的某一个对象决定处理此请求，这使得系统可以在不影响客户端的情况下动态地重新组织链和分配责任。</li>
+<li>命令模式（Command Pattern）是将一个请求封装为一个对象，从而使你可用不同的请求对客户端进行参数化；对请求排队或记录请求日志，以及支持可撤销的操作。</li>
+<li>解释器模式（Interpreter Pattern）就是描述了如何为简单的语言定义一个语法，如何在该语言中表示一个句子，以及如何解释这些句子。</li>
+<li>迭代器模式（Iterator Pattern）是提供了一种方法顺序来访问一个聚合对象中的各个元素，而又不需要暴露该对象的内部表示。</li>
+<li>中介者模式（Mediator Pattern）就是定义一个中介对象来封装系列对象之间的交互。终结者使各个对象不需要显示的相互调用 ，从而使其耦合性松散，而且可以独立的改变他们之间的交互。</li>
+<li>备忘录模式（Memento Pattern）是在不破坏封装的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态。</li>
+<li>观察者模式（Observer Pattern）定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。</li>
+<li>状态模式（State Pattern）就是允许一个对象在其内部状态改变时改变它的行为，使对象看起来似乎修改了它的类。</li>
+<li>策略模式（Strategy Pattern）就是准备一组算法，并将每一个算法封装起来，使得它们可以互换。</li>
+<li>模板方法模式（Template Method Pattern）使得子类可以不改变一个算法的结构即可重定义该算法的某些特定步骤。</li>
+<li>访问者模式（Visitor Pattern）就是表示一个作用于某对象结构中的各元素的操作，它使你可以在不改变各元素的类的前提下定义作用于这些元素的新操作。  </li>
+</ol>
+<h3 id="工厂方法模式（Factory-Method-Pattern）"><a href="#工厂方法模式（Factory-Method-Pattern）" class="headerlink" title="工厂方法模式（Factory Method Pattern）"></a>工厂方法模式（Factory Method Pattern）</h3><blockquote>
+<p><a href="https://blog.csdn.net/lcl_data/article/details/8712834" target="_blank" rel="noopener">工厂方法模式（Factory Method Pattern）</a></p>
+</blockquote>
+<p>工厂方法模式不同于简单工厂模式的地方在于工厂方法模式把对象的创建过程放到里子类里。这样工厂父对象和产品父对象一样，可以是抽象类或者接口，只定义相应的规范或操作，不涉及具体的创建或实现细节。</p>
+<p>其类图如下：</p>
+<p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789664935.png" alt=""></p>
+<p>实例代码为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#pragma once  </span><br><span class="line">class IProduct  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    IProduct(void);  </span><br><span class="line">    virtual ~IProduct(void);  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">#pragma once  </span><br><span class="line">#include &quot;iproduct.h&quot;  </span><br><span class="line">class IPad :  </span><br><span class="line">    public IProduct  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    IPad(void);  </span><br><span class="line">    ~IPad(void);  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">#pragma once  </span><br><span class="line">#include &quot;iproduct.h&quot;  </span><br><span class="line">class IPhone :  </span><br><span class="line">    public IProduct  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    IPhone(void);  </span><br><span class="line">    ~IPhone(void);  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">#pragma once  </span><br><span class="line">#include&quot;IProduct.h&quot;  </span><br><span class="line"></span><br><span class="line">class IFactory  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    IFactory(void);  </span><br><span class="line">    virtual ~IFactory(void);  </span><br><span class="line"></span><br><span class="line">    virtual IProduct* getProduct();  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma once  </span><br><span class="line">#include &quot;ifactory.h&quot;  </span><br><span class="line">class IPadFactory :  </span><br><span class="line">    public IFactory  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    IPadFactory(void);  </span><br><span class="line">    ~IPadFactory(void);  </span><br><span class="line"></span><br><span class="line">    virtual IProduct* getProduct();  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma once  </span><br><span class="line">#include &quot;ifactory.h&quot;  </span><br><span class="line">class IPhoneFactory :  </span><br><span class="line">    public IFactory  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    IPhoneFactory(void);  </span><br><span class="line">    ~IPhoneFactory(void);  </span><br><span class="line"></span><br><span class="line">    virtual IProduct* getProduct();  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>关键的实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;StdAfx.h&quot;  </span><br><span class="line">#include &quot;IPadFactory.h&quot;  </span><br><span class="line">#include&quot;IPad.h&quot;  </span><br><span class="line"></span><br><span class="line">IPadFactory::IPadFactory(void)  </span><br><span class="line">&#123;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">IPadFactory::~IPadFactory(void)  </span><br><span class="line">&#123;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">IProduct* IPadFactory::getProduct()  </span><br><span class="line">&#123;  </span><br><span class="line">    return new IPad();  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">#include &quot;StdAfx.h&quot;  </span><br><span class="line">#include &quot;IPhoneFactory.h&quot;  </span><br><span class="line">#include&quot;IPhone.h&quot;  </span><br><span class="line"></span><br><span class="line">IPhoneFactory::IPhoneFactory(void)  </span><br><span class="line">&#123;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">IPhoneFactory::~IPhoneFactory(void)  </span><br><span class="line">&#123;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">IProduct* IPhoneFactory::getProduct()  </span><br><span class="line">&#123;  </span><br><span class="line">    return new IPhone();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;  </span><br><span class="line">#include&quot;IFactory.h&quot;  </span><br><span class="line">#include&quot;IPadFactory.h&quot;  </span><br><span class="line">#include&quot;IPhoneFactory.h&quot;  </span><br><span class="line">#include&quot;IProduct.h&quot;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])  </span><br><span class="line">&#123;  </span><br><span class="line">    IFactory *fac = new IPadFactory();  </span><br><span class="line">    IProduct *pro = fac-&gt;getProduct();  </span><br><span class="line"></span><br><span class="line">    fac = new IPhoneFactory();  </span><br><span class="line">    pro = fac-&gt;getProduct();  </span><br><span class="line">    return 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="抽象工厂模式（Abstract-Factory-Pattern）"><a href="#抽象工厂模式（Abstract-Factory-Pattern）" class="headerlink" title="抽象工厂模式（Abstract Factory Pattern）"></a>抽象工厂模式（Abstract Factory Pattern）</h3><p><strong>解决的问题：</strong><br>在系统里a,b,c三个组件必须同时使用，但是a的同类 a1和a2这三种方法有共同特点但是是互斥的，b,b1,b2和c,c1,c2和a/a1/a2是一样的。就比如说创建在不同操作系统的视窗环境下都能够运行的系统时，Unix下面有unixButton和 unixText，Win下面也有winButton和winText，unixButton和unixText必须在一个系统unix里面用，而winButton和winText只能在Win下面用。但是winButton和unixButton这两种东西都是有相同的特点的，比如说按下去之后会触发事件，比如说他上面有文字描述等等，但是winButton和unixButton却又是不可以混用的。</p>
+<p>那么此问题就可以用抽象工厂很好的解决：<br>在抽象工厂模式中如何选择使用 winButton ,winText，有具体的工厂类winFactory来负责，因为他们含有选择合适的产品对象的逻辑，所以是与应用系统的商业逻辑紧密相关的。而抽象工厂类来负责定义接口，他才是抽象工厂模式的核心。<br>而winButton/macButton则是一种产品族，有共同的特点，他们具体特点有抽象产品类或者接口来定义和描述。但是他们具体的实现有具体的产品类负责，这些是客户端最终想要的东西，所以其内部一定充满了应用系统的商业逻辑（触发逻辑/样式逻辑等）。</p>
+<p>类图结构：  </p>
+<p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789694008.png" alt=""></p>
+<p>样例实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line">// CplusplusAbstractFactory.cpp : Defines the entry point for the console application.  </span><br><span class="line">//  </span><br><span class="line"></span><br><span class="line">#include &quot;stdafx.h&quot;  </span><br><span class="line">#include&lt;typeinfo&gt;  </span><br><span class="line">// &quot;AbstractProductA&quot; 草食动物  </span><br><span class="line">class Herbivore  </span><br><span class="line">&#123;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">// &quot;AbstractProductB&quot; 食肉动物  </span><br><span class="line">class Carnivore  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    // Methods  </span><br><span class="line">    virtual void Eat( Herbivore *h ) &#123;&#125;;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">// &quot;ProductA1&quot;  </span><br><span class="line">class Wildebeest : public Herbivore  </span><br><span class="line">&#123;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">// &quot;ProductA2&quot;  </span><br><span class="line">class Bison : public Herbivore  </span><br><span class="line">&#123;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">// &quot;ProductB1&quot;  </span><br><span class="line">class Lion : public Carnivore  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">public:  </span><br><span class="line">    // Methods  </span><br><span class="line">    void Eat( Herbivore *h )  </span><br><span class="line">    &#123;  </span><br><span class="line">        // eat wildebeest      </span><br><span class="line">        printf(&quot;Lion eats %s\n&quot;,typeid(h).name());  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">// &quot;ProductB2&quot;  </span><br><span class="line">class Wolf : public Carnivore  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">public:  </span><br><span class="line">    // Methods  </span><br><span class="line">    void Eat( Herbivore *h )  </span><br><span class="line">    &#123;  </span><br><span class="line">        // Eat bison  </span><br><span class="line">        printf(&quot;Wolf eats %s\n&quot;,typeid(h).name());  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">// &quot;AbstractFactory&quot;  </span><br><span class="line">class ContinentFactory  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    // Methods  </span><br><span class="line">    virtual Herbivore* CreateHerbivore()  </span><br><span class="line">    &#123;  </span><br><span class="line">        return new Herbivore();  </span><br><span class="line">    &#125;  </span><br><span class="line">    virtual Carnivore* CreateCarnivore()  </span><br><span class="line">    &#123;  </span><br><span class="line">        return new Carnivore();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">// &quot;ConcreteFactory1&quot;  </span><br><span class="line">class AfricaFactory : public ContinentFactory  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    // Methods  </span><br><span class="line">    Herbivore* CreateHerbivore()  </span><br><span class="line">    &#123;   </span><br><span class="line">        return new Wildebeest();   </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    Carnivore* CreateCarnivore()  </span><br><span class="line">    &#123;   </span><br><span class="line">        return new Lion();   </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">// &quot;ConcreteFactory2&quot;  </span><br><span class="line">class AmericaFactory : public ContinentFactory  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    // Methods  </span><br><span class="line">    Herbivore* CreateHerbivore()  </span><br><span class="line">    &#123;   </span><br><span class="line">        return new Bison();   </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    Carnivore* CreateCarnivore()  </span><br><span class="line">    &#123;   </span><br><span class="line">        return new Wolf();   </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// &quot;Client&quot;  </span><br><span class="line">class AnimalWorld  </span><br><span class="line">&#123;  </span><br><span class="line">private:  </span><br><span class="line">    // Fields  </span><br><span class="line">    Herbivore* herbivore;  </span><br><span class="line">    Carnivore* carnivore;  </span><br><span class="line"></span><br><span class="line">public:  </span><br><span class="line">    // Constructors  </span><br><span class="line">    AnimalWorld( ContinentFactory *factory )  </span><br><span class="line">    &#123;  </span><br><span class="line">        carnivore = factory-&gt;CreateCarnivore();  </span><br><span class="line">        herbivore = factory-&gt;CreateHerbivore();  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    // Methods  </span><br><span class="line">    void RunFoodChain()  </span><br><span class="line">    &#123;   </span><br><span class="line">        carnivore-&gt;Eat(herbivore);   </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])  </span><br><span class="line">&#123;  </span><br><span class="line">    // Create and run the Africa animal world  </span><br><span class="line">    ContinentFactory *africa = new AfricaFactory();  </span><br><span class="line">    AnimalWorld *world = new AnimalWorld( africa );  </span><br><span class="line">    world-&gt;RunFoodChain();  </span><br><span class="line"></span><br><span class="line">    // Create and run the America animal world  </span><br><span class="line">    ContinentFactory *america = new AmericaFactory();  </span><br><span class="line">    world = new AnimalWorld( america );  </span><br><span class="line">    world-&gt;RunFoodChain();  </span><br><span class="line"></span><br><span class="line">    return 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>“开放-封闭”原则：</strong><br>抽象工厂可以很好的应对增加新产品族的问题（即a4/b4/c4），且符合“开放-封闭”原则，但是若是增加新的产品结构的话（即d/d1/d2），就是说a/b/c/d这4中方法必须同时使用了，那就必须修改工厂角色。不符合“开放-封闭”原则。综合来讲，抽象工厂模式以一种倾斜的方式支持增加新的产品，它为新产品族的增加提供方便，而不能为新的产品结构的增加提供这样的方便。</p>
+<p><strong>实现要点：</strong></p>
+<ul>
+<li>在抽象工厂模式中，选用哪种产品族的问题，需要采用工厂方法或简单工厂模式来配合解决。</li>
+<li>抽象工厂模式和工厂方法模式一样，都把对象的创建延迟到了他的子类中。</li>
+<li>具体的工厂类可以设计成单例类，他只向外界提供自己唯一的实例。</li>
+</ul>
+<p><strong>与其他工厂模式的联系和异同：</strong></p>
+<ul>
+<li>抽象工厂模式中的具体工厂负责生产一个产品族的产品。而产品族的增加只需要增加与其对应的具体工厂。</li>
+<li>3种工厂模式都是创建型模式，都是创建对象的，但都把产品具体创建的过程给隐藏了。</li>
+<li>工厂方法模式是针对一种产品结构，而抽象工厂模式是针对多种产品结构。</li>
+</ul>
+<p><strong>适用性：</strong><br>在以下情况下应当考虑使用抽象工厂模式：</p>
+<ul>
+<li>一个系统不应当依赖于产品类实例如何被创建、组合和表达的细节，这对于所有形态的工厂模式都是重要的。</li>
+<li>这个系统有多于一个的产品族，而系统只消费其中某一产品族。</li>
+<li>同属于同一个产品族的产品是在一起使用的，这一约束必须在系统的设计中体现出来。</li>
+<li>系统提供一个产品类的库，所有的产品以同样的接口出现，从而使客户端不依赖于实现。</li>
+</ul>
+<p><strong>应用场景：</strong></p>
+<ul>
+<li>支持多种观感标准的用户界面工具箱（Kit）。</li>
+<li>游戏开发中的多风格系列场景，比如道路，房屋，管道等。</li>
+</ul>
+<h3 id="建造者模式（Builder-Pattern）"><a href="#建造者模式（Builder-Pattern）" class="headerlink" title="建造者模式（Builder Pattern）"></a>建造者模式（Builder Pattern）</h3><p><strong>解决的问题：</strong><br>我创建的这个对象比较复杂，且该对象里面的成员函数用不同的实现来表示不同的实例，换句话说就是同样的对象构建过程可以有不同的表示。比如我那天去吃过桥米线，他们有不同的套餐，套餐里包含的种类是一样的，都有一碗米线，一份凉菜，一杯饮料。但是不同的套餐里这3样又都不是全部一样的。此时我们就可以用建造者模式。</p>
+<p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789725745.png" alt=""></p>
+<p>1．建造者（Builder）角色：给出一个抽象接口，以规范产品对象的各个组成成分的建造。一般而言，此接口独立于应用程序的商业逻辑。模式中直接创建产品对象的是具体建造者（Concrete Builder）角色。具体建造者类必须实现这个接口所要求的方法：一个是建造方法，另一个是结果返还方法。此时就是米线店的员工，按照收银员的要求的去准备具体的套餐，放入适当的米线，凉菜和饮料。</p>
+<p>2．具体建造者（Concrete Builder）角色：担任这个角色的是于应用程序紧密相关的类，它们在应用程序调用下创建产品实例。这个角色主要完成的任务包括：实现Builder角色提供的接口，一步一步完成创建产品实例的过程。在建造过程完成后，提供产品的实例。是具体的做某个套餐的员工。</p>
+<p>3．指导者（Director）角色：担任这个角色的类调用具体建造者角色以创建产品对象。导演者并没有产品类的具体知识，真正拥有产品类的具体知识的是具体建造者对象。是收银员，他知道我想要什么套餐，他会告诉里面的米线店员工去准备什么套餐。</p>
+<p>4．产品（Product）角色：产品便是建造中的复杂对象。指导者角色是于客户端打交道的角色。导演者角色将客户端创建产品的请求划分为对各个零件的建造请求，再将这些请求委派给具体建造者角色。具体建造者角色是做具体建造工作的，但却不为客户端所知。就是最后的套餐，所有东西放到一起端过来。</p>
+<p><strong>样例实现：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line">// CplusplusBuild.cpp : Defines the entry point for the console application.  </span><br><span class="line">//  </span><br><span class="line"></span><br><span class="line">#include &quot;stdafx.h&quot;  </span><br><span class="line">#include &lt;vector&gt;  </span><br><span class="line">#include &lt;string&gt;  </span><br><span class="line">#include &lt;iostream&gt;  </span><br><span class="line">using namespace std;  </span><br><span class="line">//product  </span><br><span class="line">class Food  </span><br><span class="line">&#123;  </span><br><span class="line">private:  </span><br><span class="line">    vector&lt;string&gt; mFoodName;  </span><br><span class="line">    vector&lt;int&gt; mFoodPrice;  </span><br><span class="line"></span><br><span class="line">public:  </span><br><span class="line">    void add(string foodName,int price)  </span><br><span class="line">    &#123;  </span><br><span class="line">        mFoodName.push_back(foodName);        </span><br><span class="line">        mFoodPrice.push_back(price);  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    void show()  </span><br><span class="line">    &#123;  </span><br><span class="line">        cout&lt;&lt;&quot;Food List&quot; &lt;&lt;endl;  </span><br><span class="line">        cout&lt;&lt;&quot;-------------------&quot;&lt;&lt;endl;  </span><br><span class="line">        for(int i=0;i&lt;mFoodName.size();i++)  </span><br><span class="line">        &#123;  </span><br><span class="line">            cout&lt;&lt;mFoodName[i]&lt;&lt;&quot; &quot;&lt;&lt;mFoodPrice[i]&lt;&lt;endl;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">//builder  </span><br><span class="line">class Builder  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    virtual void BuildRiceNoodles() &#123;&#125;;  </span><br><span class="line">    virtual void BuildCoolDish()&#123;&#125;;  </span><br><span class="line">    virtual void BuildDrink()&#123;&#125;;  </span><br><span class="line">    virtual Food * getFood()&#123;return NULL;&#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//builderA  </span><br><span class="line">class BuilderA:public Builder  </span><br><span class="line">&#123;  </span><br><span class="line">private:  </span><br><span class="line">    Food *food;  </span><br><span class="line"></span><br><span class="line">public:  </span><br><span class="line">    BuilderA()&#123;food = new Food();&#125;  </span><br><span class="line">    void BuildRiceNoodles()  </span><br><span class="line">    &#123;  </span><br><span class="line">        food-&gt;add(&quot;RiceNoodlesA&quot;,20);  </span><br><span class="line">    &#125;  </span><br><span class="line">    void BuildCoolDish()  </span><br><span class="line">    &#123;  </span><br><span class="line">        food-&gt;add(&quot;CoolDishA&quot;,20);  </span><br><span class="line">    &#125;  </span><br><span class="line">    void BuildDrink()  </span><br><span class="line">    &#123;  </span><br><span class="line">        food-&gt;add(&quot;DrinkA&quot;,20);  </span><br><span class="line">    &#125;  </span><br><span class="line">    Food * getFood()  </span><br><span class="line">    &#123;  </span><br><span class="line">        return food;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">//builderB  </span><br><span class="line">class BuilderB:public Builder  </span><br><span class="line">&#123;  </span><br><span class="line">private:  </span><br><span class="line">    Food *food;  </span><br><span class="line">public:  </span><br><span class="line">    BuilderB()&#123;food = new Food();&#125;  </span><br><span class="line">    void BuildRiceNoodles()  </span><br><span class="line">    &#123;  </span><br><span class="line">        food-&gt;add(&quot;RiceNoodlesB&quot;,10);  </span><br><span class="line">    &#125;  </span><br><span class="line">    void BuildCoolDish()  </span><br><span class="line">    &#123;  </span><br><span class="line">        food-&gt;add(&quot;CoolDishB&quot;,10);  </span><br><span class="line">    &#125;  </span><br><span class="line">    void BuildDrink()  </span><br><span class="line">    &#123;  </span><br><span class="line">        food-&gt;add(&quot;DrinkB&quot;,10);  </span><br><span class="line">    &#125;  </span><br><span class="line">    Food * getFood()  </span><br><span class="line">    &#123;  </span><br><span class="line">        return food;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">//director  </span><br><span class="line">class FoodManager  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    void Construct(Builder * builder)  </span><br><span class="line">    &#123;  </span><br><span class="line">        builder-&gt;BuildRiceNoodles();  </span><br><span class="line">        builder-&gt;BuildDrink();  </span><br><span class="line">        builder-&gt;BuildCoolDish();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">//clent  </span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])  </span><br><span class="line">&#123;  </span><br><span class="line">    FoodManager *foodManager= new FoodManager();  </span><br><span class="line"></span><br><span class="line">    Builder * builder = new Builder();  </span><br><span class="line"></span><br><span class="line">    // the following code can use simple factory;  </span><br><span class="line">    char ch;  </span><br><span class="line">    cout&lt;&lt;&quot;input your food Type (A or B):&quot;;  </span><br><span class="line">    cin&gt;&gt;ch;  </span><br><span class="line">    if(ch==&apos;A&apos;)  </span><br><span class="line">    &#123;  </span><br><span class="line">        builder = new BuilderA();  </span><br><span class="line">    &#125;else if(ch==&apos;B&apos;)  </span><br><span class="line">    &#123;  </span><br><span class="line">        builder = new BuilderB();  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    foodManager-&gt;Construct(builder);  </span><br><span class="line">    Food * food = builder-&gt;getFood();  </span><br><span class="line">    food-&gt;show();  </span><br><span class="line">    return 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>建造者模式的扩展：</strong><br>建造者模式在使用过程中可以演化出多种形式：</p>
+<p><strong>省略抽象建造者角色</strong><br>如果系统中只需要一个具体的建造者的话，可以省略掉抽象建造者。这是代码可能如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//director  </span><br><span class="line">class FoodManager  </span><br><span class="line">&#123;  </span><br><span class="line">private:  </span><br><span class="line">    BuilderA * builder;  </span><br><span class="line">public:  </span><br><span class="line">    FoodManager() &#123;builder = new BuilderA();&#125;;  </span><br><span class="line">    void Construct()  </span><br><span class="line">    &#123;  </span><br><span class="line">        builder-&gt;BuildRiceNoodles();  </span><br><span class="line">        builder-&gt;BuildDrink();  </span><br><span class="line">        builder-&gt;BuildCoolDish();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>省略指导者角色</strong><br>在具体建造者只有一个的情况下，如果抽象建造者角色已经被省略掉，那么还可以省略掉指导者角色，让Builder自己扮演指导者和建造者双重角色。这是代码可能如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//builder  </span><br><span class="line">class Builder  </span><br><span class="line">&#123;  </span><br><span class="line">private:  </span><br><span class="line">    Food * food;  </span><br><span class="line">public:  </span><br><span class="line">     Builder()&#123;food = new Food();&#125;  </span><br><span class="line">     void BuildRiceNoodles() &#123;//..&#125;;  </span><br><span class="line">     void BuildCoolDish()&#123;//..&#125;;  </span><br><span class="line">     void BuildDrink()&#123;//..&#125;;  </span><br><span class="line">     Food * getFood()&#123;return food;&#125;  </span><br><span class="line">     void Construct()  </span><br><span class="line">     &#123;  </span><br><span class="line">         BuildRiceNoodles();  </span><br><span class="line">         BuildCoolDish();  </span><br><span class="line">         BuildDrink();  </span><br><span class="line">     &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>同时，客户端也需要进行相应的调整，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//client  </span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])  </span><br><span class="line">&#123;  </span><br><span class="line">    Builder * builder = new Builder();  </span><br><span class="line">    builder-&gt;Construct();  </span><br><span class="line">    Food *food = builder-&gt;getFood();  </span><br><span class="line">    food-&gt;show();  </span><br><span class="line">    return 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>C#中的StringBuilder就是这样一个例子。</p>
+<p><strong>实现要点：</strong><br>1．建造者模式主要用于“分步骤构建一个复杂的对象”，在这其中“每个步骤”是一个稳定的算法，而复杂对象的各个步骤之间则经常变化。</p>
+<p>2．上一篇所说的抽象工厂模式解决“系列对象”的需求变化，而建造者模式解决单个对象里“对象部分”的需求变化。</p>
+<p>产品不需要抽象类，特别是由于创建对象的算法复杂而导致使用此模式的情况下或者此模式应用于产品的生成过程，其最终结果可能差异很大，不大可能提炼出一个抽象产品类。</p>
+<p>3．创建者中的创建子部件的接口方法不是抽象方法而是空方法，不进行任何操作，具体的创建者只需要覆盖需要的方法就可以，但是这也不是绝对的，特别是类似文本转换这种情况下，缺省的方法将输入原封不动的输出是合理的缺省操作。</p>
+<p><strong>适用性：</strong><br>以下情况应当使用建造者模式：<br>1、需要生成的产品对象有复杂的内部结构。<br>2、需要生成的产品对象的属性相互依赖，建造者模式可以强迫生成顺序。<br>3、 在对象创建过程中会使用到系统中的一些其它对象，这些对象在产品对象的创建过程中不易得到。</p>
+<p><strong>效果</strong><br>1、建造者模式的使用使得产品的内部表象可以独立的变化。使用建造者模式可以使客户端不必知道产品内部组成的细节。<br>2、每一个Builder都相对独立，而与其它的Builder无关。<br>3、可使对构造过程更加精细控制。<br>4、将构建代码和实现代码分开。<br>5、建造者模式的缺点在于难于应付“分步骤构建算法”的需求变动。</p>
+<h3 id="原型模式（Prototype-Pattern）"><a href="#原型模式（Prototype-Pattern）" class="headerlink" title="原型模式（Prototype Pattern）"></a>原型模式（Prototype Pattern）</h3><p><strong>解决的问题：</strong><br>用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。这个其实和C++的拷贝构造函数的作用是一致的，实际上就是动态抽取当前对象运行时的状态。</p>
+<p><strong>类图结构：</strong></p>
+<p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789749635.png" alt=""></p>
+<p>客户（Client）角色：客户类提出创建对象的请求。<br>抽象原型（Prototype）角色：这是一个抽象角色，通常由一个C#接口或抽象类实现。此角色给出所有的具体原型类所需的接口。在C#中，抽象原型角色通常实现了ICloneable接口。<br>具体原型（Concrete Prototype）角色：被复制的对象。此角色需要实现抽象原型角色所要求的接口。</p>
+<p><strong>样例实现：</strong><br>例子参照wuzhekai1985的简历的例子，代码拷贝如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">// CplusplusPrototype.cpp : Defines the entry point for the console application.</span><br><span class="line">//</span><br><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;vector&gt;</span><br><span class="line">#include&lt;assert.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">//父类  </span><br><span class="line">class Resume  </span><br><span class="line">&#123;  </span><br><span class="line">protected:  </span><br><span class="line">	char *name;  </span><br><span class="line">public:  </span><br><span class="line">	Resume() &#123;&#125;  </span><br><span class="line">	virtual ~Resume() &#123;&#125;  </span><br><span class="line">	virtual Resume* Clone() &#123; return NULL; &#125;  </span><br><span class="line">	virtual void Set(char *n) &#123;&#125;  </span><br><span class="line">	virtual void Show() &#123;&#125;  </span><br><span class="line">&#125;;</span><br><span class="line">class ResumeA : public Resume  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">	ResumeA(const char *str);  //构造函数  </span><br><span class="line">	ResumeA(const ResumeA &amp;r); //拷贝构造函数  </span><br><span class="line">	~ResumeA();                //析构函数  </span><br><span class="line">	ResumeA* Clone();          //克隆，关键所在  </span><br><span class="line">	void Show();               //显示内容  </span><br><span class="line">&#125;;  </span><br><span class="line">ResumeA::ResumeA(const char *str)   </span><br><span class="line">&#123;  </span><br><span class="line">	if(str == NULL) &#123;  </span><br><span class="line">		name = new char[1];   </span><br><span class="line">		name[0] = &apos;\0&apos;;   </span><br><span class="line">	&#125;  </span><br><span class="line">	else &#123;  </span><br><span class="line">		name = new char[strlen(str)+1];  </span><br><span class="line">		strcpy(name, str);  </span><br><span class="line">	&#125;  </span><br><span class="line">&#125;  </span><br><span class="line">ResumeA::~ResumeA() &#123; delete [] name;&#125;  </span><br><span class="line">ResumeA::ResumeA(const ResumeA &amp;r) &#123;  </span><br><span class="line">	name = new char[strlen(r.name)+1];  </span><br><span class="line">	strcpy(name, r.name);  </span><br><span class="line">&#125;  </span><br><span class="line">ResumeA* ResumeA::Clone() &#123;  </span><br><span class="line">	return new ResumeA(*this);  </span><br><span class="line">&#125;  </span><br><span class="line">void ResumeA::Show() &#123;  </span><br><span class="line">	cout&lt;&lt;&quot;ResumeA name : &quot;&lt;&lt;name&lt;&lt;endl;   </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class ResumeB : public Resume  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">	ResumeB(const char *str);  //构造函数  </span><br><span class="line">	ResumeB(const ResumeB &amp;r); //拷贝构造函数  </span><br><span class="line">	~ResumeB();                //析构函数  </span><br><span class="line">	ResumeB* Clone();          //克隆，关键所在  </span><br><span class="line">	void Show();               //显示内容  </span><br><span class="line">&#125;;  </span><br><span class="line">ResumeB::ResumeB(const char *str)   </span><br><span class="line">&#123;  </span><br><span class="line">	if(str == NULL) &#123;  </span><br><span class="line">		name = new char[1];   </span><br><span class="line">		name[0] = &apos;\0&apos;;   </span><br><span class="line">	&#125;  </span><br><span class="line">	else &#123;  </span><br><span class="line">		name = new char[strlen(str)+1];  </span><br><span class="line">		strcpy(name, str);  </span><br><span class="line">	&#125;  </span><br><span class="line">&#125;  </span><br><span class="line">ResumeB::~ResumeB() &#123; delete [] name;&#125;  </span><br><span class="line">ResumeB::ResumeB(const ResumeB &amp;r) &#123;  </span><br><span class="line">	name = new char[strlen(r.name)+1];  </span><br><span class="line">	strcpy(name, r.name);  </span><br><span class="line">&#125;  </span><br><span class="line">ResumeB* ResumeB::Clone() &#123;  </span><br><span class="line">	return new ResumeB(*this);  </span><br><span class="line">&#125;  </span><br><span class="line">void ResumeB::Show() &#123;  </span><br><span class="line">	cout&lt;&lt;&quot;ResumeB name : &quot;&lt;&lt;name&lt;&lt;endl;   </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	Resume *r1 = new ResumeA(&quot;A&quot;);  </span><br><span class="line">    Resume *r2 = new ResumeB(&quot;B&quot;);  </span><br><span class="line">    Resume *r3 = r1-&gt;Clone();  </span><br><span class="line">    Resume *r4 = r2-&gt;Clone();  </span><br><span class="line">    r1-&gt;Show(); r2-&gt;Show();  </span><br><span class="line">    //删除r1,r2  </span><br><span class="line">    delete r1; delete r2;     </span><br><span class="line">    r1 = r2 = NULL;  </span><br><span class="line">    //深拷贝所以对r3,r4无影响  </span><br><span class="line">    r3-&gt;Show(); r4-&gt;Show();  </span><br><span class="line">    delete r3; delete r4;  </span><br><span class="line">    r3 = r4 = NULL; 	</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>带Prototype Manager的原型模式：</p>
+<p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789769404.png" alt=""></p>
+<p>客户（Client）角色：客户端类向原型管理器提出创建对象的请求。<br>抽象原型（Prototype）角色：这是一个抽象角色，通常由一个C#接口或抽象类实现。此角色给出所有的具体原型类所需的接口。在C#中，抽象原型角色通常实现了ICloneable接口。<br>具体原型（Concrete Prototype）角色：被复制的对象。此角色需要实现抽象的原型角色所要求的接口。<br>原型管理器（Prototype Manager）角色：创建具体原型类的对象，并记录每一个被创建的对象。<br>代码实现如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line">// CplusplusPrototype.cpp : Defines the entry point for the console application.</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;vector&gt;</span><br><span class="line">#include&lt;assert.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">//父类  </span><br><span class="line">class Resume  </span><br><span class="line">&#123;  </span><br><span class="line">protected:  </span><br><span class="line">	char *name;  </span><br><span class="line">public:  </span><br><span class="line">	Resume() &#123;&#125;  </span><br><span class="line">	virtual ~Resume() &#123;&#125;  </span><br><span class="line">	virtual Resume* Clone() &#123; return NULL; &#125;  </span><br><span class="line">	virtual void Set(char *n) &#123;&#125;  </span><br><span class="line">	virtual void Show() &#123;&#125;  </span><br><span class="line">&#125;;</span><br><span class="line">class ResumeA : public Resume  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">	ResumeA(const char *str);  //构造函数  </span><br><span class="line">	ResumeA(const ResumeA &amp;r); //拷贝构造函数  </span><br><span class="line">	~ResumeA();                //析构函数  </span><br><span class="line">	ResumeA* Clone();          //克隆，关键所在  </span><br><span class="line">	void Show();               //显示内容  </span><br><span class="line">&#125;;  </span><br><span class="line">ResumeA::ResumeA(const char *str)   </span><br><span class="line">&#123;  </span><br><span class="line">	if(str == NULL) &#123;  </span><br><span class="line">		name = new char[1];   </span><br><span class="line">		name[0] = &apos;\0&apos;;   </span><br><span class="line">	&#125;  </span><br><span class="line">	else &#123;  </span><br><span class="line">		name = new char[strlen(str)+1];  </span><br><span class="line">		strcpy(name, str);  </span><br><span class="line">	&#125;  </span><br><span class="line">&#125;  </span><br><span class="line">ResumeA::~ResumeA() &#123; delete [] name;&#125;  </span><br><span class="line">ResumeA::ResumeA(const ResumeA &amp;r) &#123;  </span><br><span class="line">	name = new char[strlen(r.name)+1];  </span><br><span class="line">	strcpy(name, r.name);  </span><br><span class="line">&#125;  </span><br><span class="line">ResumeA* ResumeA::Clone() &#123;  </span><br><span class="line">	return new ResumeA(*this);  </span><br><span class="line">&#125;  </span><br><span class="line">void ResumeA::Show() &#123;  </span><br><span class="line">	cout&lt;&lt;&quot;ResumeA name : &quot;&lt;&lt;name&lt;&lt;endl;   </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class ResumeB : public Resume  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">	ResumeB(const char *str);  //构造函数  </span><br><span class="line">	ResumeB(const ResumeB &amp;r); //拷贝构造函数  </span><br><span class="line">	~ResumeB();                //析构函数  </span><br><span class="line">	ResumeB* Clone();          //克隆，关键所在  </span><br><span class="line">	void Show();               //显示内容  </span><br><span class="line">&#125;;  </span><br><span class="line">ResumeB::ResumeB(const char *str)   </span><br><span class="line">&#123;  </span><br><span class="line">	if(str == NULL) &#123;  </span><br><span class="line">		name = new char[1];   </span><br><span class="line">		name[0] = &apos;\0&apos;;   </span><br><span class="line">	&#125;  </span><br><span class="line">	else &#123;  </span><br><span class="line">		name = new char[strlen(str)+1];  </span><br><span class="line">		strcpy(name, str);  </span><br><span class="line">	&#125;  </span><br><span class="line">&#125;  </span><br><span class="line">ResumeB::~ResumeB() &#123; delete [] name;&#125;  </span><br><span class="line">ResumeB::ResumeB(const ResumeB &amp;r) &#123;  </span><br><span class="line">	name = new char[strlen(r.name)+1];  </span><br><span class="line">	strcpy(name, r.name);  </span><br><span class="line">&#125;  </span><br><span class="line">ResumeB* ResumeB::Clone() &#123;  </span><br><span class="line">	return new ResumeB(*this);  </span><br><span class="line">&#125;  </span><br><span class="line">void ResumeB::Show() &#123;  </span><br><span class="line">	cout&lt;&lt;&quot;ResumeB name : &quot;&lt;&lt;name&lt;&lt;endl;   </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class ResumeManager</span><br><span class="line">&#123;</span><br><span class="line">private:</span><br><span class="line">	vector&lt;Resume *&gt; mResume;</span><br><span class="line">public:</span><br><span class="line">	ResumeManager()</span><br><span class="line">	&#123;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	void add(Resume * resume)</span><br><span class="line">	&#123;</span><br><span class="line">		mResume.push_back(resume);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	 Resume * get(int index) const</span><br><span class="line">	&#123;</span><br><span class="line">		assert(index&gt;=0 &amp;&amp; index&lt;mResume.size());</span><br><span class="line">		return mResume[index];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	ResumeManager *manager = new ResumeManager();</span><br><span class="line">	Resume *r1 = new ResumeA(&quot;A&quot;);  </span><br><span class="line">    Resume *r2 = new ResumeB(&quot;B&quot;);  </span><br><span class="line">	manager-&gt;add(r1);</span><br><span class="line">	manager-&gt;add(r2);</span><br><span class="line">    manager-&gt;get(0)-&gt;Show();</span><br><span class="line">	manager-&gt;get(1)-&gt;Show();  </span><br><span class="line">	Resume *r3 = manager-&gt;get(0)-&gt;Clone();  </span><br><span class="line">    Resume *r4 = manager-&gt;get(1)-&gt;Clone();</span><br><span class="line"></span><br><span class="line">    //删除r1,r2  </span><br><span class="line">    delete r1; delete r2;     </span><br><span class="line">    r1 = r2 = NULL;  </span><br><span class="line">    //深拷贝所以对r3,r4无影响  </span><br><span class="line">    r3-&gt;Show(); r4-&gt;Show();  </span><br><span class="line">    delete r3; delete r4;  </span><br><span class="line">    r3 = r4 = NULL;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>实现要点：</strong></p>
+<ol>
+<li>使用原型管理器，体现在一个系统中原型数目不固定时，可以动态的创建和销毁。</li>
+<li>实现克隆操作，在.NET中可以使用Object类的MemberwiseClone()方法来实现对象的浅表拷贝或通过序列化的方式来实现深拷贝，在C++中就是拷贝构造函数的作用。</li>
+<li>Prototype模式同样用于隔离类对象的使用者和具体类型（易变类）之间的耦合关系，它同样要求这些“易变类”拥有稳定的接口。</li>
+</ol>
+<p><strong>效果：</strong></p>
+<ol>
+<li>它对客户隐藏了具体的产品类，因此减少了客户知道的名字的数目。</li>
+<li>Prototype模式允许客户只通过注册原型实例就可以将一个具体产品类并入到系统中，客户可以在运行时刻建立和删除原型。</li>
+<li>减少了子类构造，Prototype模式是克隆一个原型而不是请求工厂方法创建一个，所以它不需要一个与具体产品类平行的Creater类层次。</li>
+<li>Portotype模式具有给一个应用软件动态加载新功能的能力。由于Prototype的独立性较高，可以很容易动态加载新功能而不影响老系统。</li>
+<li>产品类不需要非得有任何事先确定的等级结构，因为Prototype模式适用于任何的等级结构</li>
+<li>Prototype模式的最主要缺点就是每一个类必须配备一个克隆方法。而且这个克隆方法需要对类的功能进行通盘考虑，这对全新的类来说不是很难，但对已有的类进行改造时，不一定是件容易的事。</li>
+</ol>
+<p><strong>适用性：</strong></p>
+<ol>
+<li>当一个系统应该独立于他的产品创建、构成和表示时，需要使用原型模式</li>
+<li>当要实例化的类是在运行时刻指定时，如通过动态装载</li>
+<li>为了避免创建一个与产品类层次平行的工厂类层次时</li>
+<li>当一个类的实例只能有几个不同状态组合中的一种时，建立相应数目的原型并克隆他们可能比每次用合适的状态手工实例化该类更方便一些。</li>
+</ol>
+<h3 id="单例模式（Singleton-Pattern）"><a href="#单例模式（Singleton-Pattern）" class="headerlink" title="单例模式（Singleton Pattern）"></a>单例模式（Singleton Pattern）</h3><blockquote>
+<p><a href="https://blog.csdn.net/lcl_data/article/details/8709701" target="_blank" rel="noopener">单例模式（Singleton Pattern）</a></p>
+</blockquote>
+<p>单例模式，顾名思义，就是只能由一个实例，那么我们就必须保证</p>
+<ol>
+<li>该类不能被复制。</li>
+<li>该类不能被公开的创造。</li>
+</ol>
+<p>那么对于C++来说，他的构造函数，拷贝构造函数和他的赋值函数都不能被公开调用。<br>但对于该私有的构造函数的构造时机上来说也可以分两种情况来构造：</p>
+<ol>
+<li>只有当需要该类的时候去构造（即为懒汉模式）</li>
+<li>在程序开始之前我就先构造好，你到时候直接用就可（即为饿汉模式）</li>
+</ol>
+<p>那么我分别来说说这两种模式：</p>
+<ul>
+<li>懒汉模式，静态局部变量只会被初始化一次即第一次执行的时候，其生命周期与程序的生命周期是相同的。这个同样适用于多线程的情况。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class single1  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    static single1&amp; getInstance()  </span><br><span class="line">    &#123;  </span><br><span class="line">        static single1 instance;  </span><br><span class="line">        return instance;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    int helloSingle() &#123;return 1;&#125;  </span><br><span class="line">private:  </span><br><span class="line"></span><br><span class="line">private:  </span><br><span class="line">    single1()&#123;&#125;;  </span><br><span class="line">    single1(const single1&amp;);  </span><br><span class="line">    single1&amp; operator=(const single1&amp;);  </span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>饿汉模式，但是在main函数外面必须先调用其实例的构造，这个是静态实例的初始化，C/C++会保证其在进入main函数之前进行。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class single2  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    static single2* getInstance()  </span><br><span class="line">    &#123;  </span><br><span class="line">        return mInstance;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    int helloSingle() &#123;return 1;&#125;  </span><br><span class="line"></span><br><span class="line">private:  </span><br><span class="line">    static single2* mInstance;  </span><br><span class="line"></span><br><span class="line">private:  </span><br><span class="line">    single2()&#123;&#125;;  </span><br><span class="line">    single2(const single2&amp;);  </span><br><span class="line">    single2&amp; operator=(const single2&amp;);  </span><br><span class="line"></span><br><span class="line">&#125;;  </span><br><span class="line">single2* single2::mInstance = new single2;</span><br></pre></td></tr></table></figure>
+<p>我们运用静态局部变量和静态实例的特性，使得我们的这两种模式都适用于多线程。</p>
+<h3 id="适配器模式（Adapter-Pattern）"><a href="#适配器模式（Adapter-Pattern）" class="headerlink" title="适配器模式（Adapter Pattern）"></a>适配器模式（Adapter Pattern）</h3><blockquote>
+<p><a href="https://blog.csdn.net/lcl_data/article/details/8780140" target="_blank" rel="noopener">适配器模式（Adapter Pattern）</a></p>
+</blockquote>
+<p><strong>解决的问题：</strong><br>适配器模式把一个类的接口变换成客户端所期待的另一种接口，从而使原本接口不匹配而无法在一起工作的两个类能够在一起工作。比如说我的hp笔记本，美国产品，人家美国的电压是110V的，而我们中国的电压是220V，要在中国能使用，必须找个变压器转一下电压才可以。这个变压器就是个适配器。</p>
+<p>适配器模式有类适配器和对象适配器两种模式，我们将分别讨论。</p>
+<p><strong>类适配器：</strong></p>
+<p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789814525.png" alt=""></p>
+<p>由图中可以看出，Adaptee类没有Request方法，而客户期待这个方法。为了使客户能够使用Adaptee类，提供一个中间环节，即类Adapter类，Adapter类实现了Target接口，并继承自Adaptee，Adapter类的Request方法重新封装了Adaptee的SpecificRequest方法，实现了适配的目的。</p>
+<p>因为Adapter与Adaptee是继承的关系，所以这决定了这个适配器模式是类的。</p>
+<p>该适配器模式所涉及的角色包括：</p>
+<p>目标（Target）角色：这是客户所期待的接口。因为C#不支持多继承，所以Target必须是接口，不可以是类。<br>源（Adaptee）角色：需要适配的类。<br>适配器（Adapter）角色：把源接口转换成目标接口。这一角色必须是类</p>
+<p><strong>简单实现：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">// &quot;ITarget&quot;</span><br><span class="line">class Target</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	// Methods</span><br><span class="line">	virtual void Request()&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// &quot;Adaptee&quot;</span><br><span class="line">class Adaptee</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	// Methods</span><br><span class="line">	void SpecificRequest()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;Called SpecificRequest()&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// &quot;Adapter&quot;</span><br><span class="line">class Adapter : public Adaptee, public Target</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	// Implements ITarget interface</span><br><span class="line">	void Request()</span><br><span class="line">	&#123;</span><br><span class="line">		// Possibly do some data manipulation</span><br><span class="line">		// and then call SpecificRequest  </span><br><span class="line">		this-&gt;SpecificRequest();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	// Create adapter and place a request</span><br><span class="line">	Target *t = new Adapter();</span><br><span class="line">	t-&gt;Request();</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>对象适配器：</strong></p>
+<p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789840238.png" alt=""></p>
+<p>从图中可以看出：客户端需要调用Request方法，而Adaptee没有该方法，为了使客户端能够使用Adaptee类，需要提供一个包装（Wrapper）类Adapter。这个包装类包装了一个Adaptee的实例，从而将客户端与Adaptee衔接起来。由于Adapter与Adaptee是委派关系，这决定了这个适配器模式是对象的。</p>
+<p>该适配器模式所涉及的角色包括：</p>
+<p>目标（Target）角色：这是客户所期待的接口。目标可以是具体的或抽象的类，也可以是接口。<br>源（Adaptee）角色：需要适配的类。<br>适配器（Adapter）角色：通过在内部包装（Wrap）一个Adaptee对象，把源接口转换成目标接口。</p>
+<p><strong>简单实现：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">// &quot;ITarget&quot;</span><br><span class="line">class Target</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	// Methods</span><br><span class="line">	virtual void Request()&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// &quot;Adaptee&quot;</span><br><span class="line">class Adaptee</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	// Methods</span><br><span class="line">	void SpecificRequest()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;Called SpecificRequest()&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// &quot;Adapter&quot;</span><br><span class="line">class Adapter : public Target</span><br><span class="line">&#123;</span><br><span class="line">private:</span><br><span class="line">	Adaptee *adaptee;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">	Adapter()</span><br><span class="line">	&#123;</span><br><span class="line">		adaptee = new Adaptee();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// Implements ITarget interface</span><br><span class="line">	void Request()</span><br><span class="line">	&#123;</span><br><span class="line">		// Possibly do some data manipulation</span><br><span class="line">		// and then call SpecificRequest  </span><br><span class="line">		adaptee-&gt;SpecificRequest();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	// Create adapter and place a request</span><br><span class="line">	Target *t = new Adapter();</span><br><span class="line">	t-&gt;Request();</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>缺省适配器：</strong><br>缺省适配器模式是一种特殊的适配器模式，但这个适配器是由一个抽象类实现的，并且在抽象类中要实现目标接口中所规定的所有方法，但很多方法的实现都是“平庸”的实现，也就是说，这些方法都是空方法。而具体的子类都要继承此抽象类。</p>
+<p><strong>简单实现：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Target &#123;</span><br><span class="line">public:</span><br><span class="line">	virtual void f1()&#123;&#125;;</span><br><span class="line">	virtual void f2()&#123;&#125;;</span><br><span class="line">	virtual void f3()&#123;&#125;;   </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class DefaultAdapter : public Target</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    void f1() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void f2() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void f3() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class MyInteresting :public DefaultAdapter</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">     void f3()&#123;       </span><br><span class="line">		cout&lt;&lt;&quot;呵呵，我就对f3()方法感兴趣，别的不管了！&quot;&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	// Create adapter and place a request</span><br><span class="line">	Target *t = new MyInteresting();</span><br><span class="line">	t-&gt;f3();</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>实现要点：</strong></p>
+<ol>
+<li>Adapter模式主要应用于“希望复用一些现存的类，但是接口又与复用环境要求不一致的情况”，在遗留代码复用、类库迁移等方面非常有用。</li>
+<li>Adapter模式有对象适配器和类适配器两种形式的实现结构，但是类适配器采用“多继承”的实现方式，带来了不良的高耦合，所以一般不推荐使用。对象适配器采用“对象组合”的方式，更符合松耦合精神。</li>
+<li>Adapter模式的实现可以非常的灵活，不必拘泥于GOF23中定义的两种结构。例如，完全可以将Adapter模式中的“现存对象”作为新的接口方法参数，来达到适配的目的。</li>
+<li>Adapter模式本身要求我们尽可能地使用“面向接口的编程”风格，这样才能在后期很方便的适配。</li>
+</ol>
+<p><strong>使用场景：</strong><br>在以下各种情况下使用适配器模式：</p>
+<ol>
+<li>系统需要使用现有的类，而此类的接口不符合系统的需要。</li>
+<li>想要建立一个可以重复使用的类，用于与一些彼此之间没有太大关联的一些类，包括一些可能在将来引进的类一起工作。这些源类不一定有很复杂的接口。</li>
+<li>（对对象适配器而言）在设计里，需要改变多个已有子类的接口，如果使用类的适配器模式，就要针对每一个子类做一个适配器，而这不太实际。</li>
+</ol>
+<h3 id="桥模式（Bridge-Pattern）"><a href="#桥模式（Bridge-Pattern）" class="headerlink" title="桥模式（Bridge Pattern）"></a>桥模式（Bridge Pattern）</h3><blockquote>
+<p><a href="https://blog.csdn.net/lcl_data/article/details/8710134" target="_blank" rel="noopener">桥模式（Bridge Pattern）</a></p>
+</blockquote>
+<p>桥模式，其作用就是让抽象与实现相分离，让两者都能够各自变化。</p>
+<p>举例来说吧，画图，我可以画矩形，圆，三角形等等，在哪里画呢？我可以在pdf上画，也可以在doc上面画。画什么图和在哪里画都是可以独立变化的，此种情况就比较适合用桥模式。就是说设计中有超过一维的变化我们就可以用桥模式。如果只有一维在变化，那么我们用继承就可以圆满的解决问题。</p>
+<p>我的图形定义：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#pragma once</span><br><span class="line">#include&lt;vector&gt;</span><br><span class="line"></span><br><span class="line">#include&quot;ImpShape.h&quot;</span><br><span class="line"></span><br><span class="line">class IShape</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	IShape(void);</span><br><span class="line">	virtual ~IShape(void);</span><br><span class="line"></span><br><span class="line">	virtual std::vector&lt;Point&gt; getDrawPoints();</span><br><span class="line"></span><br><span class="line">	void paint();</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">	ImpShape *implementor;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>其他图形都继承之：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#pragma once</span><br><span class="line">#include &quot;ishape.h&quot;</span><br><span class="line">class CRectangle :</span><br><span class="line">	public IShape</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	CRectangle(void);</span><br><span class="line">	~CRectangle(void);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma once</span><br><span class="line">#include &quot;ishape.h&quot;</span><br><span class="line">class CCircle :</span><br><span class="line">	public IShape</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	CCircle(void);</span><br><span class="line">	~CCircle(void);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>那么在怎么画这个问题上，该怎么实现呢？我先定义一个shape的实现类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#pragma once</span><br><span class="line">#include&lt;vector&gt;</span><br><span class="line">class ImpShape</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	ImpShape(void);</span><br><span class="line">	virtual ~ImpShape(void);</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">	virtual void draw(std::vector&lt;Point&gt;&amp;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>那么让pdf和doc的实现类都继承自ImpShape:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#pragma once</span><br><span class="line">#include &quot;impshape.h&quot;</span><br><span class="line">class ImpPdf :</span><br><span class="line">	public ImpShape</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	ImpPdf(void);</span><br><span class="line">	~ImpPdf(void);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">#pragma once</span><br><span class="line">#include &quot;impshape.h&quot;</span><br><span class="line">class ImpDoc :</span><br><span class="line">	public ImpShape</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	ImpDoc(void);</span><br><span class="line">	~ImpDoc(void);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>那ImpPdf和ImpDoc必须继承且重写ImpShape的draw函数。</p>
+<p>我们的抽象和实现都分别实现好了，那两者如何联系，如何使用的？</p>
+<ul>
+<li>关于联系，细心的你也许已经发现，IShape里面包含一个ImpShape的指针，包含!对。因为ImpShape是实现IShape的，这里用包含，我们可以在IShape的其他函数里方便的调用。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;StdAfx.h&quot;</span><br><span class="line">#include &quot;IShape.h&quot;</span><br><span class="line"></span><br><span class="line">IShape::IShape(void)</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">IShape::~IShape(void)</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void IShape::paint()</span><br><span class="line">&#123;</span><br><span class="line">	std::vector&lt;Point&gt; vpoints = getDrawPoints();</span><br><span class="line">	this-&gt;implementor-&gt;draw(vpoints);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>关于使用，很简单：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">IShape *item = new CCircle();</span><br><span class="line">	item-&gt;implementor = new ImpPdf();</span><br><span class="line">	item-&gt;paint();</span><br><span class="line"></span><br><span class="line">	item = new CRectangle();</span><br><span class="line">	item-&gt;implementor = new ImpDoc();</span><br><span class="line">	item-&gt;paint();</span><br></pre></td></tr></table></figure>
+<p>这样既满足了画什么图形的变化，也满足了在什么上画的问题，他们之间的类图如下：</p>
+<p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789868632.png" alt=""></p>
+<h3 id="组合模式（Composite-Pattern）"><a href="#组合模式（Composite-Pattern）" class="headerlink" title="组合模式（Composite Pattern）"></a>组合模式（Composite Pattern）</h3><blockquote>
+<p><a href="https://blog.csdn.net/lcl_data/article/details/8811101" target="_blank" rel="noopener">组合模式（Composite Pattern）</a></p>
+</blockquote>
+<p><strong>解决的问题：</strong><br>我们PC用到的文件系统，其实就是我们数据结构里的树形结构，我们处理树中的每个节点时，其实不用考虑他是叶子节点还是根节点，因为他们的成员函数都是一样的，这个就是组合模式的精髓。他模糊了简单元素和复杂元素的概念，客户程序可以像处理简单元素一样来处理复杂元素,从而使得客户程序与复杂元素的内部结构解耦。</p>
+<p>将对象组合成树形结构以表示“部分-整体”的层次结构。组合模式使得用户对单个对象和组合对象的使用具有一致性。</p>
+<p>注明：树形结构里的叶子节点也有左右孩子，只不过他的孩子都是空。</p>
+<p><strong>概述</strong><br>组合模式的实现根据所实现接口的区别分为两种形式，分别称为安全模式和透明模式。组合模式可以不提供父对象的管理方法，但组合模式必须在合适的地方提供子对象的管理方法（诸如：add、remove、getChild等）。</p>
+<p><strong>透明方式</strong><br>作为第一种选择，在Component里面声明所有的用来管理子类对象的方法，包括add（）、remove（），以及getChild（）方法。这样做的好处是所有的构件类都有相同的接口。在客户端看来，树叶类对象与合成类对象的区别起码在接口层次上消失了，客户端可以同等同的对待所有的对象。这就是透明形式的组合模式。</p>
+<p>这个选择的缺点是不够安全，因为树叶类对象和合成类对象在本质上是有区别的。树叶类对象不可能有下一个层次的对象，因此add（）、remove（）以及getChild（）方法没有意义，是在编译时期不会出错，而只会在运行时期才会出错或者说识别出来。</p>
+<p><strong>安全方式</strong><br>第二种选择是在Composite类里面声明所有的用来管理子类对象的方法。这样的做法是安全的做法，因为树叶类型的对象根本就没有管理子类对象的方法，因此，如果客户端对树叶类对象使用这些方法时，程序会在编译时期出错。</p>
+<p>这个选择的缺点是不够透明，因为树叶类和合成类将具有不同的接口。</p>
+<p>这两个形式各有优缺点，需要根据软件的具体情况做出取舍决定。</p>
+<p><strong>类图结构及样例实现：</strong><br>这里给出安全方式的组合模式的类图结构和样例实现，透明方式就是在叶子节点的add()/remove()/GetChild()均有实现，不过是无意义的实现。大部分应用都是基于透明模式的，因为这样代码可以重用。</p>
+<p><strong>安全方式的组合模式：</strong></p>
+<p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789886073.png" alt=""></p>
+<p>这种形式涉及到三个角色：</p>
+<p>抽象构件(Component)角色：这是一个抽象角色，它给参加组合的对象定义出公共的接口及其默认行为，可以用来管理所有的子对象。在安全式的合成模式里，构件角色并不是定义出管理子对象的方法，这一定义由树枝构件对象给出。</p>
+<p>树叶构件（Leaf）角色：树叶对象是没有下级子对象的对象，定义出参加组合的原始对象的行为。</p>
+<p>树枝构件（Composite）角色：代表参加组合的有下级子对象的对象。树枝对象给出所有的管理子对象的方法，如add（）、remove（）、getChild（）等。</p>
+<p><strong>样例实现：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line">//Menu.h  </span><br><span class="line">#include &lt;string&gt;  </span><br><span class="line"></span><br><span class="line">class Menu    </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    virtual ~Menu();  </span><br><span class="line"></span><br><span class="line">    virtual void Add(Menu*);  </span><br><span class="line">    virtual void Remove(Menu*);  </span><br><span class="line">    virtual Menu* GetChild(int);  </span><br><span class="line">    virtual void Display() = 0;  </span><br><span class="line">protected:  </span><br><span class="line">    Menu();  </span><br><span class="line">    Menu(std::string);  </span><br><span class="line">    std::string m_strName;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">//Menu.cpp  </span><br><span class="line">#include &quot;stdafx.h&quot;  </span><br><span class="line">#include &quot;Menu.h&quot;  </span><br><span class="line"></span><br><span class="line">Menu::Menu()  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">Menu::Menu(std::string strName) : m_strName(strName)  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">Menu::~Menu()  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">void Menu::Add(Menu* pMenu)  </span><br><span class="line">&#123;&#125;  </span><br><span class="line"></span><br><span class="line">void Menu::Remove(Menu* pMenu)  </span><br><span class="line">&#123;&#125;  </span><br><span class="line"></span><br><span class="line">Menu* Menu::GetChild(int index)  </span><br><span class="line">&#123;  </span><br><span class="line">    return NULL;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">//SubMenu.h  </span><br><span class="line">#include &quot;Menu.h&quot;  </span><br><span class="line"></span><br><span class="line">class SubMenu : public Menu    </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    SubMenu();  </span><br><span class="line">    SubMenu(std::string);  </span><br><span class="line">    virtual ~SubMenu();  </span><br><span class="line"></span><br><span class="line">    void Display();  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">//SubMenu.cpp  </span><br><span class="line">#include &quot;stdafx.h&quot;  </span><br><span class="line">#include &quot;SubMenu.h&quot;  </span><br><span class="line">#include &lt;iostream&gt;  </span><br><span class="line"></span><br><span class="line">using namespace std;  </span><br><span class="line"></span><br><span class="line">SubMenu::SubMenu()  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">SubMenu::SubMenu(string strName) : Menu(strName)  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">SubMenu::~SubMenu()  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">void SubMenu::Display()  </span><br><span class="line">&#123;  </span><br><span class="line">    cout &lt;&lt; m_strName &lt;&lt; endl;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">//CompositMenu.h  </span><br><span class="line">#include &quot;Menu.h&quot;  </span><br><span class="line">#include &lt;vector&gt;  </span><br><span class="line"></span><br><span class="line">class CompositMenu : public Menu  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">    CompositMenu();  </span><br><span class="line">    CompositMenu(std::string);  </span><br><span class="line">    virtual ~CompositMenu();  </span><br><span class="line"></span><br><span class="line">    void Add(Menu*);  </span><br><span class="line">    void Remove(Menu*);  </span><br><span class="line">    Menu* GetChild(int);  </span><br><span class="line">    void Display();  </span><br><span class="line">private:  </span><br><span class="line">    std::vector&lt;Menu*&gt; m_vMenu;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">//CompositMenu.cpp  </span><br><span class="line">#include &quot;stdafx.h&quot;  </span><br><span class="line">#include &quot;CompositMenu.h&quot;  </span><br><span class="line">#include &lt;iostream&gt;  </span><br><span class="line"></span><br><span class="line">using namespace std;  </span><br><span class="line"></span><br><span class="line">CompositMenu::CompositMenu()  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">CompositMenu::CompositMenu(string strName) : Menu(strName)  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">CompositMenu::~CompositMenu()  </span><br><span class="line">&#123;  </span><br><span class="line"></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">void CompositMenu::Add(Menu* pMenu)  </span><br><span class="line">&#123;  </span><br><span class="line">    m_vMenu.push_back(pMenu);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">void CompositMenu::Remove(Menu* pMenu)  </span><br><span class="line">&#123;  </span><br><span class="line">    m_vMenu.erase(&amp;pMenu);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">Menu* CompositMenu::GetChild(int index)  </span><br><span class="line">&#123;  </span><br><span class="line">    return m_vMenu[index];  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">void CompositMenu::Display()  </span><br><span class="line">&#123;  </span><br><span class="line">    cout &lt;&lt; &quot;+&quot; &lt;&lt; m_strName &lt;&lt; endl;  </span><br><span class="line">    vector&lt;Menu*&gt;::iterator it = m_vMenu.begin();  </span><br><span class="line">    for (; it != m_vMenu.end(); ++it)  </span><br><span class="line">    &#123;  </span><br><span class="line">        cout &lt;&lt; &quot;|-&quot;;  </span><br><span class="line">        (*it)-&gt;Display();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">#include &quot;stdafx.h&quot;  </span><br><span class="line">#include &quot;Menu.h&quot;  </span><br><span class="line">#include &quot;SubMenu.h&quot;  </span><br><span class="line">#include &quot;CompositMenu.h&quot;  </span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])  </span><br><span class="line">&#123;  </span><br><span class="line">    Menu* pMenu = new CompositMenu(&quot;国内新闻&quot;);  </span><br><span class="line">    pMenu-&gt;Add(new SubMenu(&quot;时事新闻&quot;));  </span><br><span class="line">    pMenu-&gt;Add(new SubMenu(&quot;社会新闻&quot;));  </span><br><span class="line">    pMenu-&gt;Display();  </span><br><span class="line">    pMenu = new CompositMenu(&quot;国际新闻&quot;);  </span><br><span class="line">    pMenu-&gt;Add(new SubMenu(&quot;国际要闻&quot;));  </span><br><span class="line">    pMenu-&gt;Add(new SubMenu(&quot;环球视野&quot;));  </span><br><span class="line">    pMenu-&gt;Display();  </span><br><span class="line"></span><br><span class="line">    return 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>实现要点：</strong></p>
+<ol>
+<li>组合模式采用树形结构来实现普遍存在的对象容器，从而将“一对多”的关系转化“一对一”的关系，使得客户代码可以一致地处理对象和对象容器，无需关心处理的是单个的对象，还是组合的对象容器。</li>
+<li>将“客户代码与复杂的对象容器结构”解耦是组合模式的核心思想，解耦之后，客户代码将与纯粹的抽象接口——而非对象容器的复内部实现结构——发生依赖关系，从而更能“应对变化”。</li>
+<li>组合模式中，是将“Add和Remove等和对象容器相关的方法”定义在“表示抽象对象的Component类”中，还是将其定义在“表示对象容器的Composite类”中，是一个关乎“透明性”和“安全性”的两难问题，需要仔细权衡。这里有可能违背面向对象的“单一职责原则”，但是对于这种特殊结构，这又是必须付出的代价。</li>
+<li>组合模式在具体实现中，可以让父对象中的子对象反向追溯；如果父对象有频繁的遍历需求，可使用缓存技巧来改善效率。</li>
+<li>客户端尽量不要直接调用树叶类的方法，而是借助其父类（Component）的多态性完成调用，这样可以增加代码的复用性。</li>
+</ol>
+<p><strong>使用场景：</strong><br>以下情况下适用组合模式：</p>
+<ol>
+<li>你想表示对象的部分-整体层次结构。</li>
+<li>你希望用户忽略组合对象与单个对象的不同，用户将统一地使用组合结构中的所有对象。</li>
+</ol>
+<h3 id="装饰者模式（Decorator-Pattern）"><a href="#装饰者模式（Decorator-Pattern）" class="headerlink" title="装饰者模式（Decorator Pattern）"></a>装饰者模式（Decorator Pattern）</h3><blockquote>
+<p><a href="https://blog.csdn.net/lcl_data/article/details/8830455" target="_blank" rel="noopener">装饰者模式（Decorator Pattern）</a></p>
+</blockquote>
+<p><strong>解决的问题：</strong><br>我们在装饰新家的时候买了几幅抽象画，买回来之后发现有些加上色彩艳丽的边框更适合我们，而有的加上玻璃罩之后更能符合我们的使用。那我们来怎么解决这个问题呢？他需要动态的给别的对象增加额外的职责，这就是装饰者模式的目的。</p>
+<p>我们可以通过继承的方式来给原对象增加新功能，但是装饰者模式采用组合的方式比生成子类更加灵活。</p>
+<p><strong>类图及样例实现：</strong></p>
+<p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789909879.png" alt=""></p>
+<p>在装饰模式中的各个角色有：<br>抽象构件（Component）角色：给出一个抽象接口，以规范准备接收附加责任的对象。<br>具体构件（Concrete Component）角色：定义一个将要接收附加责任的类。<br>装饰（Decorator）角色：持有一个构件（Component）对象的实例，并定义一个与抽象构件接口一致的接口。<br>具体装饰（Concrete Decorator）角色：负责给构件对象”贴上”附加的责任。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;string&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;memory&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">//抽象类Tank</span><br><span class="line">class Tank</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	virtual void shot()=0;</span><br><span class="line">	virtual void run()=0;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">	virtual ~Tank()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;in the destructor of Tank&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line">//具体类 T50</span><br><span class="line">class T50:public Tank</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	void shot()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;Tank T50 shot()&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	void run()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;Tank T50 run()&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">public:</span><br><span class="line">	virtual ~T50()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;In the destructor of T50&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line">//具体类T75</span><br><span class="line">class T75:public Tank</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	void shot()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;Tank T75 shot()&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	void run()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;Tank T75 run()&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">public:</span><br><span class="line">	virtual ~T75()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;In the destructor of T75&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">//抽象类，Decorator</span><br><span class="line">class Decorator:public Tank</span><br><span class="line">&#123;</span><br><span class="line">protected:</span><br><span class="line">	Tank* tank;</span><br><span class="line">public:</span><br><span class="line">	Decorator(Tank* tank):tank(tank) &#123;&#125;  //具体的坦克的装饰类</span><br><span class="line">	virtual ~Decorator()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;In the destructor of Decorator&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">public:</span><br><span class="line">	void shot()</span><br><span class="line">	&#123;</span><br><span class="line">		tank-&gt;shot();</span><br><span class="line">	&#125;</span><br><span class="line">	void run()</span><br><span class="line">	&#123;</span><br><span class="line">		tank-&gt;run();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class InfraredDecorator: public Decorator</span><br><span class="line">&#123;</span><br><span class="line">private:</span><br><span class="line">	string infrared;//这就是所谓的addAtrribute</span><br><span class="line">public:</span><br><span class="line">	InfraredDecorator(Tank* tank):Decorator(tank) &#123;&#125;</span><br><span class="line">	virtual ~InfraredDecorator()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;in the destructor of InfraredDecorator&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">public:</span><br><span class="line">	void set_Infrared(const string &amp;infrared)</span><br><span class="line">	&#123;</span><br><span class="line">		this-&gt;infrared=infrared;</span><br><span class="line">	&#125;</span><br><span class="line">	string get_infrared() const</span><br><span class="line">	&#123;</span><br><span class="line">		return infrared;</span><br><span class="line">	&#125;</span><br><span class="line">	void run()</span><br><span class="line">	&#123;</span><br><span class="line">		tank-&gt;run();</span><br><span class="line">		set_Infrared(&quot;+Infrared&quot;);</span><br><span class="line">		cout&lt;&lt;get_infrared()&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	void shot()</span><br><span class="line">	&#123;</span><br><span class="line">		tank-&gt;shot();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class AmphibianDecorator:public Decorator</span><br><span class="line">&#123;</span><br><span class="line">private:</span><br><span class="line">	string amphibian;</span><br><span class="line">public:</span><br><span class="line">	AmphibianDecorator(Tank* tank):Decorator(tank) &#123;&#125;</span><br><span class="line">	~AmphibianDecorator()</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;&quot;in the destructor of AmphibianDecorator&quot;&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">public:</span><br><span class="line">	void set_amphibian(const string &amp;hibian)</span><br><span class="line">	&#123;</span><br><span class="line">		this-&gt;amphibian=hibian;</span><br><span class="line">	&#125;</span><br><span class="line">	string get_amphibian() const</span><br><span class="line">	&#123;</span><br><span class="line">		return amphibian;</span><br><span class="line">	&#125;</span><br><span class="line">public:</span><br><span class="line">	void run()</span><br><span class="line">	&#123;</span><br><span class="line">		tank-&gt;run();</span><br><span class="line">		set_amphibian(&quot;+amphibian&quot;);</span><br><span class="line">		cout&lt;&lt;get_amphibian()&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	void shot()</span><br><span class="line">	&#123;</span><br><span class="line">		tank-&gt;shot();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main(int argc, char **argv)</span><br><span class="line">&#123;</span><br><span class="line">	//给T50增加红外功能</span><br><span class="line">	Tank* tank1(new T50);</span><br><span class="line">	Tank* pid1(new InfraredDecorator(tank1));</span><br><span class="line">	pid1-&gt;shot();</span><br><span class="line">	cout&lt;&lt;endl;</span><br><span class="line">	pid1-&gt;run();</span><br><span class="line">	cout&lt;&lt;endl;</span><br><span class="line">	cout&lt;&lt;endl&lt;&lt;&quot;---------------&quot;&lt;&lt;endl;</span><br><span class="line">	//给t75增加红外、两栖功能</span><br><span class="line">	Tank* tank2(new T75);</span><br><span class="line">	tank2-&gt;run();</span><br><span class="line">	Tank* pid2(new InfraredDecorator(tank2));</span><br><span class="line">	Tank* pad2(new AmphibianDecorator(pid2));</span><br><span class="line">	pad2-&gt;shot();</span><br><span class="line">	cout&lt;&lt;endl;</span><br><span class="line">	pad2-&gt;run();</span><br><span class="line">	cout&lt;&lt;endl;</span><br><span class="line">	cout&lt;&lt;endl&lt;&lt;&quot;--------------&quot;&lt;&lt;endl;</span><br><span class="line"></span><br><span class="line">	//动态撤销其他装饰 ?</span><br><span class="line">	tank2-&gt;run();</span><br><span class="line"></span><br><span class="line">	Tank * tank3(tank2);</span><br><span class="line">	tank3-&gt;run();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>装饰者与适配者模式的区别：</strong></p>
+<ol>
+<li>关于新职责：适配器也可以在转换时增加新的职责，但主要目的不在此。装饰者模式主要是给被装饰者增加新职责的。</li>
+<li>关于原接口：适配器模式是用新接口来调用原接口，原接口对新系统是不可见或者说不可用的。装饰者模式原封不动的使用原接口，系统对装饰的对象也通过原接口来完成使用。（增加新接口的装饰者模式可以认为是其变种–“半透明”装饰者）</li>
+<li>关于其包裹的对象：适配器是知道被适配者的详细情况的（就是那个类或那个接口）。装饰者只知道其接口是什么，至于其具体类型（是基类还是其他派生类）只有在运行期间才知道。</li>
+</ol>
+<p><strong>要点：</strong></p>
+<ol>
+<li>装饰者和被装饰对象有相同的超类型。</li>
+<li>可以用一个或多个装饰者包装一个对象。</li>
+<li>装饰者可以在所委托被装饰者的行为之前或之后，加上自己的行为，以达到特定的目的。</li>
+<li>对象可以在任何时候被装饰，所以可以在运行时动态的，不限量的用你喜欢的装饰者来装饰对象。</li>
+<li>装饰模式中使用继承的关键是想达到装饰者和被装饰对象的类型匹配，而不是获得其行为。</li>
+<li>装饰者一般对组件的客户是透明的，除非客户程序依赖于组件的具体类型。在实际项目中可以根据需要为装饰者添加新的行为，做到“半透明”装饰者。</li>
+</ol>
+<p><strong>适用场景与优缺点：</strong><br>在以下情况下应当使用装饰模式：</p>
+<ol>
+<li>需要扩展一个类的功能，或给一个类增加附加责任。</li>
+<li>需要动态地给一个对象增加功能，这些功能可以再动态地撤销。</li>
+<li>需要增加由一些基本功能的排列组合而产生的非常大量的功能，从而使继承关系变得不现实。</li>
+</ol>
+<p><strong>优点：</strong></p>
+<ol>
+<li>Decorator模式与继承关系的目的都是要扩展对象的功能，但是Decorator可以提供比继承更多的灵活性。</li>
+<li>通过使用不同的具体装饰类以及这些装饰类的排列组合，设计师可以创造出很多不同行为的组合。</li>
+</ol>
+<p><strong>缺点：</strong></p>
+<ol>
+<li>这种比继承更加灵活机动的特性，也同时意味着更加多的复杂性。</li>
+<li>装饰模式会导致设计中出现许多小类，如果过度使用，会使程序变得很复杂。</li>
+<li>装饰模式是针对抽象组件（Component）类型编程。但是，如果你要针对具体组件编程时，就应该重新思考你的应用架构，以及装饰者是否合适。当然也可以改变Component接口，增加新的公开的行为，实现“半透明”的装饰者模式。在实际项目中要做出最佳选择。</li>
+</ol>
+<h3 id="外观模式（Facade-Pattern）"><a href="#外观模式（Facade-Pattern）" class="headerlink" title="外观模式（Facade Pattern）"></a>外观模式（Facade Pattern）</h3><blockquote>
+<p><a href="https://blog.csdn.net/lcl_data/article/details/8841779" target="_blank" rel="noopener">外观模式（Facade Pattern）</a></p>
+</blockquote>
+<h4 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h4><p>想想我们小时候玩的四驱车，里面的构造很复杂，马达，舵机，电池组等等，而我们控制它却非常简单，只要打开电池开关，他就可以跑。我们其实不用知道它里面是如何工作，只要知道拨动开关它就可以工作就行了，这个开关其实就四驱车给我们的一个友好的组件，使得我们可以很方便的控制它。</p>
+<p>外观模式其实定义了一个高层接口，该接口为子系统中的一组接口提供一个一致的界面，使得这一子系统更加容易使用。</p>
+<h4 id="类图和样例"><a href="#类图和样例" class="headerlink" title="类图和样例"></a>类图和样例</h4><p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789940900.png" alt=""></p>
+<p>在这个对象图中，出现了两个角色：</p>
+<p>外观(Facade)角色：客户端可以调用这个角色的方法。此角色知晓相关的(一个或者多个)子系统的功能和责任。在正常情况下，本角色会将所有从客户端发来的请求委派到相应的子系统去。</p>
+<p>子系统(subsystem)角色：可以同时有一个或者多个子系统。每一个子系统都不是一个单独的类，而是一个类的集合。每一个子系统都可以被客户端直接调用，或者被外观角色调用。子系统并不知道外观的存在，对于子系统而言，外观仅仅是另外一个客户端而已。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">class Scanner  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">	void Scan() &#123; cout&lt;&lt;&quot;词法分析&quot;&lt;&lt;endl; &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line">class Parser  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">	void Parse() &#123; cout&lt;&lt;&quot;语法分析&quot;&lt;&lt;endl; &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line">class GenMidCode  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">	void GenCode() &#123; cout&lt;&lt;&quot;产生中间代码&quot;&lt;&lt;endl; &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line">class GenMachineCode  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">	void GenCode() &#123; cout&lt;&lt;&quot;产生机器码&quot;&lt;&lt;endl;&#125;  </span><br><span class="line">&#125;;  </span><br><span class="line">//高层接口  Fecade</span><br><span class="line">class Compiler  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">	void Run()   </span><br><span class="line">	&#123;  </span><br><span class="line">		Scanner scanner;  </span><br><span class="line">		Parser parser;  </span><br><span class="line">		GenMidCode genMidCode;  </span><br><span class="line">		GenMachineCode genMacCode;  </span><br><span class="line">		scanner.Scan();  </span><br><span class="line">		parser.Parse();  </span><br><span class="line">		genMidCode.GenCode();  </span><br><span class="line">		genMacCode.GenCode();  </span><br><span class="line">	&#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line">//client</span><br><span class="line">int main()  </span><br><span class="line">&#123;  </span><br><span class="line">	Compiler compiler;  </span><br><span class="line">	compiler.Run();  </span><br><span class="line">	return 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h4><ol>
+<li>Facade模式对客户屏蔽了子系统组件，因而减少了客户处理的对象的数目并使得子系统使用起来更加方便。</li>
+<li>Facade模式实现了子系统与客户之间的松耦合关系，而子系统内部的功能组件往往是紧耦合的。松耦合关系使得子系统的组件变化不会影响到它的客户。</li>
+<li>如果应用需要，它并不限制它们使用子系统类。因此你可以在系统易用性与通用性之间选择。</li>
+<li>在外观模式中，通常只需要一个外观类，并且此外观类只有一个实例，换言之它是一个单例类。当然这并不意味着在整个系统里只能有一个外观类，而仅仅是说对每一个子系统只有一个外观类。或者说，如果一个系统有好几个子系统的话，每一个子系统有一个外观类，整个系统可以有数个外观类。</li>
+<li>外观模式的用意是为子系统提供一个集中化和简化的沟通管道，而不建议向子系统加入新的行为。</li>
+<li>外观模式注重的是简化接口，它更多的时候是从架构的层次去看整个系统，而并非单个类的层次。</li>
+</ol>
+<h4 id="适用性和优缺点"><a href="#适用性和优缺点" class="headerlink" title="适用性和优缺点"></a>适用性和优缺点</h4><h5 id="适用性"><a href="#适用性" class="headerlink" title="适用性"></a>适用性</h5><ol>
+<li>为一个复杂子系统提供一个简单接口。</li>
+<li>提高子系统的独立性。</li>
+<li>在层次化结构中，可以使用Facade模式定义系统中每一层的入口。</li>
+</ol>
+<h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5><ol>
+<li>松散耦合<br> 外观模式松散了客户端与子系统的耦合关系，让子系统内部的模块能更容易扩展和维护。即要点2.</li>
+<li><p>简单易用<br>外观模式让子系统更加易用，客户端不再需要了解子系统内部的实现，也不需要跟众多子系统内部的模块进行交互，只需要跟外观交互就可以了，相当于外观类为外部客户端使用子系统提供了一站式服务。</p>
+</li>
+<li><p>更好的划分访问层次<br>通过合理使用Facade，可以帮助我们更好的划分访问的层次。有些方法是对系统外的，有些方法是系统内部使用的。把需要暴露给外部的功能集中到外观中，这样既方便客户端使用，也很好的隐藏了内部的细节。</p>
+</li>
+</ol>
+<h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5><p>过多的或者是不太合理的Facade也容易让人迷惑，到底是调用Facade好呢，还是直接调用模块好。</p>
+<h3 id="享元模式（Flyweight-Pattern）"><a href="#享元模式（Flyweight-Pattern）" class="headerlink" title="享元模式（Flyweight Pattern）"></a>享元模式（Flyweight Pattern）</h3><blockquote>
+<p><a href="https://blog.csdn.net/lcl_data/article/details/8974679" target="_blank" rel="noopener">享元模式（Flyweight Pattern）</a></p>
+</blockquote>
+<h4 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h4><p>想想我们编辑文档用的wps，文档里文字很多都是重复的，我们不可能为每一个出现的汉字都创建独立的空间，这样代价太大，最好的办法就是共享其中相同的部分，使得需要创建的对象降到最小，这个就是享元模式的核心，即运用共享技术有效地支持大量细粒度的对象。</p>
+<p>享元对象能做到共享的关键是区分内蕴状态（Internal State）和外蕴状态（External State）。内蕴状态是存储在享元对象内部并且不会随环境改变而改变。因此内蕴状态并可以共享。</p>
+<p>外蕴状态是随环境改变而改变的、不可以共享的状态。享元对象的外蕴状态必须由客户端保存，并在享元对象被创建之后，在需要使用的时候再传入到享元对象内部。外蕴状态与内蕴状态是相互独立的。</p>
+<h4 id="类图与样例"><a href="#类图与样例" class="headerlink" title="类图与样例"></a>类图与样例</h4><p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533789988825.png" alt=""></p>
+<h5 id="抽象享元类（Flyweight）"><a href="#抽象享元类（Flyweight）" class="headerlink" title="抽象享元类（Flyweight）"></a>抽象享元类（Flyweight）</h5><p>它是所有具体享元类的超类。为这些类规定出需要实现的公共接口,那些需要外蕴状态(Exte的操作可以通过方法的参数传入。抽象享元的接口使得享元变得可能，但是并不强制子类实行共享，因此并非所有的享元对象都是可以共享的。</p>
+<h5 id="具体享元类-ConcreteFlyweight"><a href="#具体享元类-ConcreteFlyweight" class="headerlink" title="具体享元类(ConcreteFlyweight)"></a>具体享元类(ConcreteFlyweight)</h5><p>具体享元类实现了抽象享元类所规定的接口。如果有内蕴状态的话，必须负责为内蕴状态提供存储空间。享元对象的内蕴状态必须与对象所处的周围环境无关，从而使得享元对象可以在系统内共享。有时候具体享元类又称为单纯具体享元类，因为复合享元类是由单纯具体享元角色通过复合而成的。</p>
+<h5 id="不能共享的具体享元类-UnsharableFlyweight"><a href="#不能共享的具体享元类-UnsharableFlyweight" class="headerlink" title="不能共享的具体享元类(UnsharableFlyweight)"></a>不能共享的具体享元类(UnsharableFlyweight)</h5><p>不能共享的享元类，又叫做复合享元类。一个复合享元对象是由多个单享元对象组成，这些组成的对象是可以共享的，但是复合享元类本身并不能共享。</p>
+<h5 id="享元工厂类-FlyweightFactoiy"><a href="#享元工厂类-FlyweightFactoiy" class="headerlink" title="享元工厂类(FlyweightFactoiy)"></a>享元工厂类(FlyweightFactoiy)</h5><p>享元工厂类负责创建和管理享元对象。当一个客户端对象请求一个享元对象的时候，享元工厂需要检查系统中是否已经有一个符合要求的享元对象，如果已经有了，享元工厂角色就应当提供这个已有的享元对象；如果系统中没有适当的享元对象的话，享元工厂角色就应当创建一个新的合适的享元对象。</p>
+<h5 id="客户类-Client"><a href="#客户类-Client" class="headerlink" title="客户类(Client)"></a>客户类(Client)</h5><p>客户类需要自行存储所有享元对象的外蕴状态。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;map&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">class Character  </span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	virtual ~Character()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">	virtual void SetSize(int, int) = 0;</span><br><span class="line">	virtual void Display() = 0;</span><br><span class="line">protected:</span><br><span class="line">	Character()&#123;&#125;;</span><br><span class="line">	char m_chSymbol;</span><br><span class="line">	int m_nWeight;</span><br><span class="line">	int m_nHeight;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class CharacterA : public Character</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	CharacterA();</span><br><span class="line">	virtual ~CharacterA();</span><br><span class="line"></span><br><span class="line">	void SetSize(int, int);</span><br><span class="line">	void Display();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">CharacterA::CharacterA()</span><br><span class="line">&#123;</span><br><span class="line">	this-&gt;m_chSymbol = &apos;A&apos;;</span><br><span class="line">	this-&gt;m_nWeight = 100;</span><br><span class="line">	this-&gt;m_nHeight = 200;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CharacterA::~CharacterA()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">void CharacterA::SetSize(int nWeight, int nHeight)</span><br><span class="line">&#123;</span><br><span class="line">	this-&gt;m_nWeight = nWeight;</span><br><span class="line">	this-&gt;m_nHeight = nHeight;</span><br><span class="line">&#125;</span><br><span class="line">void CharacterA::Display()</span><br><span class="line">&#123;</span><br><span class="line">	cout &lt;&lt; &quot;CharacterA：&quot; &lt;&lt; m_chSymbol &lt;&lt; &quot;(&quot; &lt;&lt; m_nWeight &lt;&lt; &quot;,&quot; &lt;&lt; m_nHeight &lt;&lt; &quot;)&quot; &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class CharacterB : public Character</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	CharacterB();</span><br><span class="line">	virtual ~CharacterB();</span><br><span class="line"></span><br><span class="line">	void SetSize(int, int);</span><br><span class="line">	void Display();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">CharacterB::CharacterB()</span><br><span class="line">&#123;</span><br><span class="line">	this-&gt;m_chSymbol = &apos;B&apos;;</span><br><span class="line">	this-&gt;m_nWeight = 100;</span><br><span class="line">	this-&gt;m_nHeight = 200;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CharacterB::~CharacterB()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void CharacterB::SetSize(int nWeight, int nHeight)</span><br><span class="line">&#123;</span><br><span class="line">	this-&gt;m_nWeight = nWeight;</span><br><span class="line">	this-&gt;m_nHeight = nHeight;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void CharacterB::Display()</span><br><span class="line">&#123;</span><br><span class="line">	cout &lt;&lt; &quot;CharacterB：&quot; &lt;&lt; m_chSymbol &lt;&lt; &quot;(&quot; &lt;&lt; m_nWeight &lt;&lt; &quot;,&quot; &lt;&lt; m_nHeight &lt;&lt; &quot;)&quot; &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class CharacterFactory  </span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	CharacterFactory();</span><br><span class="line">	virtual ~CharacterFactory();</span><br><span class="line"></span><br><span class="line">	Character* GetCharacter(char);</span><br><span class="line">private:</span><br><span class="line">	std::map&lt;char, Character*&gt; m_mChar;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">CharacterFactory::CharacterFactory()</span><br><span class="line">&#123;</span><br><span class="line">	m_mChar.insert(make_pair&lt;char, Character*&gt;(&apos;A&apos;, new CharacterA));</span><br><span class="line">	m_mChar.insert(make_pair&lt;char, Character*&gt;(&apos;B&apos;, new CharacterB));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CharacterFactory::~CharacterFactory()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Character* CharacterFactory::GetCharacter(char chIn)</span><br><span class="line">&#123;</span><br><span class="line">	map&lt;char, Character*&gt;::iterator it = m_mChar.find(chIn);</span><br><span class="line">	if(it != m_mChar.end())</span><br><span class="line">	&#123;</span><br><span class="line">		return (Character*)it-&gt;second;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return NULL;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	CharacterFactory* pFactory = new CharacterFactory;</span><br><span class="line"></span><br><span class="line">	//内蕴状态 存储在享元对象内部并且不会随环境改变而改变</span><br><span class="line">	Character* ch1 = pFactory-&gt;GetCharacter(&apos;A&apos;);</span><br><span class="line">	ch1-&gt;Display();</span><br><span class="line"></span><br><span class="line">	//外蕴状态 客户端保存</span><br><span class="line">	Character* ch2 = pFactory-&gt;GetCharacter(&apos;B&apos;);</span><br><span class="line">	ch2-&gt;SetSize(500, 800);</span><br><span class="line">	ch2-&gt;Display();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="要点-1"><a href="#要点-1" class="headerlink" title="要点"></a>要点</h4><ol>
+<li>面向对象很好的解决了抽象性的问题，但是作为一个运行在机器中的程序实体，我们需要考虑对象的代价问题。Flyweight设计模式主要解决面向对象的代价问题，一般不触及面向对象的抽象性问题。</li>
+<li>Flyweight采用对象共享的做法来降低系统中对象的个数，从而降低细粒度对象给系统带来的内存压力。在具体实现方面，要注意对象状态的处理。</li>
+<li>享元模式的优点在于它大幅度地降低内存中对象的数量。但是，它做到这一点所付出的代价也是很高的：享元模式使得系统更加复杂。为了使对象可以共享，需要将一些状态外部化，这使得程序的逻辑复杂化。另外它将享元对象的状态外部化，而读取外部状态使得运行时间稍微变长。</li>
+</ol>
+<h4 id="适用性-1"><a href="#适用性-1" class="headerlink" title="适用性"></a>适用性</h4><p>当以下所有的条件都满足时，可以考虑使用享元模式：</p>
+<ol>
+<li>一个系统有大量的对象。</li>
+<li>这些对象耗费大量的内存。</li>
+<li>这些对象的状态中的大部分都可以外部化。</li>
+<li>这些对象可以按照内蕴状态分成很多的组，当把外蕴对象从对象中剔除时，每一个组都可以仅用一个对象代替。</li>
+<li>软件系统不依赖于这些对象的身份，换言之，这些对象可以是不可分辨的。</li>
+</ol>
+<p>满足以上的这些条件的系统可以使用享元对象。最后，使用享元模式需要维护一个记录了系统已有的所有享元的表，而这需要耗费资源。因此，应当在有足够多的享元实例可供共享时才值得使用享元模式。</p>
+<h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><p>享元模式的优点在于它大幅度地降低内存中对象的数量。但是，它做到这一点所付出的代价也是很高的：</p>
+<ol>
+<li>享元模式使得系统更加复杂。为了使对象可以共享，需要将一些状态外部化，这使得程序的逻辑复杂化。</li>
+<li>享元模式将享元对象的状态外部化，而读取外部状态使得运行时间稍微变长。</li>
+</ol>
+<h3 id="13-“一句话总结”和索引"><a href="#13-“一句话总结”和索引" class="headerlink" title="13.“一句话总结”和索引"></a>13.“一句话总结”和索引</h3><blockquote>
+<p><a href="https://blog.csdn.net/lcl_data/article/details/8989420" target="_blank" rel="noopener">代理模式（Proxy Pattern）</a></p>
+</blockquote>
+<h4 id="概述-2"><a href="#概述-2" class="headerlink" title="概述"></a>概述</h4><p>作为C++工程师，免不了要管理内存，内存管理也是C++中的难点，而智能指针采用引用计数的办法很方便的帮我们管理了内存的使用，极大方便了我们的工作效率。而智能指针的这种用法其实就是代理模式的一种，他帮我们控制了该对象的内存使用。</p>
+<p>代理模式就是为其他对象提供一种代理来控制对这个对象的访问。</p>
+<h4 id="种类和用途"><a href="#种类和用途" class="headerlink" title="种类和用途"></a>种类和用途</h4><p>Proxy模式根据种类不同，效果也不尽相同：</p>
+<ol>
+<li>远程（Remote）代理：为一个位于不同的地址空间的对象提供一个局域代表对象。这个不同的地址空间可以是在本机器中，也可是在另一台机器中。远程代理又叫做大使（Ambassador）。好处是系统可以将网络的细节隐藏起来，使得客户端不必考虑网络的存在。客户完全可以认为被代理的对象是局域的而不是远程的，而代理对象承担了大部份的网络通讯工作。由于客户可能没有意识到会启动一个耗费时间的远程调用，因此客户没有必要的思想准备。</li>
+<li>虚拟（Virtual）代理：根据需要创建一个资源消耗较大的对象，使得此对象只在需要时才会被真正创建。使用虚拟代理模式的好处就是代理对象可以在必要的时候才将被代理的对象加载；代理可以对加载的过程加以必要的优化。当一个模块的加载十分耗费资源的情况下，虚拟代理的好处就非常明显。</li>
+<li>Copy-on-Write代理：虚拟代理的一种。把复制（克隆）拖延到只有在客户端需要时，才真正采取行动。</li>
+<li>保护（Protector Access）代理：控制对一个对象的访问，如果需要，可以给不同的用户提供不同级别的使用权限。保护代理的好处是它可以在运行时间对用户的有关权限进行检查，然后在核实后决定将调用传递给被代理的对象。</li>
+<li>Cache代理：为某一个目标操作的结果提供临时的存储空间，以便多个客户端可以共享这些结果。</li>
+<li>防火墙（Firewall）代理：保护目标，不让恶意用户接近。</li>
+<li>同步化（Synchronization）代理：使几个用户能够同时使用一个对象而没有冲突。</li>
+<li>智能引用（SmartReference）代理：当一个对象被引用时，提供一些额外的操作，比如将对此对象调用的次数记录下来等。</li>
+</ol>
+<p>在所有种类的代理模式中，虚拟（Virtual）代理、远程（Remote）代理、智能引用代理（SmartReference Proxy）和保护（Protector Access）代理是最为常见的代理模式。</p>
+<h4 id="类图和实例"><a href="#类图和实例" class="headerlink" title="类图和实例"></a>类图和实例</h4><p><img src="/2018/08/09/我所理解的设计模式（C-实现）/1533790045592.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/boost系列/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -887,379 +1581,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/" itemprop="url">UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-07T18:40:21+08:00">
-                2018-08-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/" class="leancloud_visitors" data-flag-title="UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现"><a href="#UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现" class="headerlink" title="UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现"></a>UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>在UML类图中，类之间的关系可以分成：关联(association)、聚合(aggregation)、组合(composition)、依赖(dependency)、泛化(generalization)/继承(inheritance)和实现(realization)。这六种关系如下图所描绘：</p>
-<p><img src="/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/1533638525606.png" alt=""></p>
-<p>上面的关系可以解读如下:</p>
-<ul>
-<li>(关联)Association：A类有B类有逻辑上的连接</li>
-<li>(聚合)Aggregation : A类有一个B类</li>
-<li>(组合)Composition : A类拥有一个B类</li>
-<li>(依赖)Dependency : A类使用了B类</li>
-<li>(继承)Inheritance : B类是一个A类  (或者B类扩展A类)</li>
-<li>(实现)Realization : B类实现了接口A</li>
-</ul>
-<p>本篇文章主要是展示在Java中如何表示这些关系 ,以便我们可以更好地理解这些关系并且知道如何以及何时使用每一种关系。</p>
-<h3 id="关联-association"><a href="#关联-association" class="headerlink" title="关联(association)"></a>关联(association)</h3><p>关联描述两个类之间行为的一般二元关系。例如，一个学生选修一门特定的课程是学生类Student和课程类Course之间的一个关联，而一个教师教授一门课程是师资类Faculty和课程类Course之间的一个关联。Java代码中，关联可以用属性和方法来实现。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class Student &#123;</span><br><span class="line">    private Course[] courses;</span><br><span class="line"></span><br><span class="line">    public void addCourse(Course s) &#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Course &#123;</span><br><span class="line">    private Strudent[] students;</span><br><span class="line">    private Faculty faculty;</span><br><span class="line"></span><br><span class="line">    public void addStudent(Student s) &#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setFaculty(Faculty faculty) &#123;</span><br><span class="line">        this.faculty = faculty;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Faculty &#123;</span><br><span class="line">    private Course[] courses;</span><br><span class="line"></span><br><span class="line">    public void addCourse(Course s) &#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="聚合-Aggregation"><a href="#聚合-Aggregation" class="headerlink" title="聚合(Aggregation)"></a>聚合(Aggregation)</h3><p>聚合是一种特殊的关联(Association)形式，表示两个对象之间的所属(has-a)关系。所有者对象称为聚合对象，它的类称为聚合类；从属对象称为被聚合对象，它的类称为被聚合类。例如，一个公司有很多员工就是公司类Company和员工类Employee之间的一种聚合关系。被聚合对象和聚合对象有着各自的生命周期，即如果公司倒闭并不影响员工的存在。</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> public class Company &#123;</span><br><span class="line">    private List&lt;Employee&gt; employees;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Employee &#123;</span><br><span class="line">    private String name;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="组合-Composition"><a href="#组合-Composition" class="headerlink" title="组合(Composition)"></a>组合(Composition)</h3><p>聚合是一种较弱形式的对象包含(一个对象包含另一个对象)关系。较强形式是组合(Composition). 在组合关系中包含对象负责被包含对象的创建以及生命周期，即当包含对象被销毁时被包含对象也会不复存在。例如一辆汽车拥有一个引擎是汽车类Car与引擎类Engine的组合关系。下面是组合的一些例子。</p>
-<p>(1)通过成员变量初始化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Car &#123;</span><br><span class="line">    private final Engine engine = new Engine();       </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Engine &#123;</span><br><span class="line">    private String type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>(2)通过构造函数初始化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class Car &#123;</span><br><span class="line">    private final Engine engine;  </span><br><span class="line"></span><br><span class="line">    public Car()&#123;</span><br><span class="line">       engine  = new Engine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Engine &#123;</span><br><span class="line">    private String type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>(3)通过延迟初始化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class Car &#123;</span><br><span class="line">    private final Engine engine;  </span><br><span class="line">    public Engine getEngine() &#123;</span><br><span class="line">        if (null == engine) &#123;</span><br><span class="line">            engine = new Engine();</span><br><span class="line">        &#125;</span><br><span class="line">        return engine;</span><br><span class="line">    &#125;     </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Engine &#123;</span><br><span class="line">    private String type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="依赖-Dependency"><a href="#依赖-Dependency" class="headerlink" title="依赖(Dependency)"></a>依赖(Dependency)</h3><p>依赖(Dependency)描述的是一个类的引用用作另一个类的方法的参数。例如，可以使用Calendar类中的setTime(Date date)方法设置日历，所以Calendar和Date之间的关系可以用依赖描述。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Calendar implements Serializable, Cloneable, Comparable&lt;Calendar&gt; &#123;</span><br><span class="line"></span><br><span class="line">    public final void setTime(Date date) &#123;</span><br><span class="line">        setTimeInMillis(date.getTime());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    . . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在依赖关系中，类之间是松耦合的。</p>
-<h3 id="继承-Inheritance"><a href="#继承-Inheritance" class="headerlink" title="继承(Inheritance)"></a>继承(Inheritance)</h3><p>继承(Inheritance)模拟两个类之间的is-a关系。强是(strong is-a)关系描述两个类之间的直接继承关系。弱是(weak is-a)关系描述一个类具有某个属性。强是关系可以用类的继承表示。例如，Spring的ApplicationEvent是一个EventObject，ApplicationEvent和EventObject间就是一种强是关系，可以用继承描述。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public abstract class ApplicationEvent extends EventObject &#123;</span><br><span class="line">    . . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="实现-Realization"><a href="#实现-Realization" class="headerlink" title="实现(Realization)"></a>实现(Realization)</h3><p>实现(Realization)描述的是一个类实现了接口（可以是多个）。上面描述的弱是(weak is-a)关系就可以用接口表示。例如字符串是可以被序列化的，这就可以用实现来描述。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public final class String  implements java.io.Serializable, Comparable&lt;String&gt;, CharSequence &#123;</span><br><span class="line">    . . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/06/一个可注销的通用多路回调列表/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/06/一个可注销的通用多路回调列表/" itemprop="url">一个可注销的通用多路回调列表</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-06T14:03:27+08:00">
-                2018-08-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/08/06/一个可注销的通用多路回调列表/" class="leancloud_visitors" data-flag-title="一个可注销的通用多路回调列表">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="一个可注销的通用多路回调列表"><a href="#一个可注销的通用多路回调列表" class="headerlink" title="一个可注销的通用多路回调列表"></a>一个可注销的通用多路回调列表</h2><blockquote>
-<p>文章出处：<a href="https://gulu-dev.com/post/2015-07-22-multicast" target="_blank" rel="noopener">(C++) 一个可注销的通用多路回调列表</a></p>
-</blockquote>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>回调列表是个很常见的东东，经常被用在 Observer 这样的订阅/发布模式里。当系统触发一个事件时，会遍历所有已经注册的回调列表，挨个调用，通知到相关的对象。</p>
-<p>我们知道，为了保持对 C 尽可能的兼容，一直以来，C++ 中的函数并非是所谓的“一级对象” (first-class objects)。而在函数指针的帮助下，我们可以在 C/C++ 中模拟一些 First-class function 才有的特性，比如把函数像值一样以参数传递和保存。到了 C++11 的出现，有了语言和标准库级别的 lambda / closure / std::function 之后，对函数的操作才变得真正灵活和丰富起来。</p>
-<p>常见的 C/C++ 回调列表有以下这几种实现方式：</p>
-<ol>
-<li><strong>基类指针 （形如 std::vector&lt;IListener*&gt;）</strong>，当回调发生时，以虚函数的形式通知到不同的派生类的对象。这个方案的问题在于，凡是想加入这个列表，必须从 IListener 派生，而且所有的虚函数要求签名严格一致，耦合太高，灵活性较差。</li>
-<li><strong>函数指针 （形如 std::vector<fncallback>）</fncallback></strong>，当回调发生时，挨个调用容器中的函数指针。这个方案避免了继承的强耦合，但仍需要保证所有的响应函数签名一致，而且每一种类型的响应函数都要定义不同的回调列表，多了之后非常啰嗦，再一个函数指针本身可读性也欠佳。</li>
-<li><strong>函数对象 （形如std::vector&lt;std::function&lt; … &gt;&gt;）</strong>，这种回调列表相对于上面两个更加灵活一些，不仅不需要继承，在 std::bind 的帮助下，连函数签名也不需要一致。但问题是，由于 std::function 无法使用 == 和 != 来比较（见参考一(第1条)和参考二），注销比较麻烦，不像上面两个可以直接指针比较。</li>
-</ol>
-<h3 id="好处"><a href="#好处" class="headerlink" title="好处"></a>好处</h3><p>那么这里介绍的所谓通用回调列表有何好处呢？</p>
-<ol>
-<li>（以所谓“完美转发”的形式）支持任意个数和类型的参数调用</li>
-<li>在上面第三点 std::function&lt;&gt; 的基础上，可以使用 std::string 作为 tag， 标记那些后面需要被注销的函数，也同时支持不打 tag 的函数</li>
-<li>在需要时，支持批量地收集这些回调函数的返回值</li>
-</ol>
-<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><p>说完了好处，接下来看一下 BtMulticast 这个类的对外接口和基本的使用吧：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename TRet, class... TArgs&gt;</span><br><span class="line">class BtMulticast</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    using TFunc = std::function &lt; TRet(TArgs...) &gt; ;</span><br><span class="line">    using TElem = std::pair &lt; TFunc, std::string &gt; ;</span><br><span class="line">    using TRetVect = std::vector &lt; std::pair &lt; TRet, std::string &gt; &gt;;</span><br><span class="line"></span><br><span class="line">    bool AddFunc(TFunc func);</span><br><span class="line">    bool AddFunc(const std::string&amp; tag, TFunc func);</span><br><span class="line">    void RemoveFunc(const std::string&amp; tag);</span><br><span class="line"></span><br><span class="line">    template&lt;class... U&gt; void Invoke(U&amp;&amp;... u);</span><br><span class="line">    template&lt;class... U&gt; TRetVect InvokeR(U&amp;&amp;... u);</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    std::vector &lt; TElem &gt; m_funcList;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>这个类很简短，</p>
-<ul>
-<li><code>AddFunc</code> / <code>RemoveFunc</code> 是添加和删除回调函数</li>
-<li><code>Invoke</code> / <code>InvokeR</code> 分别触发无返回值和普通返回值的回调。</li>
-</ul>
-<p>需要注意的是，</p>
-<ol>
-<li><code>AddFunc()</code> 可以选择指明 tag， 在这种情况下可通过指明 tag 来 <code>RemoveFunc</code></li>
-<li><code>InvokeR()</code> 实际上返回的是一个返回值列表，采集了每一个回调的结果</li>
-<li><code>TFunc</code> 这个类型定义了最终存储在 <code>BtMulticast</code> 类中的回调函数对象，利用了 C++11 的所谓“完美转发”来把任意类型和个数的参数转发给回调函数</li>
-<li>考虑到 add/remove 通常只发生一次，而每次触发事件都会遍历，内部的存储选择 <code>std::vector</code>，牺牲了一点 add/remove 时的查找速度，换得更快更紧凑的遍历。而看一下实现代码就可以知道，牺牲的那点 add/remove 速度也只有在有 tag 的情况下会发生。</li>
-</ol>
-<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>使用方面，基本用法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// testing multicast: simplest</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticast&lt;void&gt; test;</span><br><span class="line">    test.AddFunc([]() &#123; BT_LOG(&quot;Multicast (simplest): func 1 called. &quot;); &#125;);</span><br><span class="line">    test.AddFunc([]() &#123; BT_LOG(&quot;Multicast (simplest): func 2 called. &quot;); &#125;);</span><br><span class="line">    test.AddFunc([]() &#123; BT_LOG(&quot;Multicast (simplest): func 3 called. &quot;); &#125;);</span><br><span class="line">    test.Invoke();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>三个匿名函数被添加进 test 对象，然后在 test.Invoke() 的时候被依次调用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// testing multicast: tagged &amp; single parameter</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticast&lt;void, int&gt; test;</span><br><span class="line">    test.AddFunc(&quot;a&quot;, [](int p) &#123; BT_LOG(&quot;Multicast (tagged): func a called (param: %d). &quot;, p); &#125;);</span><br><span class="line">    test.AddFunc(&quot;b&quot;, [](int p) &#123; BT_LOG(&quot;Multicast (tagged): func b called (param: %d). &quot;, p); &#125;);</span><br><span class="line">    test.AddFunc(&quot;c&quot;, [](int p) &#123; BT_LOG(&quot;Multicast (tagged): func c called (param: %d). &quot;, p); &#125;);</span><br><span class="line">    test.RemoveFunc(&quot;b&quot;);</span><br><span class="line">    test.Invoke(15);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>三个 tag 分别为 “a”, “b”, “c” 的匿名函数 (参数为 int，注意实例化 BtMulticast 时的类型参数列表变化) 被注册进来，然后 tag 为 “b” 的匿名函数被移除，最后以 15 作为参数依次调用剩下的回调函数 (“a” 和 “c”)。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// testing multicast with multiple parameters and return value list</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticast&lt;int, int, int&gt; testRet;</span><br><span class="line">    testRet.AddFunc(&quot;a&quot;, [](int p1, int p2) -&gt; int &#123; BT_LOG(&quot;Multicast (with RetVal): func a called (p1: %d, p2: %d). &quot;, p1, p2); return p1 + 1 * p2; &#125;);</span><br><span class="line">    testRet.AddFunc(&quot;b&quot;, [](int p1, int p2) -&gt; int &#123; BT_LOG(&quot;Multicast (with RetVal): func b called (p1: %d, p2: %d). &quot;, p1, p2); return p1 + 2 * p2; &#125;);</span><br><span class="line">    testRet.AddFunc(&quot;c&quot;, [](int p1, int p2) -&gt; int &#123; BT_LOG(&quot;Multicast (with RetVal): func c called (p1: %d, p2: %d). &quot;, p1, p2); return p1 + 3 * p2; &#125;);</span><br><span class="line">    testRet.RemoveFunc(&quot;b&quot;);</span><br><span class="line"></span><br><span class="line">    for (auto&amp; p : testRet.InvokeR(20, 2))</span><br><span class="line">        BT_LOG(&quot;Multicast (with RetVal): func %s returned %d. &quot;, p.second, p.first);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>最后这个用例测试了多个参数和返回值的情况，可以看到 “a”, “b”, “c” 做了不同的操作后，返回的值被采集到了一个返回值列表里面，这个列表被就地 (即所谓的 move 语意) 遍历，内部的值可以根据需要再进行处理。这个用例的运行结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Multicast (with RetVal): func a called (p1: 20, p2: 2).</span><br><span class="line">Multicast (with RetVal): func c called (p1: 20, p2: 2).</span><br><span class="line">Multicast (with RetVal): func a returned 22.</span><br><span class="line">Multicast (with RetVal): func c returned 26.</span><br></pre></td></tr></table></figure>
-<p>可以看到 <code>BtMulticast</code> 能够适配任意个数和类型的参数，因此可认为具有一定的通用性。</p>
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>最后我们简单看一下实现。先看看 <code>BtMulticast::AddFunc()</code>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename TRet, class... TArgs&gt;</span><br><span class="line">bool BtMulticast&lt;TRet, TArgs...&gt;::AddFunc(const std::string&amp; tag, TFunc func)</span><br><span class="line">&#123;</span><br><span class="line">    // check if this tag has been used</span><br><span class="line">    if (tag.size())</span><br><span class="line">    &#123;</span><br><span class="line">        auto it = std::find_if(m_funcList.begin(), m_funcList.end(),</span><br><span class="line">            [&amp;tag](const TElem&amp; elem) &#123; return elem.second == tag; &#125;);</span><br><span class="line">        if (it != m_funcList.end())</span><br><span class="line">            return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    m_funcList.emplace_back(func, tag);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>当 tag 有效时，先判定是否有 tag 冲突，然后注册一下回调，过程很直白就不多说了。</p>
-<p>再看一下具体的调用过程 <code>BtMulticast::InvokeR()</code>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/* ----- Note -----</span><br><span class="line">    `BtMulticastRetVect` is an extra alias especially for the returning type for the signature of InvokeR() below,</span><br><span class="line">    since `TRetVect` defined inside `BtMulticast` cannot be used in the signature (outside the function body)</span><br><span class="line">    although `BtMulticastRetVect` is defined separately, it literally equals to `typename BtMulticast::TRetVect`</span><br><span class="line">*/</span><br><span class="line">template &lt;typename TRet&gt;</span><br><span class="line">using BtMulticastRetVect = std::vector &lt; std::pair &lt; TRet, std::string &gt; &gt; ;</span><br><span class="line"></span><br><span class="line">template &lt;typename TRet, class... TArgs&gt;</span><br><span class="line">template &lt;class... U&gt;</span><br><span class="line">BtMulticastRetVect&lt;TRet&gt; BtMulticast&lt;TRet, TArgs...&gt;::InvokeR(U&amp;&amp;... u)</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticastRetVect&lt;TRet&gt; ret;</span><br><span class="line">    for (auto&amp; p : m_funcList)</span><br><span class="line">    &#123;</span><br><span class="line">        ret.emplace_back(p.first(std::forward&lt;U&gt;(u)...), p.second);</span><br><span class="line">    &#125;</span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里可以看到我单独定义了一下返回值的类型，具体原因见注释，大体上是说类内定义的类型 <code>TRetVect</code> 只能在类内使用 (包括类定义及相关的成员函数体的定义，成员函数的签名不算在内)。另外这函数前面的两个 <code>template</code> 声明分别是类的模板和函数的模板。</p>
-<p>俺一直觉得 C++ 的模板声明挺啰嗦，很有孔乙己范儿，看了上面这个函数声明，你也一定深有同感罢。应该跟 D 学一下，简化一下。</p>
-<p>C++ 的 <code>typedef</code> 和 <code>class template</code>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef double A;</span><br><span class="line"></span><br><span class="line">template&lt;class T&gt; struct B</span><br><span class="line">&#123;</span><br><span class="line">    typedef int A;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>D 的对应语法 <code>alias</code> 和模板的 <code>(T)</code> 语法，简洁到没朋友。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">alias A = double;</span><br><span class="line"></span><br><span class="line">class B(T)</span><br><span class="line">&#123;</span><br><span class="line">    alias A = int;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>不过 C++ 已经把 D 的 alias 关键字的用法学来了，翻到前面可以看到 class BtMulticast 的定义中的那一组 using，把 alias 抄了个十足十，啧啧，借鉴得不错。</p>
-<p>BtMulticast 类的实现和测试用例代码见<a href="https://gist.github.com/mc-gulu/ae73eb94e005fcf720c6" target="_blank" rel="noopener">这里</a>。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1310,7 +1631,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1332,7 +1653,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -293,6 +293,379 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/" itemprop="url">UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-07T18:40:21+08:00">
+                2018-08-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/" class="leancloud_visitors" data-flag-title="UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现"><a href="#UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现" class="headerlink" title="UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现"></a>UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>在UML类图中，类之间的关系可以分成：关联(association)、聚合(aggregation)、组合(composition)、依赖(dependency)、泛化(generalization)/继承(inheritance)和实现(realization)。这六种关系如下图所描绘：</p>
+<p><img src="/2018/08/07/UML类图中的六大关系：关联、聚合、组合、依赖、继承、实现/1533638525606.png" alt=""></p>
+<p>上面的关系可以解读如下:</p>
+<ul>
+<li>(关联)Association：A类有B类有逻辑上的连接</li>
+<li>(聚合)Aggregation : A类有一个B类</li>
+<li>(组合)Composition : A类拥有一个B类</li>
+<li>(依赖)Dependency : A类使用了B类</li>
+<li>(继承)Inheritance : B类是一个A类  (或者B类扩展A类)</li>
+<li>(实现)Realization : B类实现了接口A</li>
+</ul>
+<p>本篇文章主要是展示在Java中如何表示这些关系 ,以便我们可以更好地理解这些关系并且知道如何以及何时使用每一种关系。</p>
+<h3 id="关联-association"><a href="#关联-association" class="headerlink" title="关联(association)"></a>关联(association)</h3><p>关联描述两个类之间行为的一般二元关系。例如，一个学生选修一门特定的课程是学生类Student和课程类Course之间的一个关联，而一个教师教授一门课程是师资类Faculty和课程类Course之间的一个关联。Java代码中，关联可以用属性和方法来实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class Student &#123;</span><br><span class="line">    private Course[] courses;</span><br><span class="line"></span><br><span class="line">    public void addCourse(Course s) &#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Course &#123;</span><br><span class="line">    private Strudent[] students;</span><br><span class="line">    private Faculty faculty;</span><br><span class="line"></span><br><span class="line">    public void addStudent(Student s) &#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setFaculty(Faculty faculty) &#123;</span><br><span class="line">        this.faculty = faculty;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Faculty &#123;</span><br><span class="line">    private Course[] courses;</span><br><span class="line"></span><br><span class="line">    public void addCourse(Course s) &#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="聚合-Aggregation"><a href="#聚合-Aggregation" class="headerlink" title="聚合(Aggregation)"></a>聚合(Aggregation)</h3><p>聚合是一种特殊的关联(Association)形式，表示两个对象之间的所属(has-a)关系。所有者对象称为聚合对象，它的类称为聚合类；从属对象称为被聚合对象，它的类称为被聚合类。例如，一个公司有很多员工就是公司类Company和员工类Employee之间的一种聚合关系。被聚合对象和聚合对象有着各自的生命周期，即如果公司倒闭并不影响员工的存在。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> public class Company &#123;</span><br><span class="line">    private List&lt;Employee&gt; employees;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Employee &#123;</span><br><span class="line">    private String name;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="组合-Composition"><a href="#组合-Composition" class="headerlink" title="组合(Composition)"></a>组合(Composition)</h3><p>聚合是一种较弱形式的对象包含(一个对象包含另一个对象)关系。较强形式是组合(Composition). 在组合关系中包含对象负责被包含对象的创建以及生命周期，即当包含对象被销毁时被包含对象也会不复存在。例如一辆汽车拥有一个引擎是汽车类Car与引擎类Engine的组合关系。下面是组合的一些例子。</p>
+<p>(1)通过成员变量初始化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Car &#123;</span><br><span class="line">    private final Engine engine = new Engine();       </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Engine &#123;</span><br><span class="line">    private String type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>(2)通过构造函数初始化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class Car &#123;</span><br><span class="line">    private final Engine engine;  </span><br><span class="line"></span><br><span class="line">    public Car()&#123;</span><br><span class="line">       engine  = new Engine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Engine &#123;</span><br><span class="line">    private String type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>(3)通过延迟初始化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class Car &#123;</span><br><span class="line">    private final Engine engine;  </span><br><span class="line">    public Engine getEngine() &#123;</span><br><span class="line">        if (null == engine) &#123;</span><br><span class="line">            engine = new Engine();</span><br><span class="line">        &#125;</span><br><span class="line">        return engine;</span><br><span class="line">    &#125;     </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Engine &#123;</span><br><span class="line">    private String type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="依赖-Dependency"><a href="#依赖-Dependency" class="headerlink" title="依赖(Dependency)"></a>依赖(Dependency)</h3><p>依赖(Dependency)描述的是一个类的引用用作另一个类的方法的参数。例如，可以使用Calendar类中的setTime(Date date)方法设置日历，所以Calendar和Date之间的关系可以用依赖描述。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Calendar implements Serializable, Cloneable, Comparable&lt;Calendar&gt; &#123;</span><br><span class="line"></span><br><span class="line">    public final void setTime(Date date) &#123;</span><br><span class="line">        setTimeInMillis(date.getTime());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    . . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在依赖关系中，类之间是松耦合的。</p>
+<h3 id="继承-Inheritance"><a href="#继承-Inheritance" class="headerlink" title="继承(Inheritance)"></a>继承(Inheritance)</h3><p>继承(Inheritance)模拟两个类之间的is-a关系。强是(strong is-a)关系描述两个类之间的直接继承关系。弱是(weak is-a)关系描述一个类具有某个属性。强是关系可以用类的继承表示。例如，Spring的ApplicationEvent是一个EventObject，ApplicationEvent和EventObject间就是一种强是关系，可以用继承描述。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public abstract class ApplicationEvent extends EventObject &#123;</span><br><span class="line">    . . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="实现-Realization"><a href="#实现-Realization" class="headerlink" title="实现(Realization)"></a>实现(Realization)</h3><p>实现(Realization)描述的是一个类实现了接口（可以是多个）。上面描述的弱是(weak is-a)关系就可以用接口表示。例如字符串是可以被序列化的，这就可以用实现来描述。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public final class String  implements java.io.Serializable, Comparable&lt;String&gt;, CharSequence &#123;</span><br><span class="line">    . . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/06/一个可注销的通用多路回调列表/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/06/一个可注销的通用多路回调列表/" itemprop="url">一个可注销的通用多路回调列表</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-06T14:03:27+08:00">
+                2018-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/06/一个可注销的通用多路回调列表/" class="leancloud_visitors" data-flag-title="一个可注销的通用多路回调列表">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一个可注销的通用多路回调列表"><a href="#一个可注销的通用多路回调列表" class="headerlink" title="一个可注销的通用多路回调列表"></a>一个可注销的通用多路回调列表</h2><blockquote>
+<p>文章出处：<a href="https://gulu-dev.com/post/2015-07-22-multicast" target="_blank" rel="noopener">(C++) 一个可注销的通用多路回调列表</a></p>
+</blockquote>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>回调列表是个很常见的东东，经常被用在 Observer 这样的订阅/发布模式里。当系统触发一个事件时，会遍历所有已经注册的回调列表，挨个调用，通知到相关的对象。</p>
+<p>我们知道，为了保持对 C 尽可能的兼容，一直以来，C++ 中的函数并非是所谓的“一级对象” (first-class objects)。而在函数指针的帮助下，我们可以在 C/C++ 中模拟一些 First-class function 才有的特性，比如把函数像值一样以参数传递和保存。到了 C++11 的出现，有了语言和标准库级别的 lambda / closure / std::function 之后，对函数的操作才变得真正灵活和丰富起来。</p>
+<p>常见的 C/C++ 回调列表有以下这几种实现方式：</p>
+<ol>
+<li><strong>基类指针 （形如 std::vector&lt;IListener*&gt;）</strong>，当回调发生时，以虚函数的形式通知到不同的派生类的对象。这个方案的问题在于，凡是想加入这个列表，必须从 IListener 派生，而且所有的虚函数要求签名严格一致，耦合太高，灵活性较差。</li>
+<li><strong>函数指针 （形如 std::vector<fncallback>）</fncallback></strong>，当回调发生时，挨个调用容器中的函数指针。这个方案避免了继承的强耦合，但仍需要保证所有的响应函数签名一致，而且每一种类型的响应函数都要定义不同的回调列表，多了之后非常啰嗦，再一个函数指针本身可读性也欠佳。</li>
+<li><strong>函数对象 （形如std::vector&lt;std::function&lt; … &gt;&gt;）</strong>，这种回调列表相对于上面两个更加灵活一些，不仅不需要继承，在 std::bind 的帮助下，连函数签名也不需要一致。但问题是，由于 std::function 无法使用 == 和 != 来比较（见参考一(第1条)和参考二），注销比较麻烦，不像上面两个可以直接指针比较。</li>
+</ol>
+<h3 id="好处"><a href="#好处" class="headerlink" title="好处"></a>好处</h3><p>那么这里介绍的所谓通用回调列表有何好处呢？</p>
+<ol>
+<li>（以所谓“完美转发”的形式）支持任意个数和类型的参数调用</li>
+<li>在上面第三点 std::function&lt;&gt; 的基础上，可以使用 std::string 作为 tag， 标记那些后面需要被注销的函数，也同时支持不打 tag 的函数</li>
+<li>在需要时，支持批量地收集这些回调函数的返回值</li>
+</ol>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><p>说完了好处，接下来看一下 BtMulticast 这个类的对外接口和基本的使用吧：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename TRet, class... TArgs&gt;</span><br><span class="line">class BtMulticast</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    using TFunc = std::function &lt; TRet(TArgs...) &gt; ;</span><br><span class="line">    using TElem = std::pair &lt; TFunc, std::string &gt; ;</span><br><span class="line">    using TRetVect = std::vector &lt; std::pair &lt; TRet, std::string &gt; &gt;;</span><br><span class="line"></span><br><span class="line">    bool AddFunc(TFunc func);</span><br><span class="line">    bool AddFunc(const std::string&amp; tag, TFunc func);</span><br><span class="line">    void RemoveFunc(const std::string&amp; tag);</span><br><span class="line"></span><br><span class="line">    template&lt;class... U&gt; void Invoke(U&amp;&amp;... u);</span><br><span class="line">    template&lt;class... U&gt; TRetVect InvokeR(U&amp;&amp;... u);</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    std::vector &lt; TElem &gt; m_funcList;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这个类很简短，</p>
+<ul>
+<li><code>AddFunc</code> / <code>RemoveFunc</code> 是添加和删除回调函数</li>
+<li><code>Invoke</code> / <code>InvokeR</code> 分别触发无返回值和普通返回值的回调。</li>
+</ul>
+<p>需要注意的是，</p>
+<ol>
+<li><code>AddFunc()</code> 可以选择指明 tag， 在这种情况下可通过指明 tag 来 <code>RemoveFunc</code></li>
+<li><code>InvokeR()</code> 实际上返回的是一个返回值列表，采集了每一个回调的结果</li>
+<li><code>TFunc</code> 这个类型定义了最终存储在 <code>BtMulticast</code> 类中的回调函数对象，利用了 C++11 的所谓“完美转发”来把任意类型和个数的参数转发给回调函数</li>
+<li>考虑到 add/remove 通常只发生一次，而每次触发事件都会遍历，内部的存储选择 <code>std::vector</code>，牺牲了一点 add/remove 时的查找速度，换得更快更紧凑的遍历。而看一下实现代码就可以知道，牺牲的那点 add/remove 速度也只有在有 tag 的情况下会发生。</li>
+</ol>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>使用方面，基本用法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// testing multicast: simplest</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticast&lt;void&gt; test;</span><br><span class="line">    test.AddFunc([]() &#123; BT_LOG(&quot;Multicast (simplest): func 1 called. &quot;); &#125;);</span><br><span class="line">    test.AddFunc([]() &#123; BT_LOG(&quot;Multicast (simplest): func 2 called. &quot;); &#125;);</span><br><span class="line">    test.AddFunc([]() &#123; BT_LOG(&quot;Multicast (simplest): func 3 called. &quot;); &#125;);</span><br><span class="line">    test.Invoke();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>三个匿名函数被添加进 test 对象，然后在 test.Invoke() 的时候被依次调用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// testing multicast: tagged &amp; single parameter</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticast&lt;void, int&gt; test;</span><br><span class="line">    test.AddFunc(&quot;a&quot;, [](int p) &#123; BT_LOG(&quot;Multicast (tagged): func a called (param: %d). &quot;, p); &#125;);</span><br><span class="line">    test.AddFunc(&quot;b&quot;, [](int p) &#123; BT_LOG(&quot;Multicast (tagged): func b called (param: %d). &quot;, p); &#125;);</span><br><span class="line">    test.AddFunc(&quot;c&quot;, [](int p) &#123; BT_LOG(&quot;Multicast (tagged): func c called (param: %d). &quot;, p); &#125;);</span><br><span class="line">    test.RemoveFunc(&quot;b&quot;);</span><br><span class="line">    test.Invoke(15);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>三个 tag 分别为 “a”, “b”, “c” 的匿名函数 (参数为 int，注意实例化 BtMulticast 时的类型参数列表变化) 被注册进来，然后 tag 为 “b” 的匿名函数被移除，最后以 15 作为参数依次调用剩下的回调函数 (“a” 和 “c”)。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// testing multicast with multiple parameters and return value list</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticast&lt;int, int, int&gt; testRet;</span><br><span class="line">    testRet.AddFunc(&quot;a&quot;, [](int p1, int p2) -&gt; int &#123; BT_LOG(&quot;Multicast (with RetVal): func a called (p1: %d, p2: %d). &quot;, p1, p2); return p1 + 1 * p2; &#125;);</span><br><span class="line">    testRet.AddFunc(&quot;b&quot;, [](int p1, int p2) -&gt; int &#123; BT_LOG(&quot;Multicast (with RetVal): func b called (p1: %d, p2: %d). &quot;, p1, p2); return p1 + 2 * p2; &#125;);</span><br><span class="line">    testRet.AddFunc(&quot;c&quot;, [](int p1, int p2) -&gt; int &#123; BT_LOG(&quot;Multicast (with RetVal): func c called (p1: %d, p2: %d). &quot;, p1, p2); return p1 + 3 * p2; &#125;);</span><br><span class="line">    testRet.RemoveFunc(&quot;b&quot;);</span><br><span class="line"></span><br><span class="line">    for (auto&amp; p : testRet.InvokeR(20, 2))</span><br><span class="line">        BT_LOG(&quot;Multicast (with RetVal): func %s returned %d. &quot;, p.second, p.first);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后这个用例测试了多个参数和返回值的情况，可以看到 “a”, “b”, “c” 做了不同的操作后，返回的值被采集到了一个返回值列表里面，这个列表被就地 (即所谓的 move 语意) 遍历，内部的值可以根据需要再进行处理。这个用例的运行结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Multicast (with RetVal): func a called (p1: 20, p2: 2).</span><br><span class="line">Multicast (with RetVal): func c called (p1: 20, p2: 2).</span><br><span class="line">Multicast (with RetVal): func a returned 22.</span><br><span class="line">Multicast (with RetVal): func c returned 26.</span><br></pre></td></tr></table></figure>
+<p>可以看到 <code>BtMulticast</code> 能够适配任意个数和类型的参数，因此可认为具有一定的通用性。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>最后我们简单看一下实现。先看看 <code>BtMulticast::AddFunc()</code>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename TRet, class... TArgs&gt;</span><br><span class="line">bool BtMulticast&lt;TRet, TArgs...&gt;::AddFunc(const std::string&amp; tag, TFunc func)</span><br><span class="line">&#123;</span><br><span class="line">    // check if this tag has been used</span><br><span class="line">    if (tag.size())</span><br><span class="line">    &#123;</span><br><span class="line">        auto it = std::find_if(m_funcList.begin(), m_funcList.end(),</span><br><span class="line">            [&amp;tag](const TElem&amp; elem) &#123; return elem.second == tag; &#125;);</span><br><span class="line">        if (it != m_funcList.end())</span><br><span class="line">            return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    m_funcList.emplace_back(func, tag);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当 tag 有效时，先判定是否有 tag 冲突，然后注册一下回调，过程很直白就不多说了。</p>
+<p>再看一下具体的调用过程 <code>BtMulticast::InvokeR()</code>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/* ----- Note -----</span><br><span class="line">    `BtMulticastRetVect` is an extra alias especially for the returning type for the signature of InvokeR() below,</span><br><span class="line">    since `TRetVect` defined inside `BtMulticast` cannot be used in the signature (outside the function body)</span><br><span class="line">    although `BtMulticastRetVect` is defined separately, it literally equals to `typename BtMulticast::TRetVect`</span><br><span class="line">*/</span><br><span class="line">template &lt;typename TRet&gt;</span><br><span class="line">using BtMulticastRetVect = std::vector &lt; std::pair &lt; TRet, std::string &gt; &gt; ;</span><br><span class="line"></span><br><span class="line">template &lt;typename TRet, class... TArgs&gt;</span><br><span class="line">template &lt;class... U&gt;</span><br><span class="line">BtMulticastRetVect&lt;TRet&gt; BtMulticast&lt;TRet, TArgs...&gt;::InvokeR(U&amp;&amp;... u)</span><br><span class="line">&#123;</span><br><span class="line">    BtMulticastRetVect&lt;TRet&gt; ret;</span><br><span class="line">    for (auto&amp; p : m_funcList)</span><br><span class="line">    &#123;</span><br><span class="line">        ret.emplace_back(p.first(std::forward&lt;U&gt;(u)...), p.second);</span><br><span class="line">    &#125;</span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里可以看到我单独定义了一下返回值的类型，具体原因见注释，大体上是说类内定义的类型 <code>TRetVect</code> 只能在类内使用 (包括类定义及相关的成员函数体的定义，成员函数的签名不算在内)。另外这函数前面的两个 <code>template</code> 声明分别是类的模板和函数的模板。</p>
+<p>俺一直觉得 C++ 的模板声明挺啰嗦，很有孔乙己范儿，看了上面这个函数声明，你也一定深有同感罢。应该跟 D 学一下，简化一下。</p>
+<p>C++ 的 <code>typedef</code> 和 <code>class template</code>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef double A;</span><br><span class="line"></span><br><span class="line">template&lt;class T&gt; struct B</span><br><span class="line">&#123;</span><br><span class="line">    typedef int A;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>D 的对应语法 <code>alias</code> 和模板的 <code>(T)</code> 语法，简洁到没朋友。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">alias A = double;</span><br><span class="line"></span><br><span class="line">class B(T)</span><br><span class="line">&#123;</span><br><span class="line">    alias A = int;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不过 C++ 已经把 D 的 alias 关键字的用法学来了，翻到前面可以看到 class BtMulticast 的定义中的那一组 using，把 alias 抄了个十足十，啧啧，借鉴得不错。</p>
+<p>BtMulticast 类的实现和测试用例代码见<a href="https://gist.github.com/mc-gulu/ae73eb94e005fcf720c6" target="_blank" rel="noopener">这里</a>。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/03/C-基础系列/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1327,375 +1700,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/31/SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/31/SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT/" itemprop="url">SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-31T09:39:32+08:00">
-                2018-07-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index">
-                    <span itemprop="name">SQL</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/07/31/SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT/" class="leancloud_visitors" data-flag-title="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT"><a href="#SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT" class="headerlink" title="SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT"></a>SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT</h2><blockquote>
-<p>参考文章：<a href="https://www.cnblogs.com/russellluo/p/3186786.html" target="_blank" rel="noopener">SQLite中的自增关键字：AUTO_INCREMENT、INTEGER PRIMARY KEY与AUTOINCREMENT</a></p>
-</blockquote>
-<h3 id="SQLite不支持关键字AUTO-INCREMENT"><a href="#SQLite不支持关键字AUTO-INCREMENT" class="headerlink" title="SQLite不支持关键字AUTO_INCREMENT"></a>SQLite不支持关键字AUTO_INCREMENT</h3><h4 id="AUTO-INCREMENT不生效的问题"><a href="#AUTO-INCREMENT不生效的问题" class="headerlink" title="AUTO_INCREMENT不生效的问题"></a>AUTO_INCREMENT不生效的问题</h4><p>SQL语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER AUTO_INCREMENT,</span><br><span class="line">    title TEXT,</span><br><span class="line">    PRIMARY KEY (id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>问题描述：按照上述SQL语句创建表todo，用INSERT INTO todo (title) VALUES (‘xxx’)插入记录，但查询该记录后得到的id为NULL（即Python中的None）</p>
-<p>实验脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- encoding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import sqlite3</span><br><span class="line">con = sqlite3.connect(&quot;:memory:&quot;)</span><br><span class="line"></span><br><span class="line"># 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER AUTO_INCREMENT,</span><br><span class="line">    title TEXT,</span><br><span class="line">    PRIMARY KEY (id)</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"></span><br><span class="line"># 插入记录</span><br><span class="line">con.execute(&quot;INSERT INTO todo (title) VALUES (&apos;shopping&apos;);&quot;)</span><br><span class="line"></span><br><span class="line"># 查询记录</span><br><span class="line">for row in con.execute(&quot;SELECT * FROM todo&quot;):</span><br><span class="line">    print row</span><br></pre></td></tr></table></figure></p>
-<p>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ python auto_increment_null.py</span><br><span class="line">(None, u&apos;shopping&apos;)</span><br></pre></td></tr></table></figure></p>
-<h4 id="AUTO-INCREMENT导致语法错误的问题"><a href="#AUTO-INCREMENT导致语法错误的问题" class="headerlink" title="AUTO_INCREMENT导致语法错误的问题"></a>AUTO_INCREMENT导致语法错误的问题</h4><p>SQL语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY AUTO_INCREMENT,</span><br><span class="line">    title TEXT</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>问题描述：根据SQL的语法，<strong>按理说上述SQL语句应该与1）中的SQL语句等效</strong>，但运行结果却是语法错误</p>
-<p>实验脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- encoding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import sqlite3</span><br><span class="line">con = sqlite3.connect(&quot;:memory:&quot;)</span><br><span class="line"></span><br><span class="line"># 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY AUTO_INCREMENT,</span><br><span class="line">    title TEXT</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"></span><br><span class="line"># 插入记录</span><br><span class="line">con.execute(&quot;INSERT INTO todo (title) VALUES (&apos;shopping&apos;);&quot;)</span><br><span class="line"></span><br><span class="line"># 查询记录</span><br><span class="line">for row in con.execute(&quot;SELECT * FROM todo&quot;):</span><br><span class="line">    print row</span><br></pre></td></tr></table></figure></p>
-<p>运行结果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ python auto_increment_error.py</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;auto_increment_error.py&quot;, line 14, in &lt;module&gt;</span><br><span class="line">    );&quot;&quot;&quot;)</span><br><span class="line">sqlite3.OperationalError: near &quot;AUTO_INCREMENT&quot;: syntax error</span><br></pre></td></tr></table></figure>
-<p>上述两个问题在<a href="http://stackoverflow.com/questions/508627/auto-increment-in-sqlite-problem-with-python" target="_blank" rel="noopener">《AUTO_INCREMENT in sqlite problem with python》</a>中得到了解释和解答：在SQLite中，自增字段需要使用关键字INTEGER PRIMARY KEY。</p>
-<h3 id="自增关键字INTEGER-PRIMARY-KEY"><a href="#自增关键字INTEGER-PRIMARY-KEY" class="headerlink" title="自增关键字INTEGER PRIMARY KEY"></a>自增关键字INTEGER PRIMARY KEY</h3><p>SQL语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY,</span><br><span class="line">    title TEXT</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>或者<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY NOT NULL,</span><br><span class="line">    title TEXT</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>按照上述SQL语句创建表todo，用INSERT INTO todo (title) VALUES (‘xxx’)或者INSERT INTO todo (id, title) VALUES (NULL, ‘xxx’)插入记录，查询记录后得到的id为自增的整型值。</p>
-<p>实验脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- encoding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import sqlite3</span><br><span class="line">con = sqlite3.connect(&quot;:memory:&quot;)</span><br><span class="line"></span><br><span class="line"># 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY,</span><br><span class="line">    title TEXT</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"></span><br><span class="line"># 创建表：效果相同</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY NOT NULL,</span><br><span class="line">    title TEXT</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line"></span><br><span class="line"># 插入记录：shopping</span><br><span class="line">con.execute(&quot;INSERT INTO todo (title) VALUES (&apos;shopping&apos;);&quot;)</span><br><span class="line"></span><br><span class="line"># 插入记录：working</span><br><span class="line">con.execute(&quot;INSERT INTO todo (id, title) VALUES (NULL, &apos;working&apos;);&quot;)</span><br><span class="line"></span><br><span class="line"># 查询记录</span><br><span class="line">for row in con.execute(&quot;SELECT * FROM todo&quot;):</span><br><span class="line">    print row</span><br></pre></td></tr></table></figure></p>
-<p>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ python integer_primary_key_ok.py</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(2, u&apos;working&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>注意：之前看<a href="http://stackoverflow.com/questions/11490100/no-autoincrement-for-integer-primary-key-in-sqlite3" target="_blank" rel="noopener">《No autoincrement for Integer Primary key in sqlite3》</a>中有提到“SQLite的自增字段定义为NULL或NOT NULL是有区别的”，根据上面的实验，这个问题好像已经不存在了。</p>
-<h3 id="关键字AUTOINCREMENT与内部表sqlite-sequence"><a href="#关键字AUTOINCREMENT与内部表sqlite-sequence" class="headerlink" title="关键字AUTOINCREMENT与内部表sqlite_sequence"></a>关键字AUTOINCREMENT与内部表sqlite_sequence</h3><p>SQLite中，在INTEGER PRIMARY KEY的基础上添加AUTOINCREMENT后（即INTEGER PRIMARY KEY AUTOINCREMENT），可以在表的整个生命周期内保证“自增字段”的唯一性（create keys that are unique over the lifetime of the table）。</p>
-<p>SQLite内部用一个叫作sqlite_sequence的表来保存所有表的自增字段的取值基准（the largest ROWID），如果清空sqlite_sequence的记录，可以实现将所有表的自增字段的取值归零的效果（这种行为具有破坏性，请谨慎使用）。</p>
-<p>关于这一主题，更详细的介绍可以参考<a href="http://www.sqlite.org/faq.html#q1" target="_blank" rel="noopener">《How do I create an AUTOINCREMENT field》</a>和<a href="http://www.sqlite.org/autoinc.html" target="_blank" rel="noopener">《SQLite Autoincrement》</a></p>
-<p>实验脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- encoding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import sqlite3</span><br><span class="line">con = sqlite3.connect(&quot;:memory:&quot;)</span><br><span class="line"></span><br><span class="line">def new_and_show(tbl_name):</span><br><span class="line">    &quot;&quot;&quot;插入并显示记录&quot;&quot;&quot;</span><br><span class="line">    # 插入记录到表</span><br><span class="line">    con.execute(&quot;INSERT INTO &quot; + tbl_name + &quot; (title) VALUES (&apos;shopping&apos;);&quot;)</span><br><span class="line">    # 查询表记录</span><br><span class="line">    for row in con.execute(&quot;SELECT * FROM &quot; + tbl_name):</span><br><span class="line">        print row</span><br><span class="line"></span><br><span class="line">def clr(tbl_name):</span><br><span class="line">    &quot;&quot;&quot;清除表记录&quot;&quot;&quot;</span><br><span class="line">    con.execute(&quot;DELETE FROM &quot; + tbl_name)</span><br><span class="line"></span><br><span class="line">print &quot;--表todo--&quot;</span><br><span class="line"># 1. 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY,</span><br><span class="line">    title TEXT</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"># 2. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo&quot;)</span><br><span class="line"># 3. 清除表记录</span><br><span class="line">clr(&quot;todo&quot;)</span><br><span class="line"># 4. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo&quot;)</span><br><span class="line"># 5. 清除表记录</span><br><span class="line">clr(&quot;todo&quot;)</span><br><span class="line"># 6. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print &quot;--表todo_auto--&quot;</span><br><span class="line"># 1. 创建表</span><br><span class="line">con.execute(&quot;&quot;&quot;</span><br><span class="line">CREATE TABLE todo_auto</span><br><span class="line">(</span><br><span class="line">    id INTEGER PRIMARY KEY AUTOINCREMENT,</span><br><span class="line">    title TEXT</span><br><span class="line">);&quot;&quot;&quot;)</span><br><span class="line"># 2. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo_auto&quot;)</span><br><span class="line"># 3. 清除表记录</span><br><span class="line">clr(&quot;todo_auto&quot;)</span><br><span class="line"># 4. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo_auto&quot;)</span><br><span class="line"></span><br><span class="line"># 将所有表的自增列都归零</span><br><span class="line">#clr(&quot;sqlite_sequence&quot;)</span><br><span class="line"></span><br><span class="line"># 5. 清除表记录</span><br><span class="line">clr(&quot;todo_auto&quot;)</span><br><span class="line"># 6. 插入并显示记录</span><br><span class="line">new_and_show(&quot;todo_auto&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ python autoincrement_diff.py</span><br><span class="line">--表todo--</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">--表todo_auto--</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(2, u&apos;shopping&apos;)</span><br><span class="line">(3, u&apos;shopping&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>如果去掉clr(“sqlite_sequence”)这一行的注释，则运行结果会变成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ python autoincrement_diff.py</span><br><span class="line">--表todo--</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">--表todo_auto--</span><br><span class="line">(1, u&apos;shopping&apos;)</span><br><span class="line">(2, u&apos;shopping&apos;)</span><br><span class="line">(1, u&apos;shopping&apos;)    ## 由于clr(&quot;sqlite_sequence&quot;)将表todo_auto的自增字段的取值归零，因此这一行又变成了1</span><br></pre></td></tr></table></figure></p>
-<p>另外，SQLite不支持SQL标准语句“TRUNCATE TABLE tbl_name”，只能使用“DELETE FROM tbl_name”来删除表记录，具体可以参考<a href="http://zhuyanfeng.com/archives/516" target="_blank" rel="noopener">《SQLite清空表并将自增列归零》</a> 。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/31/Hexo博客添加搜索功能/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/31/Hexo博客添加搜索功能/" itemprop="url">Hexo博客添加搜索功能</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-31T08:55:20+08:00">
-                2018-07-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/博客搭建教程/" itemprop="url" rel="index">
-                    <span itemprop="name">博客搭建教程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/07/31/Hexo博客添加搜索功能/" class="leancloud_visitors" data-flag-title="Hexo博客添加搜索功能">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Hexo博客添加搜索功能"><a href="#Hexo博客添加搜索功能" class="headerlink" title="Hexo博客添加搜索功能"></a>Hexo博客添加搜索功能</h2><blockquote>
-<p>参考文章：<a href="http://www.itfanr.cc/2017/10/27/add-search-function-to-hexo-blog/" target="_blank" rel="noopener">Hexo博客添加搜索功能</a></p>
-</blockquote>
-<p>渐渐的随着hexo博客中文章越来越多了之后,平时想要查找一篇文章时,一般都是记得部分标题内容或者某些关键词,而在”归档”下通过标题一页一页的找又非常的麻烦.所以考虑为博客增加搜索功能.</p>
-<p>从Next主题网站上我们可以搜索多款搜索插件<a href="http://theme-next.iissnan.com/third-party-services.html#search-system" target="_blank" rel="noopener">第三方服务集成 – Next文档</a>,个人感觉 “Local Search” 和 “Algolia” 这两款搜索插件比较和我的心意.</p>
-<p>下面简要的介绍为hexo博客添加搜索插件的过程.  </p>
-<h3 id="升级Next主题版本"><a href="#升级Next主题版本" class="headerlink" title="升级Next主题版本"></a>升级Next主题版本</h3><p>我的hexo主题安装的是 Next 主题,当前版本为 v5.0.1 .最新版本为 5.1.3.</p>
-<p>因为我的hexo主题版本差距太大,而且我在 <code>next</code> 主题目录下的 <code>.git</code> 目录我已经删除了,所以我采用完全更新的方式.</p>
-<p>先备份本地的 <code>hexo</code> 主题目录 <code>your-hexo-site/themes/next</code> ,其实只需要备份 <code>_config.yml</code> 一个文件即可,为了保险这里我将整个目录都备份一下.</p>
-<p>另外还要注意如果你之前添加了自定义头像及打赏功能等所需图片,添加的图片是在 /themes/next/source/images/ 目录下的,也要记得做好备份.</p>
-<hr>
-<p>如果你本地的主题 <code>next</code> 目录下的 <code>.git</code> 目录没有删除,你可以直接通过 <code>git pull</code> 命令来更新:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd themes/next</span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure></p>
-<h3 id="完全更新"><a href="#完全更新" class="headerlink" title="完全更新"></a>完全更新</h3><p>先删除本地现在的 <code>next</code> 主题目录:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd &lt;your-hexo-site&gt;</span><br><span class="line">$ rm -rf ./themes/next</span><br></pre></td></tr></table></figure></p>
-<p>从github下载 hexo 主题文件最新版本:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd &lt;your-hexo-site&gt;</span><br><span class="line">$ git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure></p>
-<p>比照新的主题配置文件<code>_config.yml</code> ,将旧的主题文件中的内容添加到新文件中.</p>
-<p>我这里更改的地方有:</p>
-<ul>
-<li>menu</li>
-<li>scheme</li>
-<li>social</li>
-<li>sidebar</li>
-<li>highlight_theme</li>
-<li>tencent_analytics</li>
-<li>打赏功能 reward_comment wechatpay alipay</li>
-<li>站点建立时间 since</li>
-</ul>
-<p>更改后,清除缓存,然后再查看:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ hexo clean</span><br><span class="line">$ hexo s -g</span><br><span class="line">INFO  Start processing</span><br><span class="line">INFO  Hexo is running at http://localhost:4000/. Press Ctrl+C to stop.</span><br></pre></td></tr></table></figure></p>
-<p>打开浏览器,查看页面中是否有错误并修改.</p>
-<hr>
-<h3 id="LocalSearch搜索"><a href="#LocalSearch搜索" class="headerlink" title="LocalSearch搜索"></a>LocalSearch搜索</h3><p>安装 <code>hexo-generator-searchdb</code>，在站点的根目录下执行以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-searchdb --save</span><br></pre></td></tr></table></figure></p>
-<p>编辑 <code>站点配置文件</code>，新增以下内容到任意位置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  limit: 10000</span><br></pre></td></tr></table></figure></p>
-<p>编辑 <code>主题配置文件</code>，启用本地搜索功能：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Local search</span><br><span class="line">local_search:</span><br><span class="line">  enable: true</span><br></pre></td></tr></table></figure></p>
-<p>然后 重新生成 查看:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ hexo clean</span><br><span class="line">$ hexo s -g</span><br><span class="line">INFO  Start processing</span><br><span class="line">INFO  Hexo is running at http://localhost:4000/. Press Ctrl+C to stop.</span><br></pre></td></tr></table></figure></p>
-<p>这样,搜索功能就添加上了.</p>
-<hr>
-<h3 id="Algolia搜索"><a href="#Algolia搜索" class="headerlink" title="Algolia搜索"></a>Algolia搜索</h3><p>详情可参考官方教程,这里不再详述.</p>
-<ul>
-<li><a href="http://theme-next.iissnan.com/third-party-services.html#algolia-search" target="_blank" rel="noopener">Algolia – Next文档</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1746,7 +1750,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1768,7 +1772,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
