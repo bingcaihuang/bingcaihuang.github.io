@@ -293,6 +293,187 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/23/QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）/" itemprop="url">QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T14:00:18+08:00">
+                2018-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt-Model-View/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt - Model/View</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/23/QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）/" class="leancloud_visitors" data-flag-title="QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）"><a href="#QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）" class="headerlink" title="QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）"></a>QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）</h2><blockquote>
+<p><a href="https://blog.csdn.net/gxc1222/article/details/53035591" target="_blank" rel="noopener">QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）</a></p>
+</blockquote>
+<p>如何使QTreeView快速显示1000万条数据，并且内存占用量少呢？这个问题困扰我很久，在网上找了好多相关资料，都没有找到合理的解决方案，今天在这里把我的解决方案提供给朋友们，供大家相互学习。</p>
+<p>我开始使用的QTreeWidget 控件来显示我的数据，发现该控件在显示10000行以下的数据还可以应付的过来，但超过10000条，就明显感觉到屏幕刷新就会有卡的现象，而且占据内存很大，虽然操作起来简单方便，但灵活性没有QTreeView强大。因为我要显示的数据量是非常大的，甚至过1000万，因此，采用QTreeWidget来显示，很显然不能满足性能要求，所以打算采用QTreeView来显示，不罗嗦了，赶快进入正题了，下面讲讲我是怎么通过QTreeView来快速显示1000万条数据的吧！</p>
+<ol>
+<li>通过从文件里面读取要显示的数据，交给QTreeView来显示，从而不用把数据一次性读到内存，就可以解决内存占用大的问题。</li>
+<li>我们知道数据显示是通过刷新来实现的，通过刷新时，每次只刷新屏幕可见区域，其他部分不用刷新的方法，从而解决速度显示慢的问题。</li>
+</ol>
+<p>解决了上面的两个问题，显示1亿条数据都不会有任何问题，而且显示速度和内存占有量与显示1000条数据相当，听起来很诱人啊，下面是我是怎么通过QTreeView来解决这两个问题的：</p>
+<ol>
+<li>重载QAbstractItemModel中的如下函数：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">QVariant headerData(int section, Qt::Orientation orientation,</span><br><span class="line">int role = Qt::DisplayRole) const;</span><br><span class="line">QVariant data(const QModelIndex &amp;index, int role) const;</span><br><span class="line">int rowCount(const QModelIndex &amp;parent = QModelIndex()) const;      </span><br><span class="line">int columnCount(const QModelIndex &amp;parent = QModelIndex()) const;</span><br><span class="line">QModelIndex index(int row, int column,</span><br><span class="line">const QModelIndex &amp;parent = QModelIndex()) const;</span><br><span class="line">QModelIndex parent(const QModelIndex &amp;index) const;</span><br></pre></td></tr></table></figure>
+<p>(1) QVariant headerData(intsection, Qt::Orientationorientation, int role =Qt::DisplayRole)const;<br>显示树视的标题，section表示列，从0开始，orientation表示标题的方向（水平还是垂直），role表式标题栏显示的方式，当role的角色为Qt::DisplayRole时，表示显示文本，当然还有其他角色，大家可以参考Qt开发手册。示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">QVariant CMyModel::headerData(int section, Qt::Orientation orientation, int role) const</span><br><span class="line">&#123;</span><br><span class="line">	if (role == Qt::DisplayRole &amp;&amp; orientation == Qt::Horizontal)</span><br><span class="line">	&#123;</span><br><span class="line">		return pData-&gt;headerData(section);</span><br><span class="line">	&#125;</span><br><span class="line">	return QVariant();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>显示水平标题，其中pData是我定义的一个数据类的对象，在这里我把该类命名为CData。headerData来取出要显示的数据。</p>
+<p>(2) QVariant data(const QModelIndex &amp;index,int role)const;<br>显示数据，index表示树节点索引，树中的每个节点都有一个对应的该索引，当index = QModelIndex()时，表示该节点是根节点，否则为非根节点。index中存放了该节点在同存节点中的位置信息（行和列），以及节点的特殊信息，如index.internalPointer()，这是一个指针，我们可以通过该指针保存我们想要的节点信息，角色同上。示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">QVariant CMyModel::data(const QModelIndex &amp;index, int role) const</span><br><span class="line">&#123;</span><br><span class="line">	if (!index.isValid())</span><br><span class="line">		return QVariant();</span><br><span class="line">	int row = index.row();</span><br><span class="line">	int col = index.column();</span><br><span class="line">	if (role == Qt::DisplayRole)</span><br><span class="line">	&#123;</span><br><span class="line">		return pData-&gt;getData(row, col);</span><br><span class="line">	&#125;</span><br><span class="line">	return QVariant();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过getData来获取要显示的数据，该数据方在我们的文件里，每次只需要读取我们想要显示的数据，不需要把所有的数据都放到内存，从而节省了内存空间，这样就解决了上面讲的第一个问题。</p>
+<p>(3) int rowCount(const QModelIndex &amp;parent = QModelIndex())const;<br>大家不难猜出该函数是返回该父节点下有多少个子节点，还是来看示例代码吧：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int CMyModel::rowCount(const QModelIndex &amp;parent)const</span><br><span class="line">&#123;</span><br><span class="line">	return pData-&gt;rowCount();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>为了简单起见，这里不考虑父节点，认为任何节点都存在rowCount()个节点。</p>
+<p>(4) int columnCount(const QModelIndex &amp;parent = QModelIndex())const;<br>返回父节点有多少列，示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int CMyModel::columnCount(const QModelIndex &amp;parent)const</span><br><span class="line">&#123;</span><br><span class="line">	return pData-&gt;colCount();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>(5) QModelIndex index(int row, int column, const QModelIndex &amp;parent = QModelIndex()) const;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QModelIndex CMChModel::index(int row, int column, const QModelIndex &amp;parent) const</span><br><span class="line">&#123;</span><br><span class="line">	return createIndex(row, column, NULL);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过该函数创建节点的索引，我这里简单一点，只创建一层节点，若大家要创建多层节点，则要通parent索引里的数据（如internalPointer()）来创建对应的节点，通过createIndex的第3个参数来向节点传入指定的索引数据，由于我这里不需要创建多层节点，所以我传入NULL。那麽我们怎么建立节点的父子关系呢，聪明的你肯定想到了吧，QModelIndex parent(const QModelIndex &amp;index) const;就是建立父子节点的父子关系的，如果只有一层节点，该函数无须重载，至此我们的显示数据模型已经实现了，接下来就是要把这个模型通过视图来表现出来(QTreeView)。</p>
+<p>我们看看QTreeView是怎么来显示我们上面建立的模型的，看一段简单的代码，大家就明白了:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QTreeView treeView;</span><br><span class="line">CMyModel *pModel = new CMyModel();</span><br><span class="line">treeView.setModel(pModel);</span><br><span class="line">treeView.show();</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li>是不是很简单，到这里通过QTreeView来处理大量的数据的实现方式差不多讲完了，当你按照上面的方式准备处理你的大批量数据时，你就会发现显示10000行数据还是会卡，这是什么原因呢？其实这个也困扰我很久，网上也没有找到相关资料，没办法啊，只有啃QTreeView实现的源代码，实际上QTreeView确实是显示可见部分数据（每次显示1000行数据，按理论上来说1000行足以占据计算机屏幕，这样一来不管你数据量是多大，我始终只取1000行数据，所以1亿条数据与1000条数据显示速度是一样的，只要你一次只读出要显示的数据，内存占有量也是一样的），既然问题都解决了，那麽为什么还会有卡的现象呢？</li>
+</ol>
+<p>经过进一步研究QTreeView源代码，最后发现耗时的地方是QTreeView第一次刷新的时候会计算每一行的行高，这样刷新时，就要遍历所有行数据，原来卡是出在这个地方啊，那麽应该怎么解决呢？实现方法很简单，就是上面的代码多加一行，treeView.setUniformRowHeights(true);这样一来就不会刷新计算所有行的行高了，至此用QTreeView显示大批量数据问题得到解决。</p>
+<p>最后再补充一下，该实现方式可以适应其他QTableView, QListView等视图。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/Qt-任务调度器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -405,6 +586,31 @@
 <ol>
 <li>定时调度</li>
 <li>跨线程更新界面。</li>
+</ol>
+<p>首先看问题2：跨线程更新界面<br>Qt可以用signal/slot机制，跨线程传递信号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Schedler *pSchd;</span><br><span class="line">QDialog *pDlg;</span><br><span class="line">//...</span><br><span class="line">connect(pSchd, SIGNAL(notify(const QString &amp;, const QString &amp;)), pDlg, SLOT(updateUI(const QString &amp;, const QString &amp;)), Qt::QueuedConnection);</span><br></pre></td></tr></table></figure>
+<p>其中最后一个参数Qt::QueuedConnection适用于跨线程调用，将信号传递到消息队列中，由QAppliction.exec()或QThread.exec()等函数调用。</p>
+<p>该参数可缺省，缺省为Qt::AutoConnection。Qt::AutoConnection根据emitter/receiver是否在同一线程内，自动决定连接方式：当位于同一线程时，采用Qt::DirectConnection（直连方式，立即执行）；位于不同线程时，采用Qt::QueuedConnection。</p>
+<p>有关Qt::connectionType，QAssistant解释如下：<br><img src="/2018/11/23/Qt-任务调度器/1542952623734.png" alt=""></p>
+<p>回到问题1：调度器需要满足以下条件：</p>
+<ol>
+<li>前一个任务未执行到关键点，禁止下一个任务开始。</li>
+<li>前一个任务执行失败，中断剩余任务。</li>
+<li>所有任务都开始执行后，需等待任务执行结束。</li>
+</ol>
+<p>根据以上原则，定义调度器如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">class AberScheduler : public QObject</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">public:</span><br><span class="line">    AberScheduler();</span><br><span class="line">    ~AberScheduler();</span><br><span class="line"></span><br><span class="line">    int process();    //执行调度</span><br><span class="line">    int init(QList&lt;AberInfo&gt; infoList, const QString &amp;cmdType);</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    void sortMachine();</span><br><span class="line">    int goFirst();</span><br><span class="line">    int goNext();</span><br><span class="line">    bool end();</span><br><span class="line"></span><br><span class="line">    void TryGoNext();</span><br><span class="line">    bool IsAllDone();</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    void OnBegin();</span><br><span class="line">    void OnEnd();</span><br><span class="line">    void UpdateAllStatus();    //从通讯线程获取状态</span><br><span class="line">    void UpdateAllUI();    //更新界面线程</span><br><span class="line"></span><br><span class="line">signals:</span><br><span class="line">   int sendAberOrder(const QString &amp;machineName, const QString &amp;orderType);</span><br><span class="line">   int notify(const QString &amp;machineName, const QString &amp;progressInfo);</span><br><span class="line">   int updateSingleStatus(const QString &amp;machineName, int *next, int *status, double *progress);</span><br><span class="line">   int setUIDisabled(const QString &amp;machineName, bool bDisabled);</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    QList&lt;AberInfo&gt; m_aberInfoList;</span><br><span class="line">    int m_index;</span><br><span class="line">    QString m_cmdType;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>机器信息结构体定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">struct AberInfo</span><br><span class="line">&#123;</span><br><span class="line">    QString machineName;    </span><br><span class="line">    int machineType;</span><br><span class="line">    int next;    //下一台机器是否可以开始： -1:叵;0:可;1:中断所有</span><br><span class="line">    int status;    //命令执行状态： 0:未开始;1:正在执行;2:成功;3:失败</span><br><span class="line">    double progress;    //进度，范围: [0.00, 1.00]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>核心调度代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">int AberScheduler::process()</span><br><span class="line">&#123;</span><br><span class="line">    int ret_next = -1;</span><br><span class="line">    bool bAllDone = false;</span><br><span class="line"></span><br><span class="line">    if(this-&gt;m_infoList.count() &lt;= 0)</span><br><span class="line">    &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    OnBegin();</span><br><span class="line"></span><br><span class="line">    goFirst();</span><br><span class="line">    UpdateAllUI();</span><br><span class="line"></span><br><span class="line">    const AberInfo &amp;info = this.m_infoList[this-&gt;m_index];</span><br><span class="line">    emit sendOrder(info.machineName, this-&gt;m_cmdType);</span><br><span class="line">    Sleep(5000);</span><br><span class="line"></span><br><span class="line">    while(!end())</span><br><span class="line">    &#123;</span><br><span class="line">        Sleep(1000);</span><br><span class="line">        UpdateAllStatus();</span><br><span class="line">        UpdateAllUI();</span><br><span class="line"></span><br><span class="line">        ret_next = TryGoNext();</span><br><span class="line">        if(ret_next == 0)  //可以进行下一个</span><br><span class="line">        &#123;</span><br><span class="line">            int ret_go_next = goNext();</span><br><span class="line">            if(ret_go_next == -1)</span><br><span class="line">            &#123;</span><br><span class="line">                onEnd();</span><br><span class="line">                return -1;</span><br><span class="line">            &#125;</span><br><span class="line">            if(!end())</span><br><span class="line">            &#123;</span><br><span class="line">                const AberInfo &amp;info = this.m_infoList[this-&gt;m_index];</span><br><span class="line">                emit sendOrder(info.machineName, this-&gt;cmd_type);</span><br><span class="line">                Sleep(5000);</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else if(ret_next == -1)  //中断全部</span><br><span class="line">        &#123;</span><br><span class="line">            UpdateAllStatus();</span><br><span class="line">            UpdateAllUI();</span><br><span class="line">            onEnd();</span><br><span class="line">            return 1;</span><br><span class="line">        &#125;</span><br><span class="line">        bAllDone = IsAllDone();</span><br><span class="line">        if(bAllDone)</span><br><span class="line">        &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    while(!bAllDone)</span><br><span class="line">    &#123;</span><br><span class="line">        Sleep(1000);</span><br><span class="line">        UpdateAllStatus();</span><br><span class="line">        UpdateAllUI();</span><br><span class="line">        bAllDone = IsAllDone();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    UpdateAllStatus();</span><br><span class="line">    UpdateAllUI();</span><br><span class="line">    onEnd();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>与发送信号有关的函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">void AberScheduler::UpdateAllStatus()</span><br><span class="line">&#123;</span><br><span class="line">    //只更新index及之前的机器</span><br><span class="line">    for(int i=0; i &lt;= this-&gt;m_index &amp;&amp; i &lt; this-&gt;m_infoList.count(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        AberInfo &amp;info = this-&gt;m_infoList[i];</span><br><span class="line">        emit UpdateStatus(this-&gt;m_cmd_type, info.machineName, &amp;info.next, &amp;info.status, &amp;info.progress);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void AberScheduler::UpdateAllUI()</span><br><span class="line">&#123;</span><br><span class="line">    foreach(AberInfo info, this-&gt;m_infoList)</span><br><span class="line">    &#123;</span><br><span class="line">        emit notify(info.machineInfo, info.progress, info.status);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void AberScheduler::OnBegin()</span><br><span class="line">&#123;</span><br><span class="line">　　foreach(AberInfo info, this-&gt;m_infoList)</span><br><span class="line">　　&#123;</span><br><span class="line">　　　　emit setDisabled(info.machineInfo, true);</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void AberScheduler::OnEnd()</span><br><span class="line">&#123;</span><br><span class="line">　　foreach(AberInfo info, this-&gt;m_infoList)</span><br><span class="line">　　&#123;</span><br><span class="line">　　　　emit setDisabled(info.machineInfo, false);</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int AberScheduler::TryGoNext()</span><br><span class="line">&#123;</span><br><span class="line">    AberInfo curInfo = this-&gt;m_infoList[m_index]; //???</span><br><span class="line">    return curInfo.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用线程包装AberScheduler，使其能适用于跨线程更新界面。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class AberThread : public QRunnable</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    AberThread();</span><br><span class="line">    ~AberThread();</span><br><span class="line">    void init(const QList&lt;AberInfo&gt; &amp;infoList, const QString &amp;cmdType);</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    void run();</span><br><span class="line">    AberScheduler *schd();</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    AberScheduler *m_shcd;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void void AberThread::run()</span><br><span class="line">&#123;</span><br><span class="line">　　m_schd-&gt;process();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>界面连接signal/slot如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">void AberDialog::doSth()</span><br><span class="line">&#123;</span><br><span class="line">    QList&lt;AberInfo&gt; infoList;</span><br><span class="line">    //...</span><br><span class="line">    AberThread *bThread = new AberThread;</span><br><span class="line">    bThread-&gt;init(infoList, &quot;cmdType1&quot;);</span><br><span class="line"></span><br><span class="line">    AberScheduler *p_schd = bThread-&gt;schd();</span><br><span class="line">    connect(p_schd, SIGNAL(sendAberOrder(const QString &amp;, const QString &amp;)), this, SLOT(sendAberOrder(const QString &amp;, const QString &amp;)));</span><br><span class="line">    connect(p_schd, SIGNAL(notify(const QString &amp;, const QString &amp;)), this, SLOT(updateSingleUI(const QString &amp;, const QString &amp;)));</span><br><span class="line">    connect(p_schd, SIGNAL(updateSingleStatus(const QString &amp;, int *, int *, double *)), this, SLOT(getSingleStatus(const QString &amp;, int *, int *, double *)));</span><br><span class="line">    connect(p_schd, SIGNAL(setUIDisabled(const QString &amp;, bool)), this, SLOT(setUIDisabled(const QString &amp;, bool)));</span><br><span class="line"></span><br><span class="line">    QThreadPool::globalInstance()-&gt;start(bThread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p> QTheadPool是Qt自带的线程池，只能处理QRunnable，而不能处理QThread，可设置同时运行任务的数量，超过数量的线程会在队列中排队。并且无法强制终止QRunnable。如果要实现调度的强制中断，可以采用类似全局变量的方式，在process循环中读取g_flag，若为false，则终止调度（代码就不贴了）。</p>
+<p>总结：</p>
+<ol>
+<li>QRunnable包装AberScheduler，利用多线程防止界面卡死。</li>
+<li>AberScheduler继承QObject，并使用signal/slot机制，对处理逻辑与界面解耦。</li>
+<li>利用QThreadPool实现多个任务同时调度。<br>4.<br>P.S.</li>
+<li>VS2008无法对QObject::connect()函数、SIGNAL宏、SLOT宏做语法检查。即使写了不存在的函数也能编译通过，但信号无法传递，此处极易出错。</li>
 </ol>
 
           
@@ -953,246 +1159,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/QTransform类/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/12/QTransform类/" itemprop="url">QTransform类</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-12T09:35:48+08:00">
-                2018-09-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Qt/" itemprop="url" rel="index">
-                    <span itemprop="name">Qt</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/09/12/QTransform类/" class="leancloud_visitors" data-flag-title="QTransform类">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="QTransform类"><a href="#QTransform类" class="headerlink" title="QTransform类"></a>QTransform类</h2><blockquote>
-<p><a href="https://blog.csdn.net/founderznd/article/details/51533777" target="_blank" rel="noopener">QTransform类</a></p>
-</blockquote>
-<p>QTransform类用于控制二维坐标系之间的转换<br>包含：位移、缩放、扭曲、旋转还有映射<br>首先看它的核心内容：</p>
-<p><img src="/2018/09/12/QTransform类/1536716220481.png" alt=""></p>
-<p>这是一个仿射变换矩阵(affine transformation)，它包含了坐标系转换所需要的所有信息</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">element</th>
-<th style="text-align:left">description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">m11</td>
-<td style="text-align:left">水平缩放</td>
-</tr>
-<tr>
-<td style="text-align:left">m22</td>
-<td style="text-align:left">垂直缩放</td>
-</tr>
-<tr>
-<td style="text-align:left">m21</td>
-<td style="text-align:left">水平扭曲</td>
-</tr>
-<tr>
-<td style="text-align:left">m12</td>
-<td style="text-align:left">垂直扭曲</td>
-</tr>
-<tr>
-<td style="text-align:left">m31(dx)</td>
-<td style="text-align:left">水平位移</td>
-</tr>
-<tr>
-<td style="text-align:left">m32(dy)</td>
-<td style="text-align:left">垂直位移</td>
-</tr>
-<tr>
-<td style="text-align:left">m13</td>
-<td style="text-align:left">水平映射</td>
-</tr>
-<tr>
-<td style="text-align:left">m23</td>
-<td style="text-align:left">垂直映射</td>
-</tr>
-<tr>
-<td style="text-align:left">m33</td>
-<td style="text-align:left">额外的映射因子</td>
-</tr>
-</tbody>
-</table>
-<p>他们具体的功能可以看下图：</p>
-<p><img src="/2018/09/12/QTransform类/1536716518172.png" alt=""></p>
-<p>你可以直接使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void setMatrix(qreal m11, qreal m12, qreal m13, qreal m21, qreal m22, qreal m23, qreal m31, qreal m32, qreal m33)</span><br></pre></td></tr></table></figure></p>
-<p>来设置这些元素</p>
-<p>当然，QTransform也提供了很多方法来方便你使用</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">method</th>
-<th style="text-align:left">descripiton</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">QTransform.translate(qreal dx, qreal dy)</td>
-<td style="text-align:left">dx,dy为任意大小的实数，保存到m31(dx)和m32(dy)中</td>
-</tr>
-<tr>
-<td style="text-align:left">QTransform.scale(qreal sx, qreal sy)</td>
-<td style="text-align:left">sx，sy为任意大小的实数，保存到m11和m22中</td>
-</tr>
-<tr>
-<td style="text-align:left">QTransform.rotate(qreal angle)</td>
-<td style="text-align:left">angle为任意大小的实数，不过为了便于阅读，最好是0到360之间</td>
-</tr>
-<tr>
-<td style="text-align:left">QTransform.shear(qreal sh, qreal sv)</td>
-<td style="text-align:left">sh，sv为任意大小的实数，保存到m12和m21中</td>
-</tr>
-</tbody>
-</table>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1238,7 +1209,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1249,7 +1220,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1260,7 +1231,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -293,6 +293,246 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/26/Git-submodule用法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/26/Git-submodule用法/" itemprop="url">Git-submodule用法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-26T14:48:54+08:00">
+                2018-07-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TortoiseGit/" itemprop="url" rel="index">
+                    <span itemprop="name">TortoiseGit</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/07/26/Git-submodule用法/" class="leancloud_visitors" data-flag-title="Git-submodule用法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>参考文章<a href="https://blog.csdn.net/zahuopuboss/article/details/51472842" target="_blank" rel="noopener">git的submodule功能详解</a></p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>项目的版本库在某些情况下需要引用其他版本库中的文件，例如有一套公用的代码库，可以被多个项目调用，这个公用代码库能直接放在某个项目的代码中，而是要独立为一个代码库，那么其他要调用公用的代码库该如何处理？分别把公用的代码库拷贝到各自的项目中会造成冗余，丢弃了公共代码库的维护历史，这些显示不是好的办法，现在要了解的git子模组(git submodule)就解决了这个问题。</p>
+<p>Git 子模块功能允许你将一个Git仓库当作另外一个Git仓库的子目录。这允许你克隆另外一个仓库到你的项目中并且保持你的提交相对独立。</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>首先需要两个版本库例如：<br>1) 一个公共的版本库(例如：libA.git)<br><a href="mailto:git@gitlab.szreach.com" target="_blank" rel="noopener">git@gitlab.szreach.com</a>:fengyang/liba.git</p>
+<p>2) 一个引用公共版本库的主版本库(例如：super.git)<br><a href="mailto:git@gitlab.szreach.com" target="_blank" rel="noopener">git@gitlab.szreach.com</a>:fengyang/super.git</p>
+<h2 id="TortoiseGit上git-submodule功能实现"><a href="#TortoiseGit上git-submodule功能实现" class="headerlink" title="TortoiseGit上git submodule功能实现"></a>TortoiseGit上git submodule功能实现</h2><h3 id="添加子模组的步骤"><a href="#添加子模组的步骤" class="headerlink" title="添加子模组的步骤"></a>添加子模组的步骤</h3><p>####第一步：使用submodule add…添加子模组<br>在需要作添加子模组的Git版本库中右击，选择“TortoiseGit-&gt;Submodule Add…”，在“Repository:”里面输入需要添加子模组的版本库路径，在“Path：”<br>中输入添加子模组存放的目录路径。如下图所示：</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588080598.png" alt=""></p>
+<p>此时查看需要添加子模组的Git工作区的目录结构。在根目录下多了一个.gitmodules文件，并且公共代码库被克隆到lib/lib_a目录下。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588131524.png" alt=""></p>
+<p>####第二步：查看.gitmodules的内容<br>.gitmodules的内容记录着含子模组存放的目录路径及子模组版本库的路径</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588172075.png" alt=""><br>注：此时工作区尚未提交，完成提交后，子模组才算正式完成在需要作添加子模组的Git版本库中创立。</p>
+<p>注：此主版本库(super.git)就变成了一个包含子模组的版本库。</p>
+<h3 id="克隆带子模组的版本库的步骤"><a href="#克隆带子模组的版本库的步骤" class="headerlink" title="克隆带子模组的版本库的步骤"></a>克隆带子模组的版本库的步骤</h3><p>克隆带子模组的git库，并不能自动将子模组的版本库克隆出来，对于只关心项目本身的数据，而不关心项目引用的外部项目数据的用户，这个功能非常好，数据没有冗余而且克隆的速度也很快。</p>
+<h4 id="第一步：克隆super主版本库"><a href="#第一步：克隆super主版本库" class="headerlink" title="第一步：克隆super主版本库"></a>第一步：克隆super主版本库</h4><p>在工作区中克隆主主版本库后，会发现子模组的版本库并没有克隆，只有将存放子模组版本库的目录克隆下来了。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588235376.png" alt=""></p>
+<p>存放子模组版本库的目录路径</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588265251.png" alt=""></p>
+<h4 id="第二步：克隆子模组"><a href="#第二步：克隆子模组" class="headerlink" title="第二步：克隆子模组"></a>第二步：克隆子模组</h4><p>如果需要克隆出子模组形式引用的外部库，首先需要执行Submodule Update操作。</p>
+<p>在需要作克隆子模组的Git工作区中右击，选择“TortoiseGit-&gt;Submodule Update…”,点击“OK”即可。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588301375.png" alt=""></p>
+<p>执行Submodule Update…操作后就会把子模组的版本库克隆下来。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588313780.png" alt=""></p>
+<h3 id="对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果"><a href="#对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果" class="headerlink" title="对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果"></a>对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果</h3><h4 id="1-对主Git库工作区作commit操作"><a href="#1-对主Git库工作区作commit操作" class="headerlink" title="1) 对主Git库工作区作commit操作"></a>1) 对主Git库工作区作commit操作</h4><p>当在主Git库工作区中变更到达一个适当状态时，我们需要将这些变更提交到Git库，作版本备份和跟踪。</p>
+<p>方法：</p>
+<p>在工作区内右击，选择“ Commit-&gt; “当前分支名称” ”，在Commit窗口中，选择需要提交的变更path，填写提交说明，点击“Ok”。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588398302.png" alt=""></p>
+<p>结论：在主git工作区作commit操作，只是将主Git工作区的变更历史提交到主Git本地库中，对Submodule没有任何影响。</p>
+<h4 id="对主Git库工作区作checkout操作"><a href="#对主Git库工作区作checkout操作" class="headerlink" title="对主Git库工作区作checkout操作"></a>对主Git库工作区作checkout操作</h4><p>当在主Git库工作区中想要切换到其他某个分支、某个tag、某个commit历史记录。</p>
+<p>我们这里举个特殊的例子：</p>
+<p>切换到某个commit历史记录(如在主版本库中提交子版本库的历史记录)</p>
+<p>方法：</p>
+<p>在Git工作区内的某目录上右击，选择“Swicht/Checkout…”在Swicht/Checkout…Checkout窗口中，在Switch to Commmit中列出需要切换的commit历史记录，在此列表中选择需要切换到的commit历史记录，以后点击“Ok”按钮。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588440810.png" alt=""></p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588447419.png" alt=""></p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588452662.png" alt=""></p>
+<p>注：由于切换到的是在主版本库中提交子版本库的那条历史记录，因此子模组中状态也会改换，也需要在子模组中执行切换。</p>
+<p>执行Submodule Update操作即可。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588463163.png" alt=""></p>
+<h4 id="对主Git库工作区作revert操作"><a href="#对主Git库工作区作revert操作" class="headerlink" title="对主Git库工作区作revert操作"></a>对主Git库工作区作revert操作</h4><p>当在主Git库工作区中这次变更有错误时，就可以使用revert操作来撤销这次次操作。</p>
+<p>方法：</p>
+<p>在工作区内右击，选择“Revert”，在Revert窗口中，选择需要撤销的变更path，点击“Ok”。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588499678.png" alt=""></p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588505922.png" alt=""></p>
+<p>结论：在主git工作区作revert操作，只是将主Git工作区某次的变更操作给撤销，此次操作之前的commit都会被保留，且对Submodule没有任何影响。</p>
+<h4 id="对主Git库工作区作push操作"><a href="#对主Git库工作区作push操作" class="headerlink" title="对主Git库工作区作push操作"></a>对主Git库工作区作push操作</h4><p>当在主Git库工作区中将主Git本地库的数据推送到主Git远程库中。</p>
+<p>方法：在工作区的目录上（不要在文件上）右击，选择“Git Sync…”</p>
+<p>“Local Branch”，”Remote Branch”，“Remote URL”这3栏必须正确才能“推”数据。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588527148.png" alt=""></p>
+<p>结论：在主git工作区作push操作，只是将主Git本地库的变更历史推送到到主Git远程库中，对Submodule没有任何影响。</p>
+<h4 id="对主Git库工作区作pull操作"><a href="#对主Git库工作区作pull操作" class="headerlink" title="对主Git库工作区作pull操作"></a>对主Git库工作区作pull操作</h4><p>当在主Git库工作区中将主Git远程库的拉取到主Git本地库中。</p>
+<p>方法：在工作区的目录上（不要在文件上）右击，选择“Git Sync…”</p>
+<p>“Local Branch”，”Remote Branch”，“Remote URL”这3栏必须正确才能“拉”数据。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588582483.png" alt=""></p>
+<p>结论：在主git工作区作pull操作，只是将主Git远程库的变更历史拉取到到主Git本地库中，对Submodule没有任何影响。</p>
+<h3 id="对submodule下的内容进行修改后commit、push，对submodule目录作pull"><a href="#对submodule下的内容进行修改后commit、push，对submodule目录作pull" class="headerlink" title="对submodule下的内容进行修改后commit、push，对submodule目录作pull"></a>对submodule下的内容进行修改后commit、push，对submodule目录作pull</h3><p>在执行Submodule Update…操作更新出子模组后，都以某个具体的提交版本进行检出，进入子模组目录，会发现其处于非跟踪状态。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588613891.png" alt=""></p>
+<p>显然这种情况下，如果修改lib/lib_a下的文件，提交就会丢失。下面介绍如何在检查的子模组中修改，以及如何更新子模组。</p>
+<p>在子模组中切换到master分支(或者其他想要修改的分支)后在进行修改。</p>
+<ul>
+<li>切换到master分支，然后在工作区做一些改动。</li>
+</ul>
+<p><img src="/2018/07/26/Git-submodule用法/1532588630623.png" alt=""></p>
+<ul>
+<li>执行commit后，并且推送到子模组库中后。</li>
+<li>回到主版本库中。</li>
+</ul>
+<p>在主版本库中查看状态，在主版本库中可以看到子模组已修改，包含了更新的提交。</p>
+<ul>
+<li>需要将修改提交在主版本库中进行推送。<br><img src="/2018/07/26/Git-submodule用法/1532588659308.png" alt=""></li>
+</ul>
+<h4 id="对submodule目录作pull"><a href="#对submodule目录作pull" class="headerlink" title="对submodule目录作pull"></a>对submodule目录作pull</h4><p>当子模组版本库中有新的提交历史记录，就需要做pull操作来更新。</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588709532.png" alt=""></p>
+<p>注：对子模组库中做了pull操作，同时需要对调用子模组库的主版本库中也要做Pull操作。</p>
+<p>如下图所示：<br><img src="/2018/07/26/Git-submodule用法/1532588723173.png" alt=""></p>
+<p>注意：进入子模组目录，会发现其处于非跟踪状态。显然这种情况下，如果修改lib/lib_a下的文件，提交就会丢失。提示如下：</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588742276.png" alt=""></p>
+<h3 id="移除Submodule"><a href="#移除Submodule" class="headerlink" title="移除Submodule"></a>移除Submodule</h3><p>第一步：用Delete(keep local) 将目录或文件命令从git的索引库中移除子模块目录<br>方法：</p>
+<p>在工作区内目录或文件上右击，选择“Delete(keep local)”，在Delete窗口中，点击“Remove”。</p>
+<p>Delete(keep local)把目录lib/从git的索引库中移除,但是对目录lib/本身并不进行任何操作。</p>
+<p>因此需要彻底删除。</p>
+<p>第二步：删除物理文件</p>
+<p>第三步：删除.gitmodule文件</p>
+<p>第四步：删除.git/config的submodule配置源文件</p>
+<p>删除如下图所示红框的部门</p>
+<p><img src="/2018/07/26/Git-submodule用法/1532588786127.png" alt=""></p>
+<p>第五步：删除后，提交更改</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/26/Git-cherry-pick用法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1133,172 +1373,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/23/IPC研究之QLocalServer和QLocalSocket/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/23/IPC研究之QLocalServer和QLocalSocket/" itemprop="url">IPC研究之QLocalServer和QLocalSocket</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-23T17:10:47+08:00">
-                2018-07-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Qt-网络/" itemprop="url" rel="index">
-                    <span itemprop="name">Qt - 网络</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/07/23/IPC研究之QLocalServer和QLocalSocket/" class="leancloud_visitors" data-flag-title="IPC研究之QLocalServer和QLocalSocket">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="IPC研究之QLocalServer和QLocalSocket"><a href="#IPC研究之QLocalServer和QLocalSocket" class="headerlink" title="IPC研究之QLocalServer和QLocalSocket"></a>IPC研究之QLocalServer和QLocalSocket</h2><blockquote>
-<p>参考文章：<br><a href="http://blog.csdn.net/fldx/article/details/6254676" target="_blank" rel="noopener">IPC研究之QLocalServer和QLocalSocket</a></p>
-</blockquote>
-<p>在Qt中，提供了多种IPC方法，作者所用的是QLocalServer和QLocalSocket。看起来好像和Socket搭上点边，实则底层是windows的name pipe。这应该是支持双工通信的。</p>
-<p>QLocalServer用来监听某个管道。可以这样建立一个监听</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">QLocalServer *localServer;</span><br><span class="line">localServer = new QLocalServer(this);</span><br><span class="line">localServer-&gt;setMaxPendingConnections(MAX_CONNECTION);</span><br><span class="line"></span><br><span class="line">if (localServer-&gt;listen(&quot;commandpipe&quot;))</span><br><span class="line">&#123;</span><br><span class="line">	qDebug() &lt;&lt; &quot;listen commandpipe namepipe sucessful.&quot;;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">	qDebug() &lt;&lt; &quot;failed to listen commandpipe. &quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">connect(localServer, SIGNAL(newConnection()), this, SLOT(DealConnection()));</span><br><span class="line"></span><br><span class="line">void IPCServer::DealConnection()</span><br><span class="line">&#123;</span><br><span class="line">	QLocalSocket *socket = localServer-&gt;nextPendingConnection();</span><br><span class="line">	socket-&gt;waitForReadyRead();</span><br><span class="line">	QDataStream ds(socket);</span><br><span class="line">	ds.setVersion(QDataStream::Qt_4_6);</span><br><span class="line">	QString qstr;</span><br><span class="line">	ds &gt;&gt; qstr;</span><br><span class="line">	qDebug() &lt;&lt; &quot;Server received: &quot; &lt;&lt; qstr;</span><br><span class="line">	qDebug() &lt;&lt; &quot;Server processing...&quot;;</span><br><span class="line">	ds &lt;&lt; qstr.append(&quot; processed&quot;);</span><br><span class="line">	qDebug() &lt;&lt; &quot;Server send &quot; &lt;&lt; qstr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在这里主要采用的是QDataStream读取socket是的内容。读取完了之后，又使用这个socket再把内容转发回去。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">QLocalSocket这一块包含连接，和发送信息这一块。</span><br><span class="line">QLocalSocket _socket = new QLocalSocket(this);</span><br><span class="line">_socket-&gt;connectToServer(&quot;commandpipe&quot;);</span><br><span class="line">qDebug() &lt;&lt; &quot;socket connect to namepipe&quot;;</span><br><span class="line">QDataStream ds(_socket);</span><br><span class="line">ds.setVersion(QDataStream::Qt_4_6);</span><br><span class="line">ds &lt;&lt; QString(&quot;hello&quot;);</span><br><span class="line">_socket-&gt;waitForBytesWritten();</span><br><span class="line">qDebug() &lt;&lt; &quot;send one command&quot;;</span><br><span class="line">_socket-&gt;waitForReadyRead();</span><br><span class="line">QString bbq;</span><br><span class="line">ds &gt;&gt; bbq;</span><br><span class="line">qDebug() &lt;&lt; &quot;received servered &quot; &lt;&lt; bbq;</span><br></pre></td></tr></table></figure>
-<p>注意，这边我一开始发送的时候是使用的发送char *，但接收的时候却是用QString，结果就不对了。因为QString是unicode编码的。所以出错了。不过现在己经正常了。。。。<br>现在Shark中的Service，IPC，都己经走通了。下面主要还有编码格式，QWebKit模块，数据库模块需要完成。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1344,7 +1423,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1355,7 +1434,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1366,7 +1445,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
