@@ -293,6 +293,410 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/30/QTableWidget单击选中取消事件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/30/QTableWidget单击选中取消事件/" itemprop="url">QTableWidget单击选中取消事件</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-30T11:15:34+08:00">
+                2018-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt-Model-View/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt - Model/View</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/30/QTableWidget单击选中取消事件/" class="leancloud_visitors" data-flag-title="QTableWidget单击选中取消事件">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="QTableWidget单击选中取消事件"><a href="#QTableWidget单击选中取消事件" class="headerlink" title="QTableWidget单击选中取消事件"></a>QTableWidget单击选中取消事件</h2><blockquote>
+<p><a href="https://blog.csdn.net/u010030181/article/details/52396591" target="_blank" rel="noopener">QTableWidget单击选中取消事件</a></p>
+</blockquote>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>很多情况下有这样的需求，当鼠标点击QTableWidget时，每次只能选中一行或者不选中，不允许选中多行。例如：当点击表格中时选中一行，同时打开所选中的这行的详细信息（另一个GUI控件），当点击表格之外，选中行取消高亮（取消选择），同时详细信息也消失。</p>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>1.QTableWidget时，选择行时，可以使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setSelectionBehavior(QAbstractItemView::SelectRows);</span><br></pre></td></tr></table></figure></p>
+<p>2.QTableWidget选择多个节点时，单击节点之外是可以自动取消高亮行的，现在的问题是每次只能选择一行，QT文档说明如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Constant</th>
+<th style="text-align:left">Value</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">QAbstractItemView::SingleSelection</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">When the user selects an item, any already-selected item becomes unselected, and the user cannot unselect the selected item by clicking on it.</td>
+</tr>
+<tr>
+<td style="text-align:left">QAbstractItemView::ContiguousSelection</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">When the user selects an item in the usual way, the selection is cleared and the new item selected. However, if the user presses the Shift key while clicking on an item, all items between the current item and the clicked item are selected or unselected, depending on the state of the clicked item.</td>
+</tr>
+<tr>
+<td style="text-align:left">QAbstractItemView::ExtendedSelection</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">When the user selects an item in the usual way, the selection is cleared and the new item selected. However, if the user presses the Ctrl key when clicking on an item, the clicked item gets toggled and all other items are left untouched. If the user presses the Shift key while clicking on an item, all items between the current item and the clicked item are selected or unselected, depending on the state of the clicked item. Multiple items can be selected by dragging the mouse over them.</td>
+</tr>
+<tr>
+<td style="text-align:left">QAbstractItemView::MultiSelection</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">When the user selects an item in the usual way, the selection status of that item is toggled and the other items are left alone. Multiple items can be toggled by dragging the mouse over them.</td>
+</tr>
+<tr>
+<td style="text-align:left">QAbstractItemView::NoSelection</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">Items cannot be selected.</td>
+</tr>
+</tbody>
+</table>
+<p>红色字体可以看出，SingleSelection模式时，再次单击选中的行，是不会取消选择的，其实，还有一个没有说明：就是单击表格之外，其实也不会取消当前的选择。</p>
+<p>当表格中有多行数据时，其实可以点击其他行，是可以切换的，最大的问题是，当表格只有一行数据时，如果你选中了该行后，那么无论点击哪里，该选择都取消不了，这会带来一系列的问题……</p>
+<p>那么如何能实现每次只选择一行，却可以在点击表格之外，可以取消当前的选择行？</p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><p>通过继承，重写鼠标按下事件，在按下的时候，判断该坐标点是否在表格中，进行取消/选择高亮是可以实现的，但是，不太喜欢这样做……</p>
+<p>现在的方法如下，无需继承，只需要一个槽行数即可。<br>1.首先我们选择使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setSelectionBehavior(QAbstractItemView::SelectRows)//设置行选择。</span><br><span class="line"></span><br><span class="line">setSelectionMode(QAbstractItemView::ContiguousSelection);//设置多行选择。</span><br></pre></td></tr></table></figure></p>
+<p>2.使该表的信号itemSelectionChanged与某个槽关联。<br>3.在槽中进行处理，使其看起来像单行选择的效果。具体说明看代码<br>.h文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">#ifndef CTESTGUI_H</span><br><span class="line"></span><br><span class="line">#define CTESTGUI_H</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">#include &lt;QWidget&gt;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">class QTableWidget;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">class CTestGui : public QWidget</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    Q_OBJECT</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line"></span><br><span class="line">    CTestGui(QWidget *parent =NULL);</span><br><span class="line"></span><br><span class="line">    ~CTestGui();</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line"></span><br><span class="line">    void initLayout();</span><br><span class="line"></span><br><span class="line">    void initTab();</span><br><span class="line"></span><br><span class="line">    void initTabDatas();</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">public slots:</span><br><span class="line"></span><br><span class="line">    void onItemSelectionChanged();</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line"></span><br><span class="line">    QTableWidget* m_tab;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">#endif // CTESTGUI_H</span><br></pre></td></tr></table></figure></p>
+<p>cpp文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QVBoxLayout&gt;</span><br><span class="line"></span><br><span class="line">#include &lt;QTableWidget&gt;</span><br><span class="line"></span><br><span class="line">#include &lt;QHeaderView&gt;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">#include &quot;ctestgui.h&quot;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">CTestGui::CTestGui(QWidget *parent)</span><br><span class="line"></span><br><span class="line">    : QWidget(parent)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    initLayout();</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">CTestGui::~CTestGui()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">void CTestGui::initLayout()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    initTab();</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    QVBoxLayout* layoyt = new QVBoxLayout(this);</span><br><span class="line"></span><br><span class="line">    layoyt-&gt;addWidget(m_tab);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">void CTestGui::initTab()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    m_tab = new QTableWidget(this);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setContentsMargins(0, 0, 0, 0);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setColumnCount(4);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    m_tab-&gt;horizontalHeader()-&gt;setHighlightSections(false);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;horizontalHeader()-&gt;setStretchLastSection(true);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setFocusPolicy(Qt::NoFocus);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setSelectionBehavior(QAbstractItemView::SelectRows);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setSelectionMode(QAbstractItemView::ContiguousSelection);  //上面两句说明可以选择多行</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    //m_tab-&gt;setEditTriggers(QAbstractItemView::NoEditTriggers);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    QStringList tabHeaders;</span><br><span class="line"></span><br><span class="line">    tabHeaders &lt;&lt; tr(&quot;Item1&quot;) &lt;&lt; tr(&quot;Item2&quot;) &lt;&lt; tr(&quot;Item3&quot;) &lt;&lt; tr(&quot;Item4&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setHorizontalHeaderLabels(tabHeaders);//设置表头</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    initTabDatas();</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    connect(m_tab, &amp;QTableWidget::itemSelectionChanged,this, &amp;CTestGui::onItemSelectionChanged);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">void CTestGui::initTabDatas()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    //填充数据</span><br><span class="line"></span><br><span class="line">    int row = 0;</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;insertRow(row);//插入新行</span><br><span class="line"></span><br><span class="line">    QTableWidgetItem *newItem1 =new QTableWidgetItem(&quot;This is A1&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 0,newItem1);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    QTableWidgetItem *newItem2 =new QTableWidgetItem(&quot;This is B1&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 1,newItem2);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    QTableWidgetItem *newItem3 =new QTableWidgetItem(&quot;This is C1&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 2,newItem3);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    QTableWidgetItem *newItem4 =new QTableWidgetItem(&quot;This is D1&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 3,newItem4);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    m_tab-&gt;insertRow(++row);//插入新行</span><br><span class="line"></span><br><span class="line">    newItem1 = new QTableWidgetItem(&quot;This is A2&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 0,newItem1);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    newItem2 = new QTableWidgetItem(&quot;This is B2&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 1,newItem2);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    newItem3 = new QTableWidgetItem(&quot;This is C2&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 2,newItem3);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    newItem4 = new QTableWidgetItem(&quot;This is D2&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 3,newItem4);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    m_tab-&gt;insertRow(++row);//插入新行</span><br><span class="line"></span><br><span class="line">    newItem1 = new QTableWidgetItem(&quot;This is A3&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 0,newItem1);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    newItem2 = new QTableWidgetItem(&quot;This is B3&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 1,newItem2);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    newItem3 = new QTableWidgetItem(&quot;This is C3&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 2,newItem3);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    newItem4 = new QTableWidgetItem(&quot;This is D3&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 3,newItem4);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    m_tab-&gt;insertRow(++row);//插入新行</span><br><span class="line"></span><br><span class="line">    newItem1 = new QTableWidgetItem(&quot;This is A4&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 0,newItem1);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    newItem2 = new QTableWidgetItem(&quot;This is B4&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 1,newItem2);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    newItem3 = new QTableWidgetItem(&quot;This is C4&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 2,newItem3);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    newItem4 = new QTableWidgetItem(&quot;This is D4&quot;);</span><br><span class="line"></span><br><span class="line">    m_tab-&gt;setItem(row, 3,newItem4);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">/************************************************************************/</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"></span><br><span class="line">    多选行变成单行效果的过程：</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">1、当选择的Item发生改变时，会触发itemSelectionChanged信号,进而进入到onItemSelectionChanged()函数中，</span><br><span class="line"></span><br><span class="line">只需在该函数中控制即可</span><br><span class="line"></span><br><span class="line">2、由于我们可能选择多行，所以我们必须先取消所有选择行，再对最后一行进行高亮（选择），取消高亮（选择）的时候，又会触发该函数，</span><br><span class="line"></span><br><span class="line">造成递归触发，为了避免这个现象，在取消高亮的时候，先disconnect该信号与槽的连接，等取消好后，再高亮最后一行后，再恢复该信号。</span><br><span class="line"></span><br><span class="line">注：由于每个人创建的表格的列数并不一样，所以我们只需要找到最后一个选择的item,并且高亮（选择）该item,该item所在的行的其他items</span><br><span class="line"></span><br><span class="line">也会高亮，如果再提高一点效率，我们可以判断是选择了单行（不做处理），还是选择了多行（先取消，再选择最后一行）,判断是否选择单行，</span><br><span class="line"></span><br><span class="line">只需要在选择的selectedItems()的中的条目是否是表格的列数。如果是则说明是选择单行，如果大于表格的列数，则说明是多行。</span><br><span class="line"></span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">/************************************************************************/</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">//SLOT</span><br><span class="line"></span><br><span class="line">void CTestGui::onItemSelectionChanged()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    QList&lt;QTableWidgetItem*&gt;itemList = m_tab-&gt;selectedItems();</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    if (!itemList.isEmpty())</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">       int row;</span><br><span class="line"></span><br><span class="line">      </span><br><span class="line"></span><br><span class="line">       if (itemList.size() ==m_tab-&gt;columnCount()) //表明选中的是一行</span><br><span class="line"></span><br><span class="line">       &#123;</span><br><span class="line"></span><br><span class="line">           //</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       else   //选中了多行，要进行处理，使其最终看起来是选中了一行</span><br><span class="line"></span><br><span class="line">       &#123;</span><br><span class="line"></span><br><span class="line">           bool disabled = m_tab-&gt;disconnect(SIGNAL(itemSelectionChanged()));//此处一定要disconnect该信号，否则会产生递归</span><br><span class="line"></span><br><span class="line">           if (disabled)</span><br><span class="line"></span><br><span class="line">           &#123;</span><br><span class="line"></span><br><span class="line">              QTableWidgetItem*item = itemList[itemList.size() - 1];</span><br><span class="line"></span><br><span class="line">              row = m_tab-&gt;row(item);</span><br><span class="line"></span><br><span class="line">              m_tab-&gt;clearSelection();</span><br><span class="line"></span><br><span class="line">              m_tab-&gt;setCurrentItem(item);</span><br><span class="line"></span><br><span class="line">              //m_tab-&gt;setCurrentCell(row, 0);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">              connect(m_tab, &amp;QTableWidget::itemSelectionChanged,this, &amp;CTestGui::onItemSelectionChanged);</span><br><span class="line"></span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       //do something</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    else</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">       //do other something</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/30/Qt-学习之路-2（47）：视图选择/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/30/Qt-学习之路-2（47）：视图选择/" itemprop="url">Qt 学习之路 2（47）：视图选择</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-30T09:34:12+08:00">
+                2018-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt-豆子系列/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt - 豆子系列</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/30/Qt-学习之路-2（47）：视图选择/" class="leancloud_visitors" data-flag-title="Qt 学习之路 2（47）：视图选择">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Qt-学习之路-2（47）：视图选择"><a href="#Qt-学习之路-2（47）：视图选择" class="headerlink" title="Qt 学习之路 2（47）：视图选择"></a>Qt 学习之路 2（47）：视图选择</h2><blockquote>
+<p><a href="https://www.devbean.net/2013/03/qt-study-road-2-view-selection/" target="_blank" rel="noopener">Qt 学习之路 2（47）：视图选择</a></p>
+</blockquote>
+<p>选择是视图中常用的一个操作。在列表、树或者表格中，通过鼠标点击可以选中某一项，被选中项会变成高亮或者反色。在 Qt 中，选择也是使用了一种模型。在 model/view 架构中，这种选择模型提供了一种更通用的对选择操作的描述。对于一般应用而言，Qt 内置的选择模型已经足够，但是，Qt 还是允许你创建自己的选择模型，来实现一些特殊的操作。</p>
+<p>Qt 使用<code>QItemSelectionModel</code>类获取视图中项目的选择情况。这个模型保持有项目的索引，并且独立于任何视图。这意味着，我们可以让不同的视图共享同一个选择模型，从来达到一种同步操作的目的。选择由选择区域组成。模型只将选区的开始和结束的索引位置记录下来，以保证对于很大的选区也有很好的性能。非连续选区则由多个连续选择组成。</p>
+<p>选择会直接应用于选择模型所维护的那些被选中的索引上面。最新的选择就是当前选择。这意味着，即便界面上没有显示有任何项目被选择，如果通过某些命令对选区进行操作，同样会有作用。</p>
+<p>在视图中，始终存在一个当前项和被选择项（即便从界面上看不到有任何选择）。与通常所想的不同，当前项和选择项是相互独立的两个状态。一个项目可以即是当前项又是选择项。下表是当前项和选择项的区别：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">当前项</th>
+<th style="text-align:left">选择项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">只能有一个当前项。</td>
+<td style="text-align:left">可以有多个选择项。</td>
+</tr>
+<tr>
+<td style="text-align:left">使用键盘或者鼠标点击可以改变当前项。</td>
+<td style="text-align:left">选择项使用两种状态：选择和未选择，这取决于项目之前的状态和其它一些设置，例如，单选或多选。只有在用户进行交互的时候，这种状态才会发生改变。</td>
+</tr>
+<tr>
+<td style="text-align:left">当前项可以使用 F2 或者鼠标双击进行编辑（前提是程序允许）。</td>
+<td style="text-align:left">当前项可以结合另外一个锚点指定被选择或者去除选择的一块选区（或二者的结合）。</td>
+</tr>
+<tr>
+<td style="text-align:left">当前项通常会有一个焦点框进行标识。</td>
+<td style="text-align:left">选择项使用选区颜色进行标识。</td>
+</tr>
+</tbody>
+</table>
+<p>在处理选择的时候，我们可以将<code>QItemSelectionModel</code>当成数据模型中所有数据项的选择状态的一个记录。一旦选择模型创建好，这些数据项就可以在不知道哪些项被选择的情况下进行选择、取消选择或者改变选择状态的操作。所有被选择项的索引都在可随时更改，其它组件也可以通过信号槽机制修改这些选择的信息。</p>
+<p>标准视图类（<code>QListView</code>、<code>QTreeView</code>以及<code>QTableView</code>）已经提供了默认的选择模型，足以满足大多数应用程序的需求。某一个视图的选择模型可以通过<code>selectionModel()</code>函数获取，然后使用<code>setSelectionModel()</code>提供给其它视图共享，因此，一般没有必要新建选择模型。</p>
+<p>如果需要创建一个选区，我们需要指定一个模型以及一对索引，使用这些数据创建一个<code>QItemSelection</code>对象。这两个索引应该指向给定的模型中的数据，并且作为一个块状选区的左上角和右下角的索引。为了将选区应用到模型上，需要将选区提交到选择模型。这种操作有多种实现，对于现有选择模型有着不同的影响。</p>
+<p>下面我们来看一些代码片段。首选构建一个总数 32 个数据项的表格模型，然后将其设置为一个表格视图的数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">QTableWidget tableWidget(8, 4);</span><br><span class="line"></span><br><span class="line">QItemSelectionModel *selectionModel = tableWidget.selectionModel();</span><br></pre></td></tr></table></figure></p>
+<p>在代码的最后，我们获得<code>QTableView</code>的选择模型，以备以后使用。现在，我们没有修改模型中的数据，而是选择表格左上角的一些单元格。下面我们来看看代码如何实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">QModelIndex topLeft = tableWidget.model()-&gt;index(0, 0, QModelIndex());</span><br><span class="line">QModelIndex bottomRight = tableWidget.model()-&gt;index(5, 2, QModelIndex());</span><br></pre></td></tr></table></figure></p>
+<p>接下来，我们将获得的两个索引定义为选区。为达这一目的，我们首先构造一个<code>QItemSelection</code>对象，然后将其赋值给我们获取的选择模型：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">QItemSelection selection(topLeft, bottomRight);</span><br><span class="line">selectionModel-&gt;select(selection, QItemSelectionModel::Select);</span><br></pre></td></tr></table></figure></p>
+<p>正如前面我们说的，首先利用左上角和右下角的坐标构建一个<code>QItemSelection</code>对象，然后将这个对象设置为选择模型的选择区。<code>select()</code>函数的第一个参数就是需要选择的选区，第二个参数是选区的标志位。Qt 提供了很多不同的操作，可以参考下<code>QItemSelectionModel::SelectionFlags</code>的文档。在本例中，我们使用了<code>QItemSelectionModel::Select</code>，这意味着选区中所包含的所有单元格都会被选择。</p>
+<p>下面就是我们的运行结果：<br><img src="/2018/11/30/Qt-学习之路-2（47）：视图选择/1543547270598.png" alt=""></p>
+<p>现在我们知道如何设置选区。下面来看看如何获取选区。获取选区需要使用<code>selectedIndexes()</code>函数。该函数返回一个无序列表。我们可以通过遍历这个列表获得哪些被选择：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">QModelIndexList indexes = selectionModel-&gt;selectedIndexes();</span><br><span class="line">QModelIndex index;</span><br><span class="line"></span><br><span class="line">foreach(index, indexes) &#123;</span><br><span class="line">    QString text = QString(&quot;(%1,%2)&quot;).arg(index.row()).arg(index.column());</span><br><span class="line">    model-&gt;setData(index, text);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在选择发生更改时，选择模型会发出信号。我们可以连接<code>selectionChanged()</code>信号，在选区改变时检查哪个项目发生了变化。这个信号有两个参数：第一个是新选择的项目，第二个是刚刚被取消选择的项目。在下面的示例中，我们通过<code>selectionChanged()</code>信号，将所有新选择的项目填充字符串，将所有被取消选择的部分清空：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">void MainWindow::updateSelection(const QItemSelection &amp;selected,</span><br><span class="line">                                 const QItemSelection &amp;deselected)</span><br><span class="line">&#123;</span><br><span class="line">    QModelIndex index;</span><br><span class="line">    QModelIndexList items = selected.indexes();</span><br><span class="line"></span><br><span class="line">    foreach (index, items) &#123;</span><br><span class="line">        QString text = QString(&quot;(%1,%2)&quot;).arg(index.row()).arg(index.column());</span><br><span class="line">        model-&gt;setData(index, text);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    items = deselected.indexes();</span><br><span class="line"></span><br><span class="line">    foreach (index, items) &#123;</span><br><span class="line">        model-&gt;setData(index, &quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过<code>currentChanged()</code>，我们可以追踪当前有焦点的项。同<code>selectionChanged()</code>信号类似，这个信号也有两个参数：第一个是新的当前项，第二个是上一个当前项。下面的代码则是该信号的使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">void MainWindow::changeCurrent(const QModelIndex &amp;current,</span><br><span class="line">                               const QModelIndex &amp;previous)</span><br><span class="line">&#123;</span><br><span class="line">    statusBar()-&gt;showMessage(</span><br><span class="line">        tr(&quot;Moved from (%1,%2) to (%3,%4)&quot;)</span><br><span class="line">            .arg(previous.row()).arg(previous.column())</span><br><span class="line">            .arg(current.row()).arg(current.column()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这些信号可以用来监控选区的改变。如果你还要直接更新选区，我们还有另外的方法。</p>
+<p>同样是利用前面所说的<code>QItemSelectionModel::SelectionFlag</code>，我们可以对选区进行组合操作。还记得我们在前面的<code>select()</code>函数中使用过的第二个参数吗？当我们替换这个参数，就可以获得不同的组合方式。最常用的就是<code>QItemSelectionModel::Select</code>，它的作用是将所有指定的选区都选择上。<code>QItemSelectionModel::Toggle</code>则是一种取反的操作：如果指定的部分原来已经被选择，则取消选择，否则则选择上。<code>QItemSelectionModel::Deselect</code>则是取消指定的已选择的部分。在下面的例子中，我们使用<code>QItemSelectionModel::Toggle</code>对前面的示例作进一步的操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">QItemSelection toggleSelection;</span><br><span class="line"></span><br><span class="line">topLeft = tableWidget.model()-&gt;index(2, 1, QModelIndex());</span><br><span class="line">bottomRight = tableWidget.model()-&gt;index(7, 3, QModelIndex());</span><br><span class="line">toggleSelection.select(topLeft, bottomRight);</span><br><span class="line"></span><br><span class="line">selectionModel-&gt;select(toggleSelection, QItemSelectionModel::Toggle);</span><br></pre></td></tr></table></figure></p>
+<p>运行结果将如下所示：<br><img src="/2018/11/30/Qt-学习之路-2（47）：视图选择/1543547522396.png" alt=""></p>
+<p>默认情况下，选择操作会只会影响到指定的模型索引。但是，我们也可以改变这一设置。例如，只选择整行或者整列：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">QItemSelection columnSelection;</span><br><span class="line"></span><br><span class="line">topLeft = model-&gt;index(0, 1, QModelIndex());</span><br><span class="line">bottomRight = model-&gt;index(0, 2, QModelIndex());</span><br><span class="line"></span><br><span class="line">columnSelection.select(topLeft, bottomRight);</span><br><span class="line"></span><br><span class="line">selectionModel-&gt;select(columnSelection,</span><br><span class="line">                       QItemSelectionModel::Select | QItemSelectionModel::Columns);</span><br><span class="line"></span><br><span class="line">QItemSelection rowSelection;</span><br><span class="line"></span><br><span class="line">topLeft = model-&gt;index(0, 0, QModelIndex());</span><br><span class="line">bottomRight = model-&gt;index(1, 0, QModelIndex());</span><br><span class="line"></span><br><span class="line">rowSelection.select(topLeft, bottomRight);</span><br><span class="line"></span><br><span class="line">selectionModel-&gt;select(rowSelection,</span><br><span class="line">                       QItemSelectionModel::Select | QItemSelectionModel::Rows);</span><br></pre></td></tr></table></figure>
+<p>上面的代码，我们依然使用两个索引设置了一个区域，但是，在选择的使用我们使用了<code>QItemSelectionModel::Rows</code>和<code>QItemSelectionModel::Columns</code>这两个参数，因此只会选择这两个区域中指定的行或者列：<br><img src="/2018/11/30/Qt-学习之路-2（47）：视图选择/1543547558380.png" alt=""></p>
+<p>使用<code>QItemSelectionModel::Current</code>参数可以将当前选区替换为新的选区；使用<code>QItemSelectionModel::Clear</code>则会将原来已有的选区全部取消。为了进行全选，我们可以设置选区为左上角和右下角两个索引：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">QModelIndex topLeft = model-&gt;index(0, 0, parent);</span><br><span class="line">QModelIndex bottomRight = model-&gt;index(model-&gt;rowCount(parent)-1,</span><br><span class="line">model-&gt;columnCount(parent)-1, parent);</span><br><span class="line"></span><br><span class="line">QItemSelection selection(topLeft, bottomRight);</span><br><span class="line">selectionModel-&gt;select(selection, QItemSelectionModel::Select);</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/for循环用效率分析（-和-时效率的差异分析）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -812,378 +1216,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/23/QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）/" itemprop="url">QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T14:00:18+08:00">
-                2018-11-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Qt-Model-View/" itemprop="url" rel="index">
-                    <span itemprop="name">Qt - Model/View</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/11/23/QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）/" class="leancloud_visitors" data-flag-title="QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）"><a href="#QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）" class="headerlink" title="QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）"></a>QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）</h2><blockquote>
-<p><a href="https://blog.csdn.net/gxc1222/article/details/53035591" target="_blank" rel="noopener">QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）</a></p>
-</blockquote>
-<p>如何使QTreeView快速显示1000万条数据，并且内存占用量少呢？这个问题困扰我很久，在网上找了好多相关资料，都没有找到合理的解决方案，今天在这里把我的解决方案提供给朋友们，供大家相互学习。</p>
-<p>我开始使用的QTreeWidget 控件来显示我的数据，发现该控件在显示10000行以下的数据还可以应付的过来，但超过10000条，就明显感觉到屏幕刷新就会有卡的现象，而且占据内存很大，虽然操作起来简单方便，但灵活性没有QTreeView强大。因为我要显示的数据量是非常大的，甚至过1000万，因此，采用QTreeWidget来显示，很显然不能满足性能要求，所以打算采用QTreeView来显示，不罗嗦了，赶快进入正题了，下面讲讲我是怎么通过QTreeView来快速显示1000万条数据的吧！</p>
-<ol>
-<li>通过从文件里面读取要显示的数据，交给QTreeView来显示，从而不用把数据一次性读到内存，就可以解决内存占用大的问题。</li>
-<li>我们知道数据显示是通过刷新来实现的，通过刷新时，每次只刷新屏幕可见区域，其他部分不用刷新的方法，从而解决速度显示慢的问题。</li>
-</ol>
-<p>解决了上面的两个问题，显示1亿条数据都不会有任何问题，而且显示速度和内存占有量与显示1000条数据相当，听起来很诱人啊，下面是我是怎么通过QTreeView来解决这两个问题的：</p>
-<ol>
-<li>重载QAbstractItemModel中的如下函数：</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">QVariant headerData(int section, Qt::Orientation orientation,</span><br><span class="line">int role = Qt::DisplayRole) const;</span><br><span class="line">QVariant data(const QModelIndex &amp;index, int role) const;</span><br><span class="line">int rowCount(const QModelIndex &amp;parent = QModelIndex()) const;      </span><br><span class="line">int columnCount(const QModelIndex &amp;parent = QModelIndex()) const;</span><br><span class="line">QModelIndex index(int row, int column,</span><br><span class="line">const QModelIndex &amp;parent = QModelIndex()) const;</span><br><span class="line">QModelIndex parent(const QModelIndex &amp;index) const;</span><br></pre></td></tr></table></figure>
-<p>(1) QVariant headerData(intsection, Qt::Orientationorientation, int role =Qt::DisplayRole)const;<br>显示树视的标题，section表示列，从0开始，orientation表示标题的方向（水平还是垂直），role表式标题栏显示的方式，当role的角色为Qt::DisplayRole时，表示显示文本，当然还有其他角色，大家可以参考Qt开发手册。示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">QVariant CMyModel::headerData(int section, Qt::Orientation orientation, int role) const</span><br><span class="line">&#123;</span><br><span class="line">	if (role == Qt::DisplayRole &amp;&amp; orientation == Qt::Horizontal)</span><br><span class="line">	&#123;</span><br><span class="line">		return pData-&gt;headerData(section);</span><br><span class="line">	&#125;</span><br><span class="line">	return QVariant();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>显示水平标题，其中pData是我定义的一个数据类的对象，在这里我把该类命名为CData。headerData来取出要显示的数据。</p>
-<p>(2) QVariant data(const QModelIndex &amp;index,int role)const;<br>显示数据，index表示树节点索引，树中的每个节点都有一个对应的该索引，当index = QModelIndex()时，表示该节点是根节点，否则为非根节点。index中存放了该节点在同存节点中的位置信息（行和列），以及节点的特殊信息，如index.internalPointer()，这是一个指针，我们可以通过该指针保存我们想要的节点信息，角色同上。示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">QVariant CMyModel::data(const QModelIndex &amp;index, int role) const</span><br><span class="line">&#123;</span><br><span class="line">	if (!index.isValid())</span><br><span class="line">		return QVariant();</span><br><span class="line">	int row = index.row();</span><br><span class="line">	int col = index.column();</span><br><span class="line">	if (role == Qt::DisplayRole)</span><br><span class="line">	&#123;</span><br><span class="line">		return pData-&gt;getData(row, col);</span><br><span class="line">	&#125;</span><br><span class="line">	return QVariant();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>通过getData来获取要显示的数据，该数据方在我们的文件里，每次只需要读取我们想要显示的数据，不需要把所有的数据都放到内存，从而节省了内存空间，这样就解决了上面讲的第一个问题。</p>
-<p>(3) int rowCount(const QModelIndex &amp;parent = QModelIndex())const;<br>大家不难猜出该函数是返回该父节点下有多少个子节点，还是来看示例代码吧：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int CMyModel::rowCount(const QModelIndex &amp;parent)const</span><br><span class="line">&#123;</span><br><span class="line">	return pData-&gt;rowCount();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>为了简单起见，这里不考虑父节点，认为任何节点都存在rowCount()个节点。</p>
-<p>(4) int columnCount(const QModelIndex &amp;parent = QModelIndex())const;<br>返回父节点有多少列，示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int CMyModel::columnCount(const QModelIndex &amp;parent)const</span><br><span class="line">&#123;</span><br><span class="line">	return pData-&gt;colCount();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>(5) QModelIndex index(int row, int column, const QModelIndex &amp;parent = QModelIndex()) const;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QModelIndex CMChModel::index(int row, int column, const QModelIndex &amp;parent) const</span><br><span class="line">&#123;</span><br><span class="line">	return createIndex(row, column, NULL);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>通过该函数创建节点的索引，我这里简单一点，只创建一层节点，若大家要创建多层节点，则要通parent索引里的数据（如internalPointer()）来创建对应的节点，通过createIndex的第3个参数来向节点传入指定的索引数据，由于我这里不需要创建多层节点，所以我传入NULL。那麽我们怎么建立节点的父子关系呢，聪明的你肯定想到了吧，QModelIndex parent(const QModelIndex &amp;index) const;就是建立父子节点的父子关系的，如果只有一层节点，该函数无须重载，至此我们的显示数据模型已经实现了，接下来就是要把这个模型通过视图来表现出来(QTreeView)。</p>
-<p>我们看看QTreeView是怎么来显示我们上面建立的模型的，看一段简单的代码，大家就明白了:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QTreeView treeView;</span><br><span class="line">CMyModel *pModel = new CMyModel();</span><br><span class="line">treeView.setModel(pModel);</span><br><span class="line">treeView.show();</span><br></pre></td></tr></table></figure></p>
-<ol start="2">
-<li>是不是很简单，到这里通过QTreeView来处理大量的数据的实现方式差不多讲完了，当你按照上面的方式准备处理你的大批量数据时，你就会发现显示10000行数据还是会卡，这是什么原因呢？其实这个也困扰我很久，网上也没有找到相关资料，没办法啊，只有啃QTreeView实现的源代码，实际上QTreeView确实是显示可见部分数据（每次显示1000行数据，按理论上来说1000行足以占据计算机屏幕，这样一来不管你数据量是多大，我始终只取1000行数据，所以1亿条数据与1000条数据显示速度是一样的，只要你一次只读出要显示的数据，内存占有量也是一样的），既然问题都解决了，那麽为什么还会有卡的现象呢？</li>
-</ol>
-<p>经过进一步研究QTreeView源代码，最后发现耗时的地方是QTreeView第一次刷新的时候会计算每一行的行高，这样刷新时，就要遍历所有行数据，原来卡是出在这个地方啊，那麽应该怎么解决呢？实现方法很简单，就是上面的代码多加一行，treeView.setUniformRowHeights(true);这样一来就不会刷新计算所有行的行高了，至此用QTreeView显示大批量数据问题得到解决。</p>
-<p>最后再补充一下，该实现方式可以适应其他QTableView, QListView等视图。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/Qt-任务调度器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/23/Qt-任务调度器/" itemprop="url">Qt 任务调度器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T13:51:05+08:00">
-                2018-11-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Qt-多线程/" itemprop="url" rel="index">
-                    <span itemprop="name">Qt - 多线程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/11/23/Qt-任务调度器/" class="leancloud_visitors" data-flag-title="Qt 任务调度器">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Qt-任务调度器"><a href="#Qt-任务调度器" class="headerlink" title="Qt 任务调度器"></a>Qt 任务调度器</h2><blockquote>
-<p><a href="http://m.www.cnblogs.com/daxia319/p/4797314.html" target="_blank" rel="noopener">Qt 任务调度器</a></p>
-</blockquote>
-<p>近期刚刚完成的C/S端远程监控软件，架构为1个TcpClt对应N个TcpSvr。Clt可向Svr发送指令，Svr接收到指令执行，并通过报文反馈进度。<br>过去，软件管理的个体是每个Svr；现在需要将若干Svr合并为一个群体，各Svr之间执行指令有先后顺序。<br>因此过去只需单线程一次性向各Svr发送报文，只需在界面所在线程处理。现在需要有一个调度（等待）的过程，要在子线程里处理。</p>
-<p>需要解决的问题如下：</p>
-<ol>
-<li>定时调度</li>
-<li>跨线程更新界面。</li>
-</ol>
-<p>首先看问题2：跨线程更新界面<br>Qt可以用signal/slot机制，跨线程传递信号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Schedler *pSchd;</span><br><span class="line">QDialog *pDlg;</span><br><span class="line">//...</span><br><span class="line">connect(pSchd, SIGNAL(notify(const QString &amp;, const QString &amp;)), pDlg, SLOT(updateUI(const QString &amp;, const QString &amp;)), Qt::QueuedConnection);</span><br></pre></td></tr></table></figure>
-<p>其中最后一个参数Qt::QueuedConnection适用于跨线程调用，将信号传递到消息队列中，由QAppliction.exec()或QThread.exec()等函数调用。</p>
-<p>该参数可缺省，缺省为Qt::AutoConnection。Qt::AutoConnection根据emitter/receiver是否在同一线程内，自动决定连接方式：当位于同一线程时，采用Qt::DirectConnection（直连方式，立即执行）；位于不同线程时，采用Qt::QueuedConnection。</p>
-<p>有关Qt::connectionType，QAssistant解释如下：<br><img src="/2018/11/23/Qt-任务调度器/1542952623734.png" alt=""></p>
-<p>回到问题1：调度器需要满足以下条件：</p>
-<ol>
-<li>前一个任务未执行到关键点，禁止下一个任务开始。</li>
-<li>前一个任务执行失败，中断剩余任务。</li>
-<li>所有任务都开始执行后，需等待任务执行结束。</li>
-</ol>
-<p>根据以上原则，定义调度器如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">class AberScheduler : public QObject</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">public:</span><br><span class="line">    AberScheduler();</span><br><span class="line">    ~AberScheduler();</span><br><span class="line"></span><br><span class="line">    int process();    //执行调度</span><br><span class="line">    int init(QList&lt;AberInfo&gt; infoList, const QString &amp;cmdType);</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    void sortMachine();</span><br><span class="line">    int goFirst();</span><br><span class="line">    int goNext();</span><br><span class="line">    bool end();</span><br><span class="line"></span><br><span class="line">    void TryGoNext();</span><br><span class="line">    bool IsAllDone();</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    void OnBegin();</span><br><span class="line">    void OnEnd();</span><br><span class="line">    void UpdateAllStatus();    //从通讯线程获取状态</span><br><span class="line">    void UpdateAllUI();    //更新界面线程</span><br><span class="line"></span><br><span class="line">signals:</span><br><span class="line">   int sendAberOrder(const QString &amp;machineName, const QString &amp;orderType);</span><br><span class="line">   int notify(const QString &amp;machineName, const QString &amp;progressInfo);</span><br><span class="line">   int updateSingleStatus(const QString &amp;machineName, int *next, int *status, double *progress);</span><br><span class="line">   int setUIDisabled(const QString &amp;machineName, bool bDisabled);</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    QList&lt;AberInfo&gt; m_aberInfoList;</span><br><span class="line">    int m_index;</span><br><span class="line">    QString m_cmdType;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>机器信息结构体定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">struct AberInfo</span><br><span class="line">&#123;</span><br><span class="line">    QString machineName;    </span><br><span class="line">    int machineType;</span><br><span class="line">    int next;    //下一台机器是否可以开始： -1:叵;0:可;1:中断所有</span><br><span class="line">    int status;    //命令执行状态： 0:未开始;1:正在执行;2:成功;3:失败</span><br><span class="line">    double progress;    //进度，范围: [0.00, 1.00]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>核心调度代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">int AberScheduler::process()</span><br><span class="line">&#123;</span><br><span class="line">    int ret_next = -1;</span><br><span class="line">    bool bAllDone = false;</span><br><span class="line"></span><br><span class="line">    if(this-&gt;m_infoList.count() &lt;= 0)</span><br><span class="line">    &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    OnBegin();</span><br><span class="line"></span><br><span class="line">    goFirst();</span><br><span class="line">    UpdateAllUI();</span><br><span class="line"></span><br><span class="line">    const AberInfo &amp;info = this.m_infoList[this-&gt;m_index];</span><br><span class="line">    emit sendOrder(info.machineName, this-&gt;m_cmdType);</span><br><span class="line">    Sleep(5000);</span><br><span class="line"></span><br><span class="line">    while(!end())</span><br><span class="line">    &#123;</span><br><span class="line">        Sleep(1000);</span><br><span class="line">        UpdateAllStatus();</span><br><span class="line">        UpdateAllUI();</span><br><span class="line"></span><br><span class="line">        ret_next = TryGoNext();</span><br><span class="line">        if(ret_next == 0)  //可以进行下一个</span><br><span class="line">        &#123;</span><br><span class="line">            int ret_go_next = goNext();</span><br><span class="line">            if(ret_go_next == -1)</span><br><span class="line">            &#123;</span><br><span class="line">                onEnd();</span><br><span class="line">                return -1;</span><br><span class="line">            &#125;</span><br><span class="line">            if(!end())</span><br><span class="line">            &#123;</span><br><span class="line">                const AberInfo &amp;info = this.m_infoList[this-&gt;m_index];</span><br><span class="line">                emit sendOrder(info.machineName, this-&gt;cmd_type);</span><br><span class="line">                Sleep(5000);</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else if(ret_next == -1)  //中断全部</span><br><span class="line">        &#123;</span><br><span class="line">            UpdateAllStatus();</span><br><span class="line">            UpdateAllUI();</span><br><span class="line">            onEnd();</span><br><span class="line">            return 1;</span><br><span class="line">        &#125;</span><br><span class="line">        bAllDone = IsAllDone();</span><br><span class="line">        if(bAllDone)</span><br><span class="line">        &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    while(!bAllDone)</span><br><span class="line">    &#123;</span><br><span class="line">        Sleep(1000);</span><br><span class="line">        UpdateAllStatus();</span><br><span class="line">        UpdateAllUI();</span><br><span class="line">        bAllDone = IsAllDone();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    UpdateAllStatus();</span><br><span class="line">    UpdateAllUI();</span><br><span class="line">    onEnd();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>与发送信号有关的函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">void AberScheduler::UpdateAllStatus()</span><br><span class="line">&#123;</span><br><span class="line">    //只更新index及之前的机器</span><br><span class="line">    for(int i=0; i &lt;= this-&gt;m_index &amp;&amp; i &lt; this-&gt;m_infoList.count(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        AberInfo &amp;info = this-&gt;m_infoList[i];</span><br><span class="line">        emit UpdateStatus(this-&gt;m_cmd_type, info.machineName, &amp;info.next, &amp;info.status, &amp;info.progress);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void AberScheduler::UpdateAllUI()</span><br><span class="line">&#123;</span><br><span class="line">    foreach(AberInfo info, this-&gt;m_infoList)</span><br><span class="line">    &#123;</span><br><span class="line">        emit notify(info.machineInfo, info.progress, info.status);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void AberScheduler::OnBegin()</span><br><span class="line">&#123;</span><br><span class="line">　　foreach(AberInfo info, this-&gt;m_infoList)</span><br><span class="line">　　&#123;</span><br><span class="line">　　　　emit setDisabled(info.machineInfo, true);</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void AberScheduler::OnEnd()</span><br><span class="line">&#123;</span><br><span class="line">　　foreach(AberInfo info, this-&gt;m_infoList)</span><br><span class="line">　　&#123;</span><br><span class="line">　　　　emit setDisabled(info.machineInfo, false);</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int AberScheduler::TryGoNext()</span><br><span class="line">&#123;</span><br><span class="line">    AberInfo curInfo = this-&gt;m_infoList[m_index]; //???</span><br><span class="line">    return curInfo.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>使用线程包装AberScheduler，使其能适用于跨线程更新界面。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class AberThread : public QRunnable</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    AberThread();</span><br><span class="line">    ~AberThread();</span><br><span class="line">    void init(const QList&lt;AberInfo&gt; &amp;infoList, const QString &amp;cmdType);</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    void run();</span><br><span class="line">    AberScheduler *schd();</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    AberScheduler *m_shcd;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void void AberThread::run()</span><br><span class="line">&#123;</span><br><span class="line">　　m_schd-&gt;process();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>界面连接signal/slot如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">void AberDialog::doSth()</span><br><span class="line">&#123;</span><br><span class="line">    QList&lt;AberInfo&gt; infoList;</span><br><span class="line">    //...</span><br><span class="line">    AberThread *bThread = new AberThread;</span><br><span class="line">    bThread-&gt;init(infoList, &quot;cmdType1&quot;);</span><br><span class="line"></span><br><span class="line">    AberScheduler *p_schd = bThread-&gt;schd();</span><br><span class="line">    connect(p_schd, SIGNAL(sendAberOrder(const QString &amp;, const QString &amp;)), this, SLOT(sendAberOrder(const QString &amp;, const QString &amp;)));</span><br><span class="line">    connect(p_schd, SIGNAL(notify(const QString &amp;, const QString &amp;)), this, SLOT(updateSingleUI(const QString &amp;, const QString &amp;)));</span><br><span class="line">    connect(p_schd, SIGNAL(updateSingleStatus(const QString &amp;, int *, int *, double *)), this, SLOT(getSingleStatus(const QString &amp;, int *, int *, double *)));</span><br><span class="line">    connect(p_schd, SIGNAL(setUIDisabled(const QString &amp;, bool)), this, SLOT(setUIDisabled(const QString &amp;, bool)));</span><br><span class="line"></span><br><span class="line">    QThreadPool::globalInstance()-&gt;start(bThread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p> QTheadPool是Qt自带的线程池，只能处理QRunnable，而不能处理QThread，可设置同时运行任务的数量，超过数量的线程会在队列中排队。并且无法强制终止QRunnable。如果要实现调度的强制中断，可以采用类似全局变量的方式，在process循环中读取g_flag，若为false，则终止调度（代码就不贴了）。</p>
-<p>总结：</p>
-<ol>
-<li>QRunnable包装AberScheduler，利用多线程防止界面卡死。</li>
-<li>AberScheduler继承QObject，并使用signal/slot机制，对处理逻辑与界面解耦。</li>
-<li>利用QThreadPool实现多个任务同时调度。<br>4.<br>P.S.</li>
-<li>VS2008无法对QObject::connect()函数、SIGNAL宏、SLOT宏做语法检查。即使写了不存在的函数也能编译通过，但信号无法传递，此处极易出错。</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1229,7 +1266,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1240,7 +1277,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1251,7 +1288,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

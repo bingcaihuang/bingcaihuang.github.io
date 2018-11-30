@@ -293,6 +293,525 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/Qt-Plugin框架结构/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/13/Qt-Plugin框架结构/" itemprop="url">Qt Plugin框架结构</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-13T17:08:10+08:00">
+                2018-08-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/13/Qt-Plugin框架结构/" class="leancloud_visitors" data-flag-title="Qt Plugin框架结构">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Qt-Plugin框架结构"><a href="#Qt-Plugin框架结构" class="headerlink" title="Qt Plugin框架结构"></a>Qt Plugin框架结构</h2><blockquote>
+<p>参考文章：<br><a href="http://yleesun.blog.163.com/blog/static/2941340220093246562218/" target="_blank" rel="noopener">基于QT Plugin框架结构</a></p>
+</blockquote>
+<h3 id="qt-plugin-介绍"><a href="#qt-plugin-介绍" class="headerlink" title="qt plugin 介绍"></a>qt plugin 介绍</h3><pre><code>Qt Plugin和其他类型的插件一样，是一种计算机应用程序，它和主应用程序(host application)互相交互，以提供特定的功能。应用程序支持Plugin有许多原因，一些主要原因包括：使得第三方开发者有能力扩展应用程序，以提供无法先期预料的特色；减小应用程序的大小；由于软件版权之间的不兼容性将源代码和应用程序分享。Qt Plugin 分动态插件和静态插件两种。
+</code></pre><h3 id="qt-plugin-创建和使用方法"><a href="#qt-plugin-创建和使用方法" class="headerlink" title="qt plugin 创建和使用方法"></a>qt plugin 创建和使用方法</h3><p>Qt有两种与插件有关的API。一种用来扩展Qt本身的功能，如自定义数据库驱动，图像格式，文本编解码，自定义分格，等等，称为Higher-Level API。另一种用于应用程序的功能扩展，称为Lower-Level API。前一种是建立在后一种的基础之上的。这里讨论的是后一种，即用来扩展应用程序的Lower-level API。</p>
+<p>让应用程序支持插件扩展的步骤：</p>
+<ol>
+<li><p>定义一个接口集(只有纯虚函数的类)，用来与插件交流。</p>
+</li>
+<li><p>用宏Q_DECLARE_INTERFACE()将该接口告诉Qt元对象系统。</p>
+<p>Q_DECLARE_INTERFACE(BrushInterface,”com.trolltech.PlugAndPaint.BrushInterface/1.0”)</p>
+</li>
+<li><p>应用程序中用QPluginLoader来装载插件。</p>
+</li>
+<li><p>用宏qobject_cast()来确定一个插件是否实现了接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">QObject *obj = new QTimer;</span><br><span class="line">QTimer *timer = qobject_cast&lt;QTimer *&gt;(obj);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>写一个插件的步骤：</p>
+<ol>
+<li><p>声明插件类，该类从QObject和该插件希望实现的接口继承而来。</p>
+</li>
+<li><p>用宏Q_INTERFACES()将该接口告诉Qt元对象系统。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class BasicToolsPlugin : public QObject,</span><br><span class="line">                         public BrushInterface,</span><br><span class="line">                         public ShapeInterface,</span><br><span class="line">                         public FilterInterface</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">    Q_INTERFACES(BrushInterface ShapeInterface FilterInterface)</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用宏Q_EXPORT_PLUGIN2()导出插件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Q_EXPORT_PLUGIN2 ( PluginName, ClassName )</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用适当的.pro文件构建插件。</p>
+</li>
+</ol>
+<p>下面的代码声明了一个接口类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class FilterInterface</span><br><span class="line">&#123;</span><br><span class="line"> public:</span><br><span class="line">        virtual ~FilterInterface() &#123;&#125;</span><br><span class="line">        virtual QStringList filters() const = 0;</span><br><span class="line">        virtual QImage filterImage(const QString &amp;filter, const QImage &amp;image, QWidget* parent)=0;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Q_DECLARE_INTERFACE(FilterInterface, &quot;com.trolltech.PlugAndPaint.FilterInterface/1.0&quot;)</span><br></pre></td></tr></table></figure>
+<p>这里是实现该接口的插件类的定义：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QObject&gt;</span><br><span class="line">#include &lt;QStringList&gt;</span><br><span class="line">#include &lt;QImage&gt;</span><br><span class="line">#include &lt;plugandpaint/interfaces.h&gt;</span><br><span class="line"></span><br><span class="line">class ExtraFiltersPlugin : public QObject, public FilterInterface</span><br><span class="line">&#123;</span><br><span class="line">Q_OBJECT</span><br><span class="line">Q_INTERFACES(FilterInterface)</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    QStringList filters() const;</span><br><span class="line">    QImage filterImage(const QString &amp;filter, const QImage &amp;image,</span><br><span class="line">    QWidget *parent);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>根据插件的类型不同，pro文件中配置上有不同。下面是pro文件分析：</p>
+<p>TEMPLATE      = lib                                  // 声明为lib，动态和静态插件一样。</p>
+<p>CONFIG       += plugin static                // 声明为plugin，带static表面为静态，否则为动态。</p>
+<p>INCLUDEPATH  += ../..</p>
+<p>HEADERS       = basictoolsplugin.h</p>
+<p>SOURCES       = basictoolsplugin.cpp</p>
+<p>TARGET        = $$qtLibraryTarget(pnp_basictools)           // 指明插件的名称</p>
+<p>DESTDIR       = ../../plugandpaint/plugins</p>
+<p>加载插件的主应用程序默认在当前目录下的plugins文件夹中寻找可用插件，如果是动态插件，则直接放在plugins文件夹中便可，如果是静态，则需要在主应用程序的main函数的开始的地方用宏：Q_IMPORT_PLUGIN(pluginname(和pro文件中声明的一致))声明需要加载的插件并在工程配置中指明插件的lib位置。</p>
+<h3 id="基于qt-plugin-技术的框架结构设想"><a href="#基于qt-plugin-技术的框架结构设想" class="headerlink" title="基于qt plugin 技术的框架结构设想"></a>基于qt plugin 技术的框架结构设想</h3><ol>
+<li><p>愿景<br>由于我们目前系统功能多，模块多，缺乏系统的整体性。我们想借助Qt Plugin技术，把各个独立的功能模块实现为一个个插件，统一在主体框架中，并能根据不同地方的用户的不同需求，在主框架中加载不同的功能模块，以实现整个系统的功能集中，体现出系统的整体性。</p>
+</li>
+<li><p>plugin 接口<br>通过技术验证得出，目前我们采用动态插件，各个功能的插件实现定义的统一接口，具体功能放在插件界面中实现，此部分就像开发独立的应用程序，只是需要注意的是：</p>
+<ul>
+<li>功能部分的主界面需要继承至插件界面基类：PluginWidget，插件接口中用具体的实现类指针给插件界面基类指针赋值，在加载插件的主框架中通过插件接口中定义的基类指针统一调用，利用C++动态技术动态识别具体指向的实现类。</li>
+<li>插件界面类必须实现基类的虚函数：CreateActions()用于创建Action</li>
+<li>创建Action需要使用基类的方法newAction创建，在此函数中加入了保存创建的Action功能。</li>
+</ul>
+</li>
+</ol>
+<p>插件接口定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class QPluginInterface</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    // 析构函数</span><br><span class="line">    virtual ~QPluginInterface() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    // 插件名称</span><br><span class="line">    virtual QString PluginName() = 0;</span><br><span class="line"></span><br><span class="line">    // 插件显示在主框架中的图标文件路径</span><br><span class="line">    virtual QString PluginIconurl() = 0;</span><br><span class="line"></span><br><span class="line">    //　插件提供的对外操作接口集</span><br><span class="line">    virtual QList&lt;QAction*&gt;* Actions() = 0;</span><br><span class="line"></span><br><span class="line">    // 创建插件提供的操作方法</span><br><span class="line">    virtual void CreateActions()=0;</span><br><span class="line"></span><br><span class="line">    // 插件的主界面</span><br><span class="line">    virtual QWidget* Widget() = 0;</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    // 插件的主界面基类</span><br><span class="line">    PluginWidget *pluginWidget;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>插件界面基类定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class PluginWidget :public QMainWindow</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">public:</span><br><span class="line">    PluginWidget(QWidget*parent=0);</span><br><span class="line">    ~PluginWidget();</span><br><span class="line">    QList&lt;QAction*&gt;* Actions();</span><br><span class="line">    virtual void CreateActions()&#123;&#125;</span><br><span class="line">    QAction *newAction(const QIcon &amp;icon,const QString &amp;text,QObject*parent);</span><br><span class="line">    QAction *newAction(const QString &amp;text,QObject*parent);</span><br><span class="line">    void AppendAction(QAction*act);</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    // action链表</span><br><span class="line">    QList&lt;QAction*&gt; *m_actlist;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>下图是一个实现案例中各类之间的关系图：</p>
+<p><img src="/2018/08/13/Qt-Plugin框架结构/1534151586951.png" alt=""></p>
+<ol start="3">
+<li>插件调用</li>
+</ol>
+<p>插件在主框架中动态加载，目前考虑主框架基本结构是继承至QMainWindow，工具栏上显示当前加载的插件的功能键，并留有返回键可以回退到上一级。主工作区是一个QStackWidget,保存插件的界面，并把插件序号和插件对应的界面建立映射，保存在QMap&lt;int,QWidget&gt;中。通过序号到QStackWidget中切换界面。</p>
+<p>下图是把DBManager做成插件加载到主框架的运行界面：</p>
+<p><img src="/2018/08/13/Qt-Plugin框架结构/1534151601388.png" alt=""></p>
+<p>下图是把一个简单的绘图程序做成了插件，加载到主框架的运行界面：</p>
+<p><img src="/2018/08/13/Qt-Plugin框架结构/1534151609060.png" alt=""></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>目前只是通过实现两个动态插件在主框架中运行，基本算是功能性的验证，离具体实施还有很多工作需要进一步的研究，比如主框架的风格，插件的管理等等。由于本人的能力有限，可能有很多认识不够的地方，请指正。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/模式PK/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/13/模式PK/" itemprop="url">模式PK</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-13T08:54:42+08:00">
+                2018-08-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/13/模式PK/" class="leancloud_visitors" data-flag-title="模式PK">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="模式PK"><a href="#模式PK" class="headerlink" title="模式PK"></a>模式PK</h2><p>一张记住图例的图片</p>
+<p><img src="/2018/08/13/模式PK/1534121798715.png" alt=""></p>
+<h3 id="抽象工厂模式VS建造者模式"><a href="#抽象工厂模式VS建造者模式" class="headerlink" title="抽象工厂模式VS建造者模式"></a>抽象工厂模式VS建造者模式</h3><blockquote>
+<p><a href="https://www.cnblogs.com/ChinaHook/p/7471736.html" target="_blank" rel="noopener">抽象工厂模式VS建造者模式</a></p>
+</blockquote>
+<h4 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h4><p>抽象工厂模式实现对产品家族的创建，一个产品家族是这样的一系列产品：具有不同分类维度的产品组合，采用抽象工厂模式则是不需要关心构建过程，只关心什么产品由什么工厂生产即可。而建造者模式则是要求按照指定的蓝图建造产品，它的主要目的是通过组装零配件而产生一个新产品，两者的区别还是比较明显的。</p>
+<p>现代化的汽车工厂能够批量生产汽车（不考虑手工打造的豪华车）。不同的工厂生产不同的汽车，宝马工厂生产宝马牌子的车，奔驰工厂生产奔驰牌子的车。车不仅具有不同品牌，还有不同的用途分类，如商务车Van，运动型车SUV等，我们按照两种设计模式分别实现车辆的生产过程。</p>
+<h4 id="抽象工厂模式生产车辆"><a href="#抽象工厂模式生产车辆" class="headerlink" title="抽象工厂模式生产车辆"></a>抽象工厂模式生产车辆</h4><h5 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h5><p>按照抽象工厂模式，首先需要定义一个抽象的产品接口即汽车接口，然后宝马和奔驰分别实现该接口，由于它们只具有了一个品牌属性，还没有定义一个具体的型号，属于对象的抽象层次，每个具体车型由其子类实现，如R系列的奔驰车是商务车，X系列的宝马车属于SUV，我们来看类图。</p>
+<p><img src="/2018/08/13/模式PK/1534121926220.png" alt=""></p>
+<p>在类图中，产品类很简单，我们从两个维度看产品：品牌和车型，每个品牌下都有两个车型，如宝马SUV，宝马商务车等，同时我们又建造了两个工厂，一个专门生产宝马车的宝马工厂BMWFactory，一个是生产奔驰车的奔驰车生产工厂BenzFactory。当然，汽车工厂也有两个不同的维度，可以建立这样两个工厂：一个专门生产SUV车辆的生产工厂，生产宝马SUV和奔驰SUV，另外一个工厂专门生成商务车，分别是宝马商务车和奔驰商务车，这样设计在技术上是完全可行的，但是在业务上是不可行的，为什么？这是因为你看到过有一个工厂既能生产奔驰SUV也能生产宝马SUV吗？这是不可能的，因为业务受限，除非是国内的山寨工厂。</p>
+<h5 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h5><h5 id="产品类"><a href="#产品类" class="headerlink" title="产品类"></a>产品类</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class CICar</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CICar()&#123;&#125;;</span><br><span class="line">    ~CICar()&#123;&#125;;</span><br><span class="line">    //汽车的生产商， 也就是牌子</span><br><span class="line">    virtual string msGetBand() = 0;</span><br><span class="line">    virtual string msGetModel() = 0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在产品接口中我们定义了车辆有两个可以查询的属性：品牌和型号，奔驰车和宝马车是两个不同品牌的产品，但不够具体，只是知道它们的品牌而已，还不能够实例化，因此还是一个抽象类。</p>
+<h5 id="抽象宝马车"><a href="#抽象宝马车" class="headerlink" title="抽象宝马车"></a>抽象宝马车</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class CAbsBMW :public CICar</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CAbsBMW() &#123; msBand = &quot;宝马汽车&quot;; &#125;</span><br><span class="line">    ~CAbsBMW()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //宝马车</span><br><span class="line">    string msGetBand()&#123; return msBand; &#125;</span><br><span class="line"></span><br><span class="line">    // 型号由具体的实现类实现</span><br><span class="line">    virtual string msGetModel() = 0;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    string msBand;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>抽象产品类中实现了产品的类型定义，车辆的型号没有实现，两实现类分别实现商务车和运动型车。</p>
+<h5 id="宝马商务车"><a href="#宝马商务车" class="headerlink" title="宝马商务车"></a>宝马商务车</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class CBMWVan : public CAbsBMW</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CBMWVan()&#123; msModel = &quot;7系列车型商务车&quot;; &#125;;</span><br><span class="line">    ~CBMWVan()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    string msGetModel()&#123; return msModel; &#125;;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    string msModel;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="宝马SUV"><a href="#宝马SUV" class="headerlink" title="宝马SUV"></a>宝马SUV</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class CBMWSuv : public CAbsBMW</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CBMWSuv()&#123; msModel = &quot;X系列车型SUV&quot;; &#125;;</span><br><span class="line">    ~CBMWSuv()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    string msGetModel()&#123; return msModel; &#125;;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    string msModel;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="奔驰抽象类"><a href="#奔驰抽象类" class="headerlink" title="奔驰抽象类"></a>奔驰抽象类</h5><p>奔驰车与宝马车类似，都已经有清晰品牌定义，但是型号还没有确认，也是一个抽象的产品类。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class CAbsBenz :public CICar</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CAbsBenz() &#123; msBand = &quot;奔驰汽车&quot;; &#125;</span><br><span class="line">    ~CAbsBenz()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //奔驰车</span><br><span class="line">    string msGetBand()&#123; return msBand; &#125;</span><br><span class="line"></span><br><span class="line">    // 型号由具体的实现类实现</span><br><span class="line">    virtual string msGetModel() = 0;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    string msBand;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="奔驰商务车"><a href="#奔驰商务车" class="headerlink" title="奔驰商务车"></a>奔驰商务车</h5><p>由于分类的标准是相同的，因此奔驰车也应该有商务车和运动车两个类型。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class CBenzVan : public CAbsBenz</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CBenzVan()&#123; msModel = &quot;R系列商务车&quot;; &#125;;</span><br><span class="line">    ~CBenzVan()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    string msGetModel()&#123; return msModel; &#125;;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    string msModel;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="奔驰SUV"><a href="#奔驰SUV" class="headerlink" title="奔驰SUV"></a>奔驰SUV</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class CBenzSuv : public CAbsBenz</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CBenzSuv()&#123; msModel = &quot;G系列SUV&quot;; &#125;;</span><br><span class="line">    ~CBenzSuv()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    string msGetModel()&#123; return msModel; &#125;;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    string msModel;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="抽象工厂"><a href="#抽象工厂" class="headerlink" title="抽象工厂"></a>抽象工厂</h5><p>所有的产品类都已经实现了，剩下的工作就是要定义工厂类进行生产，由于产品类型多样，也导致了必须有多个工厂类来生产不同产品，首先就需要定义一个抽象工厂，声明每个工厂必须完成的职责。<br>抽象工厂定义了每个工厂必须生产两个类型车：SUV（运动车）和VAN（商务车），否则一个工厂就不能被实例化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class CICarFactory</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CICarFactory()&#123;&#125;;</span><br><span class="line">    ~CICarFactory()&#123;&#125;;</span><br><span class="line">    virtual CICar * mopCreateSuv() = 0;</span><br><span class="line">    virtual CICar * mopCreateVan() = 0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="宝马车工厂"><a href="#宝马车工厂" class="headerlink" title="宝马车工厂"></a>宝马车工厂</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class CBMWFactory : public CICarFactory</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CBMWFactory()&#123;&#125;;</span><br><span class="line">    ~CBMWFactory()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //生产SUV</span><br><span class="line">    CICar * mopCreateSuv() &#123; return new CBMWSuv; &#125;</span><br><span class="line"></span><br><span class="line">    //生产商务车</span><br><span class="line">    CICar * mopCreateVan() &#123; return new CBMWVan; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>很简单，你要我生产宝马商务车，没问题，直接产生一个宝马商务车对象，返回给调用者，这对调用者来说根本不需要关心到底是怎么生产的，它只要找到一个宝马工厂，即可生产出自己需要的产品（汽车）。</p>
+<h5 id="奔驰车工厂"><a href="#奔驰车工厂" class="headerlink" title="奔驰车工厂"></a>奔驰车工厂</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class CBenzFactory : public CICarFactory</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CBenzFactory()&#123;&#125;;</span><br><span class="line">    ~CBenzFactory()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //生产SUV</span><br><span class="line">    CICar * mopCreateSuv() &#123; return new CBenzSuv; &#125;</span><br><span class="line"></span><br><span class="line">    //生产商务车</span><br><span class="line">    CICar * mopCreateVan() &#123; return new CBenzVan; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="调用场景"><a href="#调用场景" class="headerlink" title="调用场景"></a>调用场景</h5><p>产品和工厂都具备了，剩下的工作就是建立一个场景类模拟调用者调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    //要求生产一辆奔驰SUV</span><br><span class="line">    cout &lt;&lt; &quot;===要求生产一辆奔驰SUV===&quot; &lt;&lt; endl;</span><br><span class="line">    //首先找到生产奔驰车的工厂</span><br><span class="line">    cout &lt;&lt; &quot;A、 找到奔驰车工厂&quot; &lt;&lt; endl;</span><br><span class="line">    CICarFactory *op_factory = new CBenzFactory;</span><br><span class="line">    //开始生产奔驰SUV</span><br><span class="line">    cout &lt;&lt; &quot;B、 开始生产奔驰SUV&quot; &lt;&lt; endl;</span><br><span class="line">    CICar *op_benz_suv = op_factory-&gt;mopCreateSuv();</span><br><span class="line">    //生产完毕， 展示一下车辆信息</span><br><span class="line">    cout &lt;&lt; &quot;C、 生产出的汽车如下： &quot; &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;汽车品牌： &quot; &lt;&lt; op_benz_suv-&gt;msGetBand().c_str() &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;汽车型号： &quot; &lt;&lt; op_benz_suv-&gt;msGetModel().c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h5><p><img src="/2018/08/13/模式PK/1534121943512.png" alt=""></p>
+<h5 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h5><p>对外界调用者来说，只要更换一个具备相同结构的对象，即可发生非常大的改变，如我们原本使用BenzFactory生产汽车，但是过了一段时间后，我们的系统需要生产宝马汽车，这对系统来说不需要很大的改动，只要把工厂类使用BMWFactory代替即可，立刻可以生产出宝马车，注意这里生产的是一辆完整的车，对于一个产品，只要给出产品代码（车类型）即可生产，抽象工厂模式把一辆车认为是一个完整的、不可拆分的对象。它注重完整性，一个产品一旦找到一个工厂生产，那就是固定的型号，不会出现一个宝马工厂生产奔驰车的情况。</p>
+<h4 id="造者模式生产车辆"><a href="#造者模式生产车辆" class="headerlink" title="造者模式生产车辆"></a>造者模式生产车辆</h4><p>那现在的问题是我们就想要一辆混合的车型，如奔驰的引擎，宝马的车轮，那该怎么处理呢？使用我们的建造者模式！</p>
+<h5 id="类图-1"><a href="#类图-1" class="headerlink" title="类图"></a>类图</h5><p>按照建造者模式设计一个生产车辆需要把车辆进行拆分，拆分成引擎和车轮两部分，然后由建造者进行建造，想要什么车，你只要有设计图纸就成，马上可以制造一辆车出来。它注重的是对零件的装配、组合、封装，它从一个细微构件装配角度看待一个对象。我们来看生产车辆的类图。</p>
+<p><img src="/2018/08/13/模式PK/1534121951198.png" alt=""></p>
+<p>注意看我们类图中的蓝图类Blueprint，它负责对产品建造过程定义。既然要生产产品，那必然要对产品进行一个描述，在类图中我们定义了一个接口来描述汽车。<br>车辆产品描述，我们定义一辆车必须有车轮和引擎</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class CICar</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    //汽车车轮</span><br><span class="line">    virtual string msGetWheel() = 0;</span><br><span class="line">    //汽车引擎</span><br><span class="line">    virtual string msGetEngine() = 0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h5><h5 id="具体车辆"><a href="#具体车辆" class="headerlink" title="具体车辆"></a>具体车辆</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">class CCar : public CICar</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CCar(const string &amp;sEngine, const string &amp;sWheel)</span><br><span class="line">    &#123;</span><br><span class="line">        msEngine = sEngine;</span><br><span class="line">        msWheel = sWheel;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    ~CCar()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //汽车车轮</span><br><span class="line">    string msGetWheel()  &#123; return msWheel;  &#125;;</span><br><span class="line">    //汽车引擎</span><br><span class="line">    string msGetEngine() &#123; return msEngine;  &#125;;</span><br><span class="line"></span><br><span class="line">    string msGetInfo()&#123; return &quot;车的轮子是： &quot; + msWheel + &quot;\n车的引擎是： &quot; + msEngine; &#125;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    //汽车引擎</span><br><span class="line">    string msEngine;</span><br><span class="line">    //汽车车轮</span><br><span class="line">    string msWheel;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>简单定义产品的属性，明确对产品的描述。我们继续来思考，因为我们的产品是比较抽象的，它没有指定引擎的型号，也没有指定车轮的牌子，那么这样的组合方式有很多，完全要靠建造者来建造，建造者说要生产一辆奔驰SUV那就得用奔驰的引擎和奔驰的车轮，该建造者对于一个具体的产品来说是绝对的权威，我们来描述一下建造者。</p>
+<h5 id="抽象建造者"><a href="#抽象建造者" class="headerlink" title="抽象建造者"></a>抽象建造者</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class CCarBuilder</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CCarBuilder() &#123;&#125;;</span><br><span class="line">    ~CCarBuilder()&#123;&#125;;</span><br><span class="line">    // 接收一份设计蓝图</span><br><span class="line">    void mvSetBlueprint(CBlueprint *opBlueprint)&#123; mopBluprint = opBlueprint; &#125;;</span><br><span class="line">    CCar *mopBuildCar() &#123; return new CCar(msBuildEngine(), msBuildWheel()); &#125;;</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    // 查看蓝图， 只有真正的建造者才可以查看蓝图</span><br><span class="line">    CBlueprint *mopGetBlueprint() &#123; return mopBluprint; &#125;;</span><br><span class="line">    virtual string msBuildWheel() = 0;</span><br><span class="line">    virtual string msBuildEngine() = 0;</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    //设计蓝图</span><br><span class="line">    CBlueprint *mopBluprint;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>看到Blueprint类了，它中文的意思是“蓝图”，你要建造一辆车必须有一个设计样稿或者蓝图吧，否则怎么生产？怎么装配？该类就是一个可参考的生产样本。</p>
+<h5 id="生产蓝图"><a href="#生产蓝图" class="headerlink" title="生产蓝图"></a>生产蓝图</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class CBlueprint</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    string msGetWheel()&#123; return msWheel; &#125;</span><br><span class="line">    void mvSetWheel(const string &amp;sWheel)&#123; msWheel = sWheel; &#125;</span><br><span class="line"></span><br><span class="line">    string msGetEngine()&#123; return msEngine; &#125;</span><br><span class="line">    void mvSetEngine(const string &amp;sEngine) &#123; msEngine = sEngine; &#125;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    string msWheel;</span><br><span class="line">    string msEngine;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这和一个具体的产品Car类是一样的？错，不一样！它是一个蓝图，是一个可以参考的模板，有一个蓝图可以设计出非常多的产品，如有一个R系统的奔驰商务车设计蓝图，我们就可以生产出一系列的奔驰车。它指导我们的产品生产，而不是一个具体的产品。我们来看宝马车建造车间。</p>
+<h5 id="宝马车建造车间"><a href="#宝马车建造车间" class="headerlink" title="宝马车建造车间"></a>宝马车建造车间</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class CBMWBuilder : public CCarBuilder</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CBMWBuilder()&#123;&#125;;</span><br><span class="line">    ~CBMWBuilder()&#123;&#125;;</span><br><span class="line">    string msBuildWheel() &#123; return mopBluprint-&gt;msGetWheel(); &#125;</span><br><span class="line">    string msBuildEngine() &#123; return mopBluprint-&gt;msGetEngine(); &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这是非常简单的类。只要获得一个蓝图，然后按照蓝图制造引擎和车轮即可，剩下的事情就交给抽象的建造者进行装配。奔驰车间与此类似。</p>
+<h5 id="奔驰车建造车间"><a href="#奔驰车建造车间" class="headerlink" title="奔驰车建造车间"></a>奔驰车建造车间</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class CBenzBuilder : public CCarBuilder</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CBenzBuilder()&#123;&#125;;</span><br><span class="line">    ~CBenzBuilder()&#123;&#125;;</span><br><span class="line">    string msBuildWheel() &#123; return mopBluprint-&gt;msGetWheel(); &#125;</span><br><span class="line">    string msBuildEngine() &#123; return mopBluprint-&gt;msGetEngine(); &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>两个建造车间都已经完成，那现在的问题就变成了怎么让车间运作，谁来编写蓝图？谁来协调生产车间？谁来对外提供最终产品？于是导演类出场了，它不仅仅有每个车间需要的设计蓝图，还具有指导不同车间装配顺序的职责。</p>
+<h5 id="导演类"><a href="#导演类" class="headerlink" title="导演类"></a>导演类</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">class CDirector</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CDirector()</span><br><span class="line">    &#123;</span><br><span class="line">        mopBenzBuilder = new CBenzBuilder;</span><br><span class="line">        mopBMWBuilder = new CBMWBuilder;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ~CDirector()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //生产奔驰SUV</span><br><span class="line">    CCar *mopCreateBenzSuv()</span><br><span class="line">    &#123;</span><br><span class="line">        //制造出汽车</span><br><span class="line">        return mopCreateCar(mopBenzBuilder, &quot;benz的引擎&quot;, &quot;benz的轮胎&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 生产出一辆宝马商务车</span><br><span class="line">    CCar *mopCreateBMWVan()</span><br><span class="line">    &#123;</span><br><span class="line">        return mopCreateCar(mopBMWBuilder, &quot;BMW的引擎&quot;, &quot;BMW的轮胎&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 生产出一个混合车型</span><br><span class="line">    CCar *mopCreateComplexCar()</span><br><span class="line">    &#123;</span><br><span class="line">        return mopCreateCar(mopBMWBuilder, &quot;BMW的引擎&quot;, &quot;benz的轮胎&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">     // 生产车辆</span><br><span class="line">     CCar *mopCreateCar(CCarBuilder *opCarBuilder, const string &amp;sEngine, const string &amp;sWheel)</span><br><span class="line">     &#123;</span><br><span class="line">        //导演怀揣蓝图</span><br><span class="line">         CBlueprint *op_bp = new CBlueprint();</span><br><span class="line">         op_bp-&gt;mvSetEngine(sEngine);</span><br><span class="line">         op_bp-&gt;mvSetWheel(sWheel);</span><br><span class="line">        opCarBuilder-&gt;mvSetBlueprint(op_bp);</span><br><span class="line"></span><br><span class="line">        return opCarBuilder-&gt;mopBuildCar();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    CCarBuilder *mopBenzBuilder;</span><br><span class="line">    CCarBuilder *mopBMWBuilder;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里有一个私有方法mopCreateCar，其作用是减少导演类中的方法对蓝图的依赖，全部由该方法来完成。</p>
+<h5 id="场景调用"><a href="#场景调用" class="headerlink" title="场景调用"></a>场景调用</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    //定义出导演类</span><br><span class="line">    CDirector o_director;</span><br><span class="line"></span><br><span class="line">    //给我一辆奔驰车SUV</span><br><span class="line">    cout &lt;&lt; &quot;===制造一辆奔驰SUV===&quot; &lt;&lt; endl;</span><br><span class="line">    CCar *op_benz_suv = o_director.mopCreateBenzSuv();</span><br><span class="line">    cout &lt;&lt; op_benz_suv-&gt;msGetInfo().c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    //给我一辆宝马商务车</span><br><span class="line">    cout &lt;&lt; &quot;===制造一辆宝马商务车===&quot; &lt;&lt; endl;</span><br><span class="line">    CCar *op_bmw_van = o_director.mopCreateBMWVan();</span><br><span class="line">    cout &lt;&lt; op_bmw_van-&gt;msGetInfo().c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    //给我一辆混合车型</span><br><span class="line">    cout &lt;&lt; &quot;===制造一辆混合车===&quot; &lt;&lt; endl;</span><br><span class="line">    CCar *op_complex_car = o_director.mopCreateComplexCar();</span><br><span class="line">    cout &lt;&lt; op_complex_car-&gt;msGetInfo().c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="调用结果"><a href="#调用结果" class="headerlink" title="调用结果"></a>调用结果</h5><p>场景类只要找到导演类（也就是车间主任了）说给我制造一辆这样的宝马车，车间主任马上通晓你的意图，设计了一个蓝图，然后命令建造车间拼命加班加点建造，最终返回给你一件最新出品的产品，运行结果如下所示</p>
+<p><img src="/2018/08/13/模式PK/1534122001067.png" alt=""></p>
+<h5 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h5><p>注意最后一个运行结果片段，我们可以立刻生产出一辆混合车型，只要有设计蓝图，这非常容易实现。反观我们的抽象工厂模式，它是不可能实现该功能的，因为它更关注的是整体，而不关注到底用的是奔驰引擎还是宝马引擎，而我们的建造者模式却可以很容易地实现该设计，市场信息变更了，我们就可以立刻跟进，生产出客户需要的产品。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>注意看上面的描述，我们在抽象工厂模式中使用“工厂”来描述构建者，而在建造者模式中使用“车间”来描述构建者，其实我们已经在说它们两者的区别了，抽象工厂模式就好比是一个一个的工厂，宝马车工厂生产宝马SUV和宝马VAN，奔驰车工厂生产奔驰车SUV和奔驰VAN，它是从一个更高层次去看对象的构建，具体到工厂内部还有很多的车间，如制造引擎的车间、装配引擎的车间等，但这些都是隐藏在工厂内部的细节，对外不公布。也就是对领导者来说，他只要关心一个工厂到底是生产什么产品的，不用关心具体怎么生产。而建造者模式就不同了，它是由车间组成，不同的车间完成不同的创建和装配任务，一个完整的汽车生产过程需要引擎制造车间、引擎装配车间的配合才能完成，它们配合的基础就是设计蓝图，而这个蓝图是掌握在车间主任（导演类）手中，它给建造车间什么蓝图就能生产什么产品，建造者模式更关心建造过程。虽然从外界看来一个车间还是生产车辆，但是这个车间的转型是非常快的，只要重新设计一个蓝图，即可产生不同的产品，这有赖于建造者模式的功劳。</p>
+<p>相对来说，抽象工厂模式比建造者模式的尺度要大，它关注产品整体，而建造者模式关注构建过程，因此建造者模式可以很容易地构建出一个崭新的产品，只要导演类能够提供具体的工艺流程。也正因为如此，两者的应用场景截然不同，如果希望屏蔽对象的创建过程，只提供一个封装良好的对象，则可以选择抽象工厂方法模式。而建造者模式可以用在构件的装配方面，如通过装配不同的组件或者相同组件的不同顺序，可以产生出一个新的对象，它可以产生一个非常灵活的架构，方便地扩展和维护系统。</p>
+<h3 id="工厂模式VS建造者模式"><a href="#工厂模式VS建造者模式" class="headerlink" title="工厂模式VS建造者模式"></a>工厂模式VS建造者模式</h3><blockquote>
+<p><a href="http://www.cnblogs.com/ChinaHook/p/7471470.html" target="_blank" rel="noopener">工厂模式VS建造者模式</a><br>Create by bingcaihaung</p>
+</blockquote>
+<h4 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h4><p>工厂方法模式注重的是整体对象的创建方法，而建造者模式注重的是部件构建的过程，旨在通过一步一步地精确构造创建出一个复杂的对象。我们举个简单例子来说明两者的差异，如要制造一个超人，如果使用工厂方法模式，直接产生出来的就是一个力大无穷、能够飞翔、内裤外穿的超人；而如果使用建造者模式，则需要组装手、头、脚、躯干等部分，然后再把内裤外穿，才能创造一个超人。</p>
+<h4 id="工厂方法建造超人"><a href="#工厂方法建造超人" class="headerlink" title="工厂方法建造超人"></a>工厂方法建造超人</h4><h5 id="类图-2"><a href="#类图-2" class="headerlink" title="类图"></a>类图</h5><p>首先我们按照工厂方法创造超人，我们来看类图。类图中我们按照年龄段把超人分为两种类型：成年超人（如克拉克、超能先生）和未成年超人（如Dash、Jack）。这是一个非常正宗的工厂方法模式，定义一个产品的接口，然后再定义两个实现，通过超人制造工厂制造超人。</p>
+<p><img src="/2018/08/13/模式PK/1534122092060.png" alt=""></p>
+<h5 id="抽象超人"><a href="#抽象超人" class="headerlink" title="抽象超人"></a>抽象超人</h5><p>想想看我们对超人最大印象是什么？当然是他的超能力，我们以specialTalent（特殊天赋）方法来代表，先看抽象产品类。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class CISuperMan</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CISuperMan()&#123;&#125;;</span><br><span class="line">    ~CISuperMan()&#123;&#125;;</span><br><span class="line">    virtual void mvSpecialTalent() = 0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="成年超人"><a href="#成年超人" class="headerlink" title="成年超人"></a>成年超人</h5><p>产品的接口定义好了，我们再来看具体的产品。先看成年超人，很简单。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class CAdultSuperMan : public CISuperMan</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CAdultSuperMan()&#123;&#125;;</span><br><span class="line">    ~CAdultSuperMan()&#123;&#125;;</span><br><span class="line">    void mvSpecialTalent()</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; &quot;超人力大无穷&quot; &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="未成年超人"><a href="#未成年超人" class="headerlink" title="未成年超人"></a>未成年超人</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class ChildSuperMan : public CISuperMan</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    ChildSuperMan()&#123;&#125;;</span><br><span class="line">    ~ChildSuperMan()&#123;&#125;;</span><br><span class="line">    void mvSpecialTalent()</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; &quot;小超人的能力是刀枪不入、 快速运动&quot; &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="工厂"><a href="#工厂" class="headerlink" title="工厂"></a>工厂</h5><p>产品都具备，那我们编写一个工厂类，其意图就是生产超人，具体是成年超人还是未成年超人，则由客户端决定。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class CSuperManFactory</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CSuperManFactory()&#123;&#125;;</span><br><span class="line">    ~CSuperManFactory()&#123;&#125;;</span><br><span class="line">    CISuperMan *mopCreateSuperMan(string sType)</span><br><span class="line">    &#123;</span><br><span class="line">        if (&quot;adult&quot; == sType)</span><br><span class="line">        &#123;</span><br><span class="line">            return new CAdultSuperMan;</span><br><span class="line">        &#125;</span><br><span class="line">        else if (&quot;child&quot; == sType)</span><br><span class="line">        &#123;</span><br><span class="line">            return new CChildSuperMan;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            return NULL;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h5><p>产品有了，工厂类也有了，剩下的工作就是开始生产超人。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    CSuperManFactory o_factory;</span><br><span class="line">    CISuperMan *op_super = o_factory.mopCreateSuperMan(&quot;adult&quot;);</span><br><span class="line">    op_super-&gt;mvSpecialTalent();</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h5><p>建立了一个超人生产工厂，年复一年地生产超人，对于具体生产出的产品，不管是成年超人还是未成年超人，都是一个模样：深蓝色紧身衣、胸前S标记、内裤外穿，没有特殊的地方。但是我们的目的达到了——生产出超人，这就是我们的意图。具体怎么生产、怎么组装，这不是工厂方法模式要考虑的，也就是说，工厂模式关注的是一个产品整体，生产出的产品应该具有相似的功能和架构。</p>
+<p>注意：通过工厂方法模式生产出对象，然后由客户端进行对象的其他操作，但是并不代表所有生产出的对象都必须具有相同的状态和行为，它是由产品所决定。</p>
+<h4 id="建造者模式建造超人"><a href="#建造者模式建造超人" class="headerlink" title="建造者模式建造超人"></a>建造者模式建造超人</h4><h5 id="类图-3"><a href="#类图-3" class="headerlink" title="类图"></a>类图</h5><p>我们在抽象建造者上使用了模板方法模式，每一个建造者都必须返回一个产品，但是产品是如何制造的，则由各个建造者自己负责。</p>
+<p><img src="/2018/08/13/模式PK/1534122128745.png" alt=""></p>
+<h5 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h5><h5 id="产品类-1"><a href="#产品类-1" class="headerlink" title="产品类"></a>产品类</h5><p>超人这个产品是由三部分组成：躯体、特殊技能、身份标记，这就类似于电子产品，首先生产出一个固件，然后再安装一个灵魂（软件驱动），最后再打上产品标签。一个崭新的产品就诞生。我们的超人也是这样生产的，先生产一个普通的躯体，然后注入特殊技能，最后打上S标签，一个超人生产完毕。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class CSuperMan</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CSuperMan()&#123;&#125;;</span><br><span class="line">    ~CSuperMan()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    string msGetBody() &#123; return msBody; &#125;;</span><br><span class="line">    void mvSetBody(const string &amp;sBody) &#123; msBody = sBody; &#125;;</span><br><span class="line"></span><br><span class="line">    string msGetSpecialTalent() &#123; return msSpecialTalent; &#125;;</span><br><span class="line">    void mvSetSpecialTalent(const string &amp;sSpecialTalent) &#123; msSpecialTalent = sSpecialTalent; &#125;;</span><br><span class="line"></span><br><span class="line">    string msGetSpecialSymbol() &#123; return msSpecialSymbol; &#125;;</span><br><span class="line">    void mvSetSpecialSymbol(const string &amp;sSpecialSymbol) &#123; msSpecialSymbol = sSpecialSymbol; &#125;;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    string msBody;             //超人的躯体</span><br><span class="line">    string msSpecialTalent;    //超人的特殊技能</span><br><span class="line">    string msSpecialSymbol;    //超人的标志</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="抽象建造者-1"><a href="#抽象建造者-1" class="headerlink" title="抽象建造者"></a>抽象建造者</h5><p>一个典型的模板方法模式，超人的各个部件（躯体、灵魂、标志）都准备好了，具体怎么组装则是由实现类来决定。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class CBuilder</span><br><span class="line">&#123;</span><br><span class="line">protected:</span><br><span class="line">    CBuilder() &#123; mopSuperMan = new CSuperMan; &#125;;</span><br><span class="line">    ~CBuilder();</span><br><span class="line"></span><br><span class="line">    void mvSetBody(const string &amp;sBody) &#123; this-&gt;mopSuperMan-&gt;mvSetBody(sBody); &#125;;</span><br><span class="line">    void mvSetSpecialTalent(const string &amp;sSpecialTalent) &#123; this-&gt;mopSuperMan-&gt;mvSetSpecialTalent(sSpecialTalent); &#125;;</span><br><span class="line">    void mvSetSpecialSymbol(const string &amp;sSpecialSymbol) &#123; this-&gt;mopSuperMan-&gt;mvSetSpecialSymbol(sSpecialSymbol); &#125;;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    virtual CSuperMan  *mopGetSuperMan() = 0;</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    CSuperMan *mopSuperMan;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="成年超人-1"><a href="#成年超人-1" class="headerlink" title="成年超人"></a>成年超人</h5><p>设计模式只是提供了一个解决问题的意图：复杂对象的构建与它的表示分离，而没有具体定出一个设计模式必须是这样的实现，必须是这样的代码，灵活运用模式才是其根本，我们通过模版方法加上建造者模式来建造超人。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class CAdultSuperManBuilder : public CBuilder</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CAdultSuperManBuilder()&#123;&#125;;</span><br><span class="line">    ~CAdultSuperManBuilder()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    CSuperMan  *mopGetSuperMan()</span><br><span class="line">    &#123;</span><br><span class="line">        mvSetBody(&quot;强壮的躯体&quot;);</span><br><span class="line">        mvSetSpecialTalent(&quot;会飞行&quot;);</span><br><span class="line">        mvSetSpecialSymbol(&quot;胸前带S标记&quot;);</span><br><span class="line"></span><br><span class="line">        return mopSuperMan;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="未成年超人-1"><a href="#未成年超人-1" class="headerlink" title="未成年超人"></a>未成年超人</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class CChildSuperManBuilder : public CBuilder</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CChildSuperManBuilder()&#123;&#125;;</span><br><span class="line">    ~CChildSuperManBuilder()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    CSuperMan  *mopGetSuperMan()</span><br><span class="line">    &#123;</span><br><span class="line">        mvSetBody(&quot;强壮的躯体&quot;);</span><br><span class="line">        mvSetSpecialTalent(&quot;刀枪不入&quot;);</span><br><span class="line">        mvSetSpecialSymbol(&quot;胸前带S标记&quot;);</span><br><span class="line"></span><br><span class="line">        return mopSuperMan;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>大家注意看我们这两个具体的建造者，它们都关注了产品的各个部分，在某些应用场景下甚至会关心产品的构建顺序，即使是相同的部件，装配顺序不同，产生的结果也不同，这也正是建造者模式的意图：通过不同的部件、不同装配产生不同的复杂对象。</p>
+<h5 id="导演类-1"><a href="#导演类-1" class="headerlink" title="导演类"></a>导演类</h5><p>导演类很简单就不多说了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class CDirector &#123;</span><br><span class="line">public:</span><br><span class="line">    CDirector()&#123;&#125;;</span><br><span class="line">    ~CDirector()&#123;&#125;;</span><br><span class="line">    //两个建造者的应用</span><br><span class="line">    CBuilder *mopAdultBuilder = new CAdultSuperManBuilder();</span><br><span class="line">    //未成年超人的建造者</span><br><span class="line">    CBuilder *CChildBuilder = new CChildSuperManBuilder();</span><br><span class="line">    //建造一个成年、 会飞行的超人</span><br><span class="line">    CSuperMan *mopGetAdultSuperMan()&#123; return mopAdultBuilder-&gt;mopGetSuperMan();     &#125;</span><br><span class="line">    // 建造一个未成年、 刀枪不入的超人</span><br><span class="line">    CSuperMan *mopGetChildSuperMan()&#123; return CChildBuilder-&gt;mopGetSuperMan(); &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="场景调用-1"><a href="#场景调用-1" class="headerlink" title="场景调用"></a>场景调用</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    CDirector o_director;</span><br><span class="line"></span><br><span class="line">    //建造一个成年超人</span><br><span class="line">    CSuperMan *op_adult = o_director.mopGetAdultSuperMan();</span><br><span class="line"></span><br><span class="line">    // 展示超人信息</span><br><span class="line">    cout &lt;&lt; op_adult-&gt;msGetSpecialTalent().c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个场景类的写法与工厂方法模式是相同的，但是你可以看到，在建立超人的过程中，建造者必须关注超人的各个部件，而工厂方法模式则只关注超人的整体，这就是两者的区别。</p>
+<h4 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h4><p>工厂方法模式和建造者模式都属于对象创建类模式，都用来创建类的对象。但它们之间的区别还是比较明显的。</p>
+<ul>
+<li>意图不同</li>
+</ul>
+<p>在工厂方法模式里，我们关注的是一个产品整体，如超人整体，无须关心产品的各部分是如何创建出来的；但在建造者模式中，一个具体产品的产生是依赖各个部件的产生以及装配顺序，它关注的是“由零件一步一步地组装出产品对象”。简单地说，工厂模式是一个对象创建的粗线条应用，建造者模式则是通过细线条勾勒出一个复杂对象，关注的是产品组成部分的创建过程。</p>
+<ul>
+<li>产品的复杂度不同</li>
+</ul>
+<p>工厂方法模式创建的产品一般都是单一性质产品，如成年超人，都是一个模样，而建造者模式创建的则是一个复合产品，它由各个部件复合而成，部件不同产品对象当然不同。这不是说工厂方法模式创建的对象简单，而是指它们的粒度大小不同。一般来说，工厂方法模式的对象粒度比较粗，建造者模式的产品对象粒度比较细。</p>
+<p>两者的区别有了，那在具体的应用中，我们该如何选择呢？是用工厂方法模式来创建对象，还是用建造者模式来创建对象，这完全取决于我们在做系统设计时的意图，如果需要详细关注一个产品部件的生产、安装步骤，则选择建造者，否则选择工厂方法模式。</p>
+<h3 id="装饰模式VS适配器模式"><a href="#装饰模式VS适配器模式" class="headerlink" title="装饰模式VS适配器模式"></a>装饰模式VS适配器模式</h3><blockquote>
+<p><a href="http://www.cnblogs.com/ChinaHook/p/7475540.html" target="_blank" rel="noopener">装饰模式VS适配器模式</a></p>
+</blockquote>
+<h4 id="概述-2"><a href="#概述-2" class="headerlink" title="概述"></a>概述</h4><p>装饰模式和适配器模式在通用类图上没有太多的相似点，差别比较大，但是它们的功能有相似的地方：都是包装作用，都是通过委托方式实现其功能。不同点是：装饰模式包装的是自己的兄弟类，隶属于同一个家族（相同接口或父类），适配器模式则修饰非血缘关系类，把一个非本家族的对象伪装成本家族的对象，注意是伪装，因此它的本质还是非相同接口的对象。</p>
+<p>大家都应该听过丑小鸭的故事吧，我们今天就用这两种模式分别讲述丑小鸭的故事。话说鸭妈妈有5个孩子，其中4个孩子都是黄白相间的颜色，而最小的那只也就是叫做丑小鸭的那只，是纯白色的，与兄弟姐妹不相同，在遭受了诸多的嘲讽和讥笑后，最终丑小鸭变成了一只美丽的天鹅。那我们如何用两种不同模式来描述这一故事呢？</p>
+<h4 id="装饰模式描述丑小鸭"><a href="#装饰模式描述丑小鸭" class="headerlink" title="装饰模式描述丑小鸭"></a>装饰模式描述丑小鸭</h4><h5 id="类图-4"><a href="#类图-4" class="headerlink" title="类图"></a>类图</h5><p>用装饰模式来描述丑小鸭，首先就要肯定丑小鸭是一只天鹅，只是因为她小或者是鸭妈妈的无知才没有被认出是天鹅，经过一段时间后，它逐步变成一个漂亮、自信、优美的白天鹅。根据分析我们可以这样设计，先设计一个丑小鸭，然后根据时间先后来进行不同的美化处理，怎么美化呢？先长出漂亮的羽毛，然后逐步展现出异于鸭子的不同行为，如飞行，最终在具备了所有的行为后，它就成为一只纯粹的白天鹅了。类图比较简单，非常标准的装饰模式。</p>
+<p><img src="/2018/08/13/模式PK/1534122187586.png" alt=""></p>
+<h4 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h4><h5 id="天鹅接口"><a href="#天鹅接口" class="headerlink" title="天鹅接口"></a>天鹅接口</h5><p>我们按照故事的情节发展一步一步地实现程序。初期的时候，丑小鸭表现得很另类，叫声不同，外形不同，致使周围的亲戚、朋友都对她鄙视，那我们来建立这个过程，由于丑小鸭的本质就是一个天鹅，我们就先生成一个天鹅的接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class CISwan</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CISwan()&#123;&#125;;</span><br><span class="line">    ~CISwan()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //天鹅会飞</span><br><span class="line">    virtual  void mvFly() = 0;</span><br><span class="line">    //天鹅会叫</span><br><span class="line">    virtual void mvCry() = 0;</span><br><span class="line">    //天鹅都有漂亮的外表</span><br><span class="line">    virtual void mvDesAppaearance() = 0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="丑小鸭"><a href="#丑小鸭" class="headerlink" title="丑小鸭"></a>丑小鸭</h5><p>我们定义了天鹅的行为，都会飞行、会叫，并且可以描述她们漂亮的外表。丑小鸭是一只白天鹅，是”is-a”的关系，也就是需要实现这个接口了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class CUglyDuckling : public CISwan</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CUglyDuckling()&#123;&#125;;</span><br><span class="line">    ~CUglyDuckling()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //丑小鸭的叫声</span><br><span class="line">    void mvCry() &#123; cout &lt;&lt; &quot;叫声是克噜——克噜——克噜&quot; &lt;&lt; endl; &#125;;</span><br><span class="line"></span><br><span class="line">    //丑小鸭的外形</span><br><span class="line">    void mvDesAppaearance() &#123; cout &lt;&lt; &quot;外形是脏兮兮的白色， 毛茸茸的大脑袋&quot; &lt;&lt; endl; &#125;</span><br><span class="line"></span><br><span class="line">    //丑小鸭还比较小，不能飞</span><br><span class="line">    void mvFly()&#123; cout &lt;&lt; &quot;不能飞行&quot; &lt;&lt; endl; &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="抽象装饰类"><a href="#抽象装饰类" class="headerlink" title="抽象装饰类"></a>抽象装饰类</h5><p>丑小鸭具备了天鹅的所有行为和属性，因为她本来就是一只白天鹅，只是因为她太小了还不能飞行，也不能照顾自己，所以丑丑的，在经过长时间的流浪生活后，丑小鸭长大了。终于有一天，她发现自己竟然变成了一只美丽的白天鹅，有着漂亮、洁白的羽毛，而且还可以飞行，这完全是一种升华行为。我们来看看她的行为（飞行）和属性（外形）是如何加强的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class CDecorator : public CISwan</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CDecorator(CISwan *opSwan)&#123; mopSwan = opSwan; &#125;;</span><br><span class="line">    ~CDecorator()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    virtual void mvCry() &#123; mopSwan-&gt;mvCry(); &#125;</span><br><span class="line">    virtual void mvFly() &#123; mopSwan-&gt;mvFly(); &#125;</span><br><span class="line">    virtual void mvDesAppaearance() &#123; mopSwan-&gt;mvDesAppaearance(); &#125;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    CISwan *mopSwan;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="外形装饰"><a href="#外形装饰" class="headerlink" title="外形装饰"></a>外形装饰</h5><p>这是一个非常简单的代理模式。我们再来看丑小鸭是如何开始变得美丽的，变化是由外及里的，有了漂亮的外表才有内心的实质变化。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class CBeautifyAppearance : public CDecorator</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CBeautifyAppearance(CISwan *opSwan) : CDecorator(opSwan) &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    // 外表美化处理</span><br><span class="line">    void mvDesAppaearance() override &#123; cout &lt;&lt; &quot;外表是纯白色的，非常惹人喜爱！&quot; &lt;&lt; endl; &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="行为装饰"><a href="#行为装饰" class="headerlink" title="行为装饰"></a>行为装饰</h5><p>丑小鸭最后发现自己还能飞行，这是一个行为突破，是对原有行为“不会飞行”的一种强化。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class CStrongBehavior : public CDecorator</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CStrongBehavior(CISwan *opSwan) : CDecorator(opSwan) &#123;&#125;;</span><br><span class="line">    ~CStrongBehavior()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    // 会飞行了</span><br><span class="line">    void mvFly() override &#123; cout &lt;&lt; &quot;会飞行了！&quot; &lt;&lt; endl; &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="场景调用-2"><a href="#场景调用-2" class="headerlink" title="场景调用"></a>场景调用</h5><p>所有的故事元素我们都具备了，就等有人来讲故事了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    //很久很久以前， 这里有一个丑陋的小鸭子</span><br><span class="line">    cout &lt;&lt; &quot;===很久很久以前， 这里有一只丑陋的小鸭子===&quot; &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    CISwan *op_duck = new CUglyDuckling;</span><br><span class="line">    //展示一下小鸭子</span><br><span class="line">    op_duck-&gt;mvDesAppaearance();</span><br><span class="line">    op_duck-&gt;mvCry();</span><br><span class="line">    op_duck-&gt;mvFly();</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;===小鸭子终于发现自己是一只天鹅====&quot; &lt;&lt; endl;</span><br><span class="line">    //首先外形变化了</span><br><span class="line">    op_duck = new CBeautifyAppearance(op_duck);</span><br><span class="line">    //其次行为也发生了改变</span><br><span class="line">    op_duck = new CStrongBehavior(op_duck);</span><br><span class="line">    //虽然还是叫丑小鸭， 但是已经发生了很大变化</span><br><span class="line">    op_duck-&gt;mvDesAppaearance();</span><br><span class="line">    op_duck-&gt;mvCry();</span><br><span class="line">    op_duck-&gt;mvFly();</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h5><p><img src="/2018/08/13/模式PK/1534122227827.png" alt=""></p>
+<p>使用装饰模式描述丑小鸭蜕变的过程是如此简单，它关注了对象功能的强化，是对原始对象的行为和属性的修正和加强，把原本被人歧视、冷落的丑小鸭通过两次强化处理最终转变为受人喜爱、羡慕的白天鹅。</p>
+<h4 id="适配器模式实现丑小鸭"><a href="#适配器模式实现丑小鸭" class="headerlink" title="适配器模式实现丑小鸭"></a>适配器模式实现丑小鸭</h4><h5 id="类图-5"><a href="#类图-5" class="headerlink" title="类图"></a>类图</h5><p>采用适配器模式实现丑小鸭变成白天鹅的过程要从鸭妈妈的角度来分析，鸭妈妈有5个孩子，它认为这5个孩子都是她的后代，都是鸭类，但是实际上是有一只（也就是丑小鸭）不是真正的鸭类，她是一只小白天鹅，因为太小，差别太细微，很难分辨，导致鸭妈妈认为她是一只鸭子，从鸭子的审美观来看，丑小鸭是丑陋的。通过分析，我们要做的就是要设计两个对象：鸭和天鹅，然后鸭妈妈把一只天鹅看成了小鸭子，最终时间到来的时候丑小鸭变成了白天鹅。</p>
+<p><img src="/2018/08/13/模式PK/1534122243332.png" alt=""></p>
+<p>类图非常简单，我们定义了两个接口：鸭类接口和天鹅类接口，然后建立了一个适配器UglyDuckling，把一只白天鹅封装成了小鸭子。</p>
+<h4 id="代码-4"><a href="#代码-4" class="headerlink" title="代码"></a>代码</h4><h5 id="鸭类接口"><a href="#鸭类接口" class="headerlink" title="鸭类接口"></a>鸭类接口</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class CIDuck</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CIDuck()&#123;&#125;;</span><br><span class="line">    ~CIDuck()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //会叫</span><br><span class="line">    virtual void mvCry() = 0;</span><br><span class="line"></span><br><span class="line">    //鸭子的外形</span><br><span class="line">    virtual void mvDesAppearance() = 0;</span><br><span class="line"></span><br><span class="line">    //描述鸭子的其他行为</span><br><span class="line">    virtual void mvDesBehavior() = 0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>鸭类有3个行为，一个是鸭会叫，一个是外形描述，还有一个是综合性的其他行为描述，例如会游泳等。</p>
+<h5 id="小鸭子"><a href="#小鸭子" class="headerlink" title="小鸭子"></a>小鸭子</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class CDuckling : public CIDuck</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CDuckling()&#123;&#125;;</span><br><span class="line">    ~CDuckling()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    void mvCry() &#123; cout &lt;&lt; &quot;叫声是嘎——嘎——嘎&quot; &lt;&lt; endl;  &#125;;</span><br><span class="line">    void mvDesAppearance() &#123; cout &lt;&lt; &quot;外形是黄白相间，嘴长&quot; &lt;&lt; endl; &#125;;</span><br><span class="line"></span><br><span class="line">    // 鸭子的其他行为， 如游泳</span><br><span class="line">    void mvDesBehavior() &#123; cout &lt;&lt; &quot;会游泳&quot; &lt;&lt; endl; &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="白天鹅"><a href="#白天鹅" class="headerlink" title="白天鹅"></a>白天鹅</h5><p>4只正宗的小鸭子形象已经清晰地定义出来了。鸭妈妈还有一个孩子，就是另类的丑小鸭，她实际是一只白天鹅。我们先定义出白天鹅。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">class CISwan</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CISwan()&#123;&#125;;</span><br><span class="line">    ~CISwan()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //天鹅会飞</span><br><span class="line">    virtual  void mvFly() = 0;</span><br><span class="line">    //天鹅会叫</span><br><span class="line">    virtual void mvCry() = 0;</span><br><span class="line">    //天鹅都有漂亮的外表</span><br><span class="line">    virtual void mvDesAppaearance() = 0;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class CWhiteSwan : public CISwan</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CWhiteSwan()&#123;&#125;;</span><br><span class="line">    ~CWhiteSwan()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    //白天鹅的叫声</span><br><span class="line">    void mvCry() &#123; cout &lt;&lt; &quot;叫声是克噜——克噜——克噜&quot; &lt;&lt; endl; &#125;;</span><br><span class="line"></span><br><span class="line">    //白天鹅的外形</span><br><span class="line">    void mvDesAppaearance() &#123; cout &lt;&lt; &quot;外形是纯白色，惹人喜爱&quot; &lt;&lt; endl; &#125;</span><br><span class="line"></span><br><span class="line">    //天鹅是能够飞行的</span><br><span class="line">    void mvFly()&#123; cout &lt;&lt; &quot;能够飞行&quot; &lt;&lt; endl; &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="当成鸭子的白天鹅"><a href="#当成鸭子的白天鹅" class="headerlink" title="当成鸭子的白天鹅"></a>当成鸭子的白天鹅</h5><p>但是，鸭妈妈却不认为自己这个另类的孩子是白天鹅，它从自己的观点出发，认为她很丑陋，有碍自己的脸面，于是驱赶她——鸭妈妈把这只小天鹅误认为一只鸭。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class CUglyDuckling : public CWhiteSwan, public CIDuck</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    CUglyDuckling()&#123;&#125;;</span><br><span class="line">    ~CUglyDuckling()&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    void mvCry() &#123; CWhiteSwan::mvCry(); &#125;;</span><br><span class="line">    void mvDesAppearance() &#123; CWhiteSwan::mvDesAppaearance(); &#125;;</span><br><span class="line">    void mvDesBehavior()</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; &quot;会游泳！&quot; &lt;&lt; endl;</span><br><span class="line">        CWhiteSwan::mvFly();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="调用-1"><a href="#调用-1" class="headerlink" title="调用"></a>调用</h5><p>天鹅被看成了鸭子，有点暴殄天物的感觉。我们再来创建一个场景类来描述这一场景。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    //鸭妈妈有5个孩子， 其中4个都是一个模样</span><br><span class="line">    cout &lt;&lt; &quot;===妈妈有五个孩子， 其中四个模样是这样的： ===&quot; &lt;&lt; endl;</span><br><span class="line">    CIDuck *op_duck = new CDuckling();</span><br><span class="line">    op_duck-&gt;mvCry();</span><br><span class="line">    op_duck-&gt;mvDesAppearance();</span><br><span class="line">    op_duck-&gt;mvDesBehavior();</span><br><span class="line">    cout &lt;&lt; &quot;===一只独特的小鸭子， 模样是这样的： ===&quot; &lt;&lt; endl;</span><br><span class="line">    CIDuck *op_ugly_duck = new CUglyDuckling;</span><br><span class="line">    op_ugly_duck-&gt;mvCry();</span><br><span class="line">    op_ugly_duck-&gt;mvDesAppearance();</span><br><span class="line">    op_ugly_duck-&gt;mvDesBehavior();</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="执行结果-1"><a href="#执行结果-1" class="headerlink" title="执行结果"></a>执行结果</h5><p><img src="/2018/08/13/模式PK/1534122278770.png" alt=""></p>
+<p>小天鹅被认为是一只丑陋的小鸭子…采用适配器模式讲述丑小鸭的故事，我们首先观察到的是鸭与天鹅的不同点，建立了不同的接口以实现不同的物种，然后在需要的时候（根据故事情节）把一个物种伪装成另外一个物种，实现不同物种的相同处理过程，这就是适配器模式的设计意图。</p>
+<h4 id="总结-3"><a href="#总结-3" class="headerlink" title="总结"></a>总结</h4><p>我们用两个模式实现了丑小鸭的美丽蜕变。我们发现：这两个模式有较多的不同点。</p>
+<ul>
+<li>意图不同</li>
+</ul>
+<p>装饰模式的意图是加强对象的功能，例子中就是把一个怯弱的小天鹅强化成了一个美丽、自信的白天鹅，它不改变类的行为和属性，只是增加（当然了，减弱类的功能也是可能存在的）功能，使美丽更加美丽，强壮更加强壮，安全更加安全；而适配器模式关注的则是转化，它的主要意图是两个不同对象之间的转化，它可以把一个天鹅转化为一个小鸭子看待，也可以把一只小鸭子看成是一只天鹅，它关注转换。</p>
+<ul>
+<li>施与对象不同</li>
+</ul>
+<p>装饰模式装饰的对象必须是自己的同宗，也就是相同的接口或父类，只要在具有相同的属性和行为的情况下，才能比较行为是增加还是减弱；适配器模式则必须是两个不同的对象，因为它着重于转换，只有两个不同的对象才有转换的必要，如果是相同对象还转换什么？！</p>
+<ul>
+<li>场景不同</li>
+</ul>
+<p>装饰模式在任何时候都可以使用，只要是想增强类的功能，而适配器模式则是一个补救模式，一般出现在系统成熟或已经构建完毕的项目中，作为一个紧急处理手段采用。</p>
+<ul>
+<li>扩展性不同</li>
+</ul>
+<p>装饰模式很容易扩展！今天不用这个修饰，好，去掉；明天想再使用，好，加上。这都没有问题。而且装饰类可以继续扩展下去；但是适配器模式就不同了，它在两个不同对象之间架起了一座沟通的桥梁，建立容易，去掉就比较困难了，需要从系统整体考虑是否能够撤销。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/C-编译器知识/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1172,420 +1691,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/C-智能指针系列/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/07/C-智能指针系列/" itemprop="url">C++智能指针系列</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-07T19:02:22+08:00">
-                2018-08-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/08/07/C-智能指针系列/" class="leancloud_visitors" data-flag-title="C++智能指针系列">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="C-智能指针系列"><a href="#C-智能指针系列" class="headerlink" title="C++智能指针系列"></a>C++智能指针系列</h2><h3 id="智能指针shared-ptr的用法"><a href="#智能指针shared-ptr的用法" class="headerlink" title="智能指针shared_ptr的用法"></a>智能指针shared_ptr的用法</h3><blockquote>
-<p><a href="https://www.cnblogs.com/jiayayao/p/6128877.html" target="_blank" rel="noopener">智能指针shared_ptr的用法</a></p>
-</blockquote>
-<p>为了解决C++内存泄漏的问题，C++11引入了智能指针（Smart Pointer）。</p>
-<p>智能指针的原理是，接受一个申请好的内存地址，构造一个保存在栈上的智能指针对象，当程序退出栈的作用域范围后，由于栈上的变量自动被销毁，智能指针内部保存的内存也就被释放掉了（除非将智能指针保存起来）。</p>
-<p>C++11提供了三种智能指针：std::shared_ptr, std::unique_ptr, std::weak_ptr，使用时需添加头文件<memory>。</memory></p>
-<p>shared_ptr使用引用计数，每一个shared_ptr的拷贝都指向相同的内存。每使用他一次，内部的引用计数加1，每析构一次，内部的引用计数减1，减为0时，删除所指向的堆内存。shared_ptr内部的引用计数是安全的，但是对象的读取需要加锁。</p>
-<h4 id="shared-ptr的基本用法"><a href="#shared-ptr的基本用法" class="headerlink" title="shared_ptr的基本用法"></a>shared_ptr的基本用法</h4><h5 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h5><p>可以通过构造函数、std::make_shared<t>辅助函数和reset方法来初始化shared_ptr：</t></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;future&gt;</span><br><span class="line">#include &lt;thread&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line">class Person</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    Person(int v) &#123;</span><br><span class="line">        value = v;</span><br><span class="line">        std::cout &lt;&lt; &quot;Cons&quot; &lt;&lt;value&lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">    ~Person() &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;Des&quot; &lt;&lt;value&lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    int value;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    std::shared_ptr&lt;Person&gt; p1(new Person(1));// Person(1)的引用计数为1</span><br><span class="line"></span><br><span class="line">    std::shared_ptr&lt;Person&gt; p2 = std::make_shared&lt;Person&gt;(2);</span><br><span class="line"></span><br><span class="line">    p1.reset(new Person(3));// 首先生成新对象，然后引用计数减1，引用计数为0，故析构Person(1)</span><br><span class="line">                            // 最后将新对象的指针交给智能指针</span><br><span class="line"></span><br><span class="line">    std::shared_ptr&lt;Person&gt; p3 = p1;//现在p1和p3同时指向Person(3)，Person(3)的引用计数为2</span><br><span class="line"></span><br><span class="line">    p1.reset();//Person(3)的引用计数为1</span><br><span class="line">    p3.reset();//Person(3)的引用计数为0，析构Person(3)</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意，不能将一个原始指针直接赋值给一个智能指针，如下所示，原因是一个是类，一个是指针。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::shared_ptr&lt;int&gt; p4 = new int(1);// error</span><br></pre></td></tr></table></figure>
-<p><strong>reset()包含两个操作。当智能指针中有值的时候，调用reset()会使引用计数减1.当调用reset（new xxx())重新赋值时，智能指针首先是生成新对象，然后将就对象的引用计数减1（当然，如果发现引用计数为0时，则析构旧对象），然后将新对象的指针交给智能指针保管。</strong></p>
-<h5 id="获取原始指针"><a href="#获取原始指针" class="headerlink" title="获取原始指针"></a>获取原始指针</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::shared_ptr&lt;int&gt; p4(new int(5));</span><br><span class="line">int *pInt = p4.get();</span><br></pre></td></tr></table></figure>
-<h5 id="指定删除器"><a href="#指定删除器" class="headerlink" title="指定删除器"></a>指定删除器</h5><p>智能指针可以指定删除器，当智能指针的引用计数为0时，自动调用指定的删除器来释放内存。std::shared_ptr可以指定删除器的一个原因是其默认删除器不支持数组对象，这一点需要注意。</p>
-<h4 id="使用shared-ptr需要注意的问题"><a href="#使用shared-ptr需要注意的问题" class="headerlink" title="使用shared_ptr需要注意的问题"></a>使用shared_ptr需要注意的问题</h4><p>但凡一些高级的用法，使用时都有不少陷阱。<br><strong>不要用一个原始指针初始化多个shared_ptr，原因在于，会造成二次销毁，如下所示：</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">int *p5 = new int;</span><br><span class="line">std::shared_ptr&lt;int&gt; p6(p5);</span><br><span class="line">std::shared_ptr&lt;int&gt; p7(p5);// logic error</span><br></pre></td></tr></table></figure>
-<p><strong>不要在函数实参中创建shared_ptr。因为C++的函数参数的计算顺序在不同的编译器下是不同的。正确的做法是先创建好，然后再传入。</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function(shared_ptr&lt;int&gt;(new int), g());</span><br></pre></td></tr></table></figure>
-<p><strong>禁止通过shared_from_this()返回this指针，这样做可能也会造成二次析构。</strong></p>
-<p><strong>避免循环引用。智能指针最大的一个陷阱是循环引用，循环引用会导致内存泄漏。解决方法是AStruct或BStruct改为weak_ptr。</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">struct AStruct;</span><br><span class="line">struct BStruct;</span><br><span class="line"></span><br><span class="line">struct AStruct &#123;</span><br><span class="line">    std::shared_ptr&lt;BStruct&gt; bPtr;</span><br><span class="line">    ~AStruct() &#123; cout &lt;&lt; &quot;AStruct is deleted!&quot;&lt;&lt;endl; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct BStruct &#123;</span><br><span class="line">    std::shared_ptr&lt;AStruct&gt; APtr;</span><br><span class="line">    ~BStruct() &#123; cout &lt;&lt; &quot;BStruct is deleted!&quot; &lt;&lt; endl; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void TestLoopReference()</span><br><span class="line">&#123;</span><br><span class="line">    std::shared_ptr&lt;AStruct&gt; ap(new AStruct);</span><br><span class="line">    std::shared_ptr&lt;BStruct&gt; bp(new BStruct);</span><br><span class="line">    ap-&gt;bPtr = bp;</span><br><span class="line">    bp-&gt;APtr = ap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="shared-ptr-使用注意事项"><a href="#shared-ptr-使用注意事项" class="headerlink" title="shared_ptr 使用注意事项"></a>shared_ptr 使用注意事项</h3><blockquote>
-<p><a href="https://www.cnblogs.com/daihanlong/p/4716009.html" target="_blank" rel="noopener">c++ shared_ptr 使用注意事项</a></p>
-</blockquote>
-<h4 id="条款1：不要把一个原生指针给多个shared-ptr管理"><a href="#条款1：不要把一个原生指针给多个shared-ptr管理" class="headerlink" title="条款1：不要把一个原生指针给多个shared_ptr管理"></a>条款1：不要把一个原生指针给多个shared_ptr管理</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">int* ptr = new int;</span><br><span class="line">shared_ptr&lt;int&gt; p1(ptr);</span><br><span class="line">shared_ptr&lt;int&gt; p2(ptr); //logic error</span><br></pre></td></tr></table></figure>
-<p>ptr对象被删除了2次<br>这种问题比喻成“二龙治水”，在原生指针中也同样可能发生。</p>
-<h4 id="条款2：不要把this指针给shared-ptr"><a href="#条款2：不要把this指针给shared-ptr" class="headerlink" title="条款2：不要把this指针给shared_ptr"></a>条款2：不要把this指针给shared_ptr</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Test&#123;</span><br><span class="line">public:</span><br><span class="line">    void Do()&#123;  m_member_sp =  shared_ptr&lt;Test&gt;(this);  &#125;</span><br><span class="line">private:</span><br><span class="line">    shared_ptr&lt;Test&gt; m_member_sp;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Test* t = new Test;</span><br><span class="line">shared_ptr&lt;Test&gt; local_sp(t);</span><br><span class="line">p-&gt;Do();</span><br></pre></td></tr></table></figure>
-<p>发生什么事呢，t对象被删除了2次！<br>t对象给了local_sp管理，然后在m_member_sp =  shared_ptr<test>(this)这句里又请了一尊神来管理t。<br>这就发生了条款1里“二龙治水”错误。</test></p>
-<h4 id="条款3：不要让shared-ptr的循环引用"><a href="#条款3：不要让shared-ptr的循环引用" class="headerlink" title="条款3：不要让shared_ptr的循环引用"></a>条款3：不要让shared_ptr的循环引用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">//---------------------------------------------</span><br><span class="line">class Dog;</span><br><span class="line">class Animal&#123;</span><br><span class="line">public:</span><br><span class="line">    ~Animal()&#123;</span><br><span class="line">        cout &lt;&lt; &quot;Animal Deconstructor&quot; &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    shared_ptr&lt;Dog&gt; _dog;</span><br><span class="line">&#125;;</span><br><span class="line">//---------------------------------------------</span><br><span class="line">class Dog&#123;</span><br><span class="line">public:</span><br><span class="line">    ~Dog()&#123;</span><br><span class="line">        cout &lt;&lt; &quot;Dog Deconstructor&quot; &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    shared_ptr&lt;Animal&gt; _animal;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">//---------------------------------------------</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line"></span><br><span class="line">    shared_ptr&lt;Dog&gt; dog = make_shared&lt;Dog&gt;();</span><br><span class="line">    shared_ptr&lt;Animal&gt; animal = make_shared&lt;Animal&gt;();</span><br><span class="line"></span><br><span class="line">    dog-&gt;_animal = animal;</span><br><span class="line">    animal-&gt;_dog = dog;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;--------------------------&quot; &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样 Animal 和 Dog 都不会被回收.<br>解决办法,将 shared_ptr<dog> _dog  或   shared_ptr&lt;Animal&gt; _animal 其中的一个换成  weak_ptr.</dog></p>
-<h4 id="条款4：不要在函数实参里创建shared-ptr"><a href="#条款4：不要在函数实参里创建shared-ptr" class="headerlink" title="条款4：不要在函数实参里创建shared_ptr"></a>条款4：不要在函数实参里创建shared_ptr</h4><p>function ( shared_ptr<int>(new int), g( ) );  //有缺陷<br>可能的过程是先new int，然后调g( )，g( )发生异常，shared_ptr<int>没有创建，int内存泄露</int></int></p>
-<p>shared_ptr<int> p(new int());<br>f(p, g());  //Boost推荐写法</int></p>
-<h4 id="条款5：对象内部生成shared-ptr"><a href="#条款5：对象内部生成shared-ptr" class="headerlink" title="条款5：对象内部生成shared_ptr"></a>条款5：对象内部生成shared_ptr</h4><p>前面说过，不能把this指针直接扔给shared_ptr. 但是没有禁止在对象内部生成自己的shared_ptr</p>
-<p>//这是Boost的例子改的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Y: public boost::enable_shared_from_this&lt;Y&gt;</span><br><span class="line">&#123;</span><br><span class="line">    boost::shared_ptr&lt;Y&gt; GetSelf()</span><br><span class="line">    &#123;</span><br><span class="line">        return shared_from_this();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>原理是这样的。普通的（没有继承enable_shared_from_this）类T的shared_ptr<t> p(new T).<br>p作为栈对象占8个字节，为了记录（new T）对象的引用计数，p会在堆上分配16个字节以保存<br>引用计数等“智能信息”。share_ptr没有“嵌入(intrusive)”到T对象，或者说T对象对share_ptr毫不知<br>情。Y对象则不同，Y对象已经被“嵌入”了一些share_ptr相关的信息，目的是为了找到“全局性”的<br>那16字节的本对象的“智能信息”。</t></p>
-<p>原理说完了，就是陷阱<br>Y y;<br>boost::shared_ptr<y> p=  y.GetSelf(); //无知的代码，y根本就不是new出来的</y></p>
-<p>Y* y = new Y;<br>boost::shared_ptr<y> p=  y-&gt;GetSelf(); //似是而非，仍旧程序崩盘。<br>Boost文档说，在调用shared_from_this()之前，必须存在一个正常途径创建的shared_ptr</y></p>
-<p>boost::shared_ptr<y> spy(new Y)<br>boost::shared_ptr<y> p =  spy-&gt;GetSelf(); //OK</y></y></p>
-<h4 id="条款6-：处理不是new的对象要小心"><a href="#条款6-：处理不是new的对象要小心" class="headerlink" title="条款6 ：处理不是new的对象要小心"></a>条款6 ：处理不是new的对象要小心</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int* pi = (int*)malloc(4)</span><br><span class="line">shared_ptr&lt;int&gt; sp( pi ) ; //delete马嘴不对malloc驴头。</span><br></pre></td></tr></table></figure>
-<h4 id="条款7：多线程对引用计数的影响"><a href="#条款7：多线程对引用计数的影响" class="headerlink" title="条款7：多线程对引用计数的影响"></a>条款7：多线程对引用计数的影响</h4><p>如果是轻量级的锁，比如InterLockIncrement等，对程序影响不大<br>如果是重量级的锁，就要考虑因为share_ptr维护引用计数而造成的上下文切换开销。<br>1.33版本以后的shared_ptr对引用计数的操作使用的是Lock-Free（类似InterLockIncrement函数族）<br>的操作，应该效率不错，而且能保证线程安全（库必须保证其安全，程序员都没有干预这些隐藏事物的机会）。<br>Boost文档说read，write同时对shared_ptr操作时，行为不确定。这是因为shared_ptr本身有两个成员px，pi。<br>多线程同时对px读写是要出问题的。与一个int的全局变量多线程读写会出问题的原因一样。</p>
-<h4 id="条款8：对象数组用shared-array"><a href="#条款8：对象数组用shared-array" class="headerlink" title="条款8：对象数组用shared_array"></a>条款8：对象数组用shared_array</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int* pint = new int[100];</span><br><span class="line">shared_array&lt;int&gt; p (pint );</span><br></pre></td></tr></table></figure>
-<p>既然shared_ptr对应着delete；显然需要一个delete[]对应物shared_array</p>
-<h4 id="条款9：学会用删除器"><a href="#条款9：学会用删除器" class="headerlink" title="条款9：学会用删除器"></a>条款9：学会用删除器</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct Test_Deleter</span><br><span class="line">&#123;   </span><br><span class="line">    void  operator ()( Test* p)&#123;   ::free(p);   &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Test* t = (Test*)malloc(sizeof(Test));</span><br><span class="line">new (t) Test;</span><br></pre></td></tr></table></figure>
-<p>shared_ptr<test> sp( t ,  Test_Deleter() ); //删除器可以改变share_ptr销毁对象行为</test></p>
-<p>有了删除器，shared_array无用武之地了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class T&gt;</span><br><span class="line">struct Array_Deleter</span><br><span class="line">&#123;   </span><br><span class="line">    void  operator ()( T*)&#123;   delete[] p;   &#125;</span><br><span class="line">&#125;;</span><br><span class="line">int* pint = new int[100];</span><br><span class="line">shared_ptr&lt;int&gt; p (pint, Array_Deleter&lt;int&gt;() );</span><br></pre></td></tr></table></figure>
-<h4 id="条款10：学会用分配器"><a href="#条款10：学会用分配器" class="headerlink" title="条款10：学会用分配器"></a>条款10：学会用分配器</h4><p>存放引用计数的地方是堆内存，需要16-20字节的开销。<br>如果大量使用shared_ptr会造成大量内存碎片。<br>shared_ptr构造函数的第3个参数是分配器，可以解决这个问题。</p>
-<p>shared_ptr<test> p( (new Test), Test_Deleter(), Mallocator<test>() );<br>注意删除器Test_Deleter是针对Test类的。分配器是针对shared_ptr内部数据的。</test></test></p>
-<p>Mallocator<test>()是个临时对象（无状态的），符合STL分配器规约。</test></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename T&gt;</span><br><span class="line">class Mallocator &#123;</span><br><span class="line">    //略。。。。。。</span><br><span class="line">    T * allocate(const size_t n) const &#123;</span><br><span class="line">        return singleton_pool&lt;T,sizeof(T)&gt;::malloc();</span><br><span class="line">    &#125;</span><br><span class="line">    //略。。。。。。</span><br></pre></td></tr></table></figure>
-<p>Mallocator传入Test，实际分配的类型确是</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class boost::detail::sp_counted_impl_pda&lt;class Test *,</span><br><span class="line">                                         struct Test_Deleter,</span><br><span class="line">                                         class Mallocator&lt;class Test&gt; &gt;</span><br></pre></td></tr></table></figure>
-<p>这是用typeid(T).name()打印出来的。可能和rebind相关。</p>
-<h4 id="条款11-weak-ptr在使用前需要检查合法性"><a href="#条款11-weak-ptr在使用前需要检查合法性" class="headerlink" title="条款11 weak_ptr在使用前需要检查合法性"></a>条款11 weak_ptr在使用前需要检查合法性</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">weak_ptr&lt;K&gt; wp;</span><br><span class="line">&#123;</span><br><span class="line">shared_ptr&lt;K&gt;  sp(new K);  //sp.use_count()==1</span><br><span class="line">wp = sp; //wp不会改变引用计数，所以sp.use_count()==1</span><br><span class="line">shared_ptr&lt;K&gt; sp_ok = wp.lock(); //wp没有重载-&gt;操作符。只能这样取所指向的对象</span><br><span class="line">&#125;</span><br><span class="line">shared_ptr&lt;K&gt; sp_null = wp.lock(); //sp_null .use_count()==0;</span><br></pre></td></tr></table></figure>
-<p>因为上述代码中sp和sp_ok离开了作用域，其容纳的K对象已经被释放了。<br>得到了一个容纳NULL指针的sp_null对象。在使用wp前需要调用wp.expired()函数判断一下。<br>因为wp还仍旧存在，虽然引用计数等于0，仍有某处“全局”性的存储块保存着这个计数信息。<br>直到最后一个weak_ptr对象被析构，这块“堆”存储块才能被回收。否则weak_ptr无法知道自己<br>所容纳的那个指针资源的当前状态。</p>
-<h4 id="条款12-不要new-shared-ptr-lt-T-gt"><a href="#条款12-不要new-shared-ptr-lt-T-gt" class="headerlink" title="条款12 不要new shared_ptr&lt;T&gt;"></a>条款12 不要new shared_ptr&lt;T&gt;</h4><p>本来shared_ptr就是为了管理指针资源的，不要又引入一个需要管理的指针资源shared_ptr<t>*</t></p>
-<h4 id="条款13-尽量不要get"><a href="#条款13-尽量不要get" class="headerlink" title="条款13  尽量不要get"></a>条款13  尽量不要get</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class B&#123;...&#125;;</span><br><span class="line">class D : public B&#123; ...&#125;;  //继承层次关系</span><br><span class="line"></span><br><span class="line">shared_ptr&lt;B&gt; sp (new D);    //通过隐式转换，储存D的指针。</span><br><span class="line">B* b = sp.get();             //shared_ptr辛辛苦苦隐藏的原生指针就这么被刨出来了。</span><br><span class="line">D* d = dynamic_cast&lt;D*&gt;(b);  //这是使用get的正当理由吗？</span><br></pre></td></tr></table></figure>
-<p>正确的做法<br>shared_ptr&lt;B&gt; spb (new D)  ;<br>shared_ptr&lt;D&gt; spd = shared_dynamic_cast&lt;D&gt;(spb); //变成子类的指针<br>shared_ptr在竭尽全力表演的像一个原生指针，原生指针能干的事，它也基本上能干。</p>
-<p>另一个同get相关的错误<br>shared_ptr&lt;T&gt; sp(new T);<br>shared_ptr&lt;T&gt; sp2( sp.get() ) ;//又一个“二龙治水”实例，指针会删2次而错误。</p>
-<h4 id="条款14-不要memcpy-shared-ptr"><a href="#条款14-不要memcpy-shared-ptr" class="headerlink" title="条款14 不要memcpy shared_ptr"></a>条款14 不要memcpy shared_ptr</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;B&gt; sp1 (new B)  ;</span><br><span class="line">shared_ptr&lt;B&gt; sp2;</span><br><span class="line">memcpy(&amp;sp2,&amp;sp1,sizeof(shared_ptr&lt;B&gt;)); //sp2.use_count()==1</span><br></pre></td></tr></table></figure>
-<p>很显然，不是通过正常途径（拷贝构造，赋值运算），引用计数是不会正确增长的。</p>
-<h4 id="条款15-使用BOOST预定义的宏去改变shared-ptr行为。"><a href="#条款15-使用BOOST预定义的宏去改变shared-ptr行为。" class="headerlink" title="条款15 使用BOOST预定义的宏去改变shared_ptr行为。"></a>条款15 使用BOOST预定义的宏去改变shared_ptr行为。</h4><p>shared_ptr行为由类似BOOST_SP_DISABLE_THREADS这样的宏控制。需要去学习他们到底是干什么的。<br>大师Andrei Alexandrescu设计了一种基于模板策略设计模式的智能指针，通过几个模板参数去定制化<br>智能指针的行为。Boost却不以为然，官方解释是：需要统一的接口，这样利于大规模书写。<br>smart_ptr&lt;T,OwnershipPolicy,ConversionPolicy,CheckingPolicy,StoragePolicy&gt; sp(new T);<br>上述接口缺点是外形复杂，看上去像个大花脸。优点是客户程序员可以轻易的定制行为。</p>
-<h4 id="条款17-构造函数里调用shared-from-this抛例外"><a href="#条款17-构造函数里调用shared-from-this抛例外" class="headerlink" title="条款17 构造函数里调用shared_from_this抛例外"></a>条款17 构造函数里调用shared_from_this抛例外</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Holder:public enable_shared_from_this&lt;Holder&gt;&#123;</span><br><span class="line">public:</span><br><span class="line">    Holder() &#123;</span><br><span class="line">        shared_ptr&lt;Holder&gt; sp = shared_from_this();</span><br><span class="line">        int x = sp.use_count();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>同前面条款5，不符合enable_shared_from_this使用前提。</p>
-<p>总结：<br>学习了一天就总结出10多条条款，长期研究一下恐怕就出现条款100了。为什么还要使用shared_ptr呢？<br>有很多开源库用shared_ptr，而且shared_ptr具有“传染性”（某网友语：像毒品沾上就甩不掉），<br>抛开它就会有更严重的多龙治水现象。shared_ptr作为原生指针的替代品，能解决一定的内存泄露问题。<br>实际上初学原生指针时，每个人都遇到过野指针，删两次，忘记删除等问题。学习shared_ptr也会遇到。<br>shared_ptr的确能改善上述问题，并不能完全解决问题。shared_ptr可能在将来占主流，它最可能号令江湖，<br>否则一大堆auto_ptr,weak_ptr,原生指针，scoped_ptr共存就把人搞糊涂了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/针对范围对的高效查找算法设计/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/07/针对范围对的高效查找算法设计/" itemprop="url">针对范围对的高效查找算法设计</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-07T18:57:53+08:00">
-                2018-08-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/08/07/针对范围对的高效查找算法设计/" class="leancloud_visitors" data-flag-title="针对范围对的高效查找算法设计">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="针对范围对的高效查找算法设计"><a href="#针对范围对的高效查找算法设计" class="headerlink" title="针对范围对的高效查找算法设计"></a>针对范围对的高效查找算法设计</h2><blockquote>
-<p><a href="https://www.cnblogs.com/lanxuezaipiao/p/3802699.html" target="_blank" rel="noopener">针对范围对的高效查找算法设计（不准用数组）</a></p>
-</blockquote>
-<p>描述如下：</p>
-<p>假如有一群范围对，格式为：&lt;范围表示，该范围对应的结果值&gt;，设计一个最快查找算法，使得给定一个值，输出该值所在范围对的结果值。<br>注意1：范围对之间没有交集，即不可能存在&lt;1, 10&gt;和&lt;2, 11&gt;这样的两个范围对。</p>
-<p>注意2：各个区间不一定严格相邻，也就是可能只有&lt;1, 3&gt;和&lt;99, 201&gt;这样两个区间，所以STL中的lower_bound不适用。<br>例如有以下几个范围对：<br>&lt;&lt;1, 2&gt;, 20&gt;<br>&lt;&lt;3, 37&gt;, 27&gt;<br>&lt;&lt;48, 57&gt;, 28&gt;<br>&lt;&lt;58, 63&gt;, 27&gt;<br>&lt;&lt;97, 128&gt;, 122&gt;<br>&lt;&lt;129, 149&gt;, 12&gt;<br>&lt;&lt;150, 189&gt;, 13&gt;<br>&lt;&lt;200, 245&gt;, 14&gt;<br>&lt;&lt;246, 256&gt;, 129&gt;<br>&lt;&lt;479, 560&gt;, 12&gt;</p>
-<p>假如给定一个数100，则根据题意应输出122，因为100属于范围对&lt;97, 128&gt;</p>
-<p>要求：不要用范围对作为下标用数组来存储，因为范围对可能非常大。</p>
-<p>对于这个问题，思考许久，有了下面几个思路：</p>
-<h3 id="用STL-map来存储这些范围对（key）及对应的结果集（value），用map进行查找"><a href="#用STL-map来存储这些范围对（key）及对应的结果集（value），用map进行查找" class="headerlink" title="用STL map来存储这些范围对（key）及对应的结果集（value），用map进行查找"></a>用STL map来存储这些范围对（key）及对应的结果集（value），用map进行查找</h3><p>范围对定义如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class range &#123;</span><br><span class="line">public:</span><br><span class="line">    int from;                                                                  </span><br><span class="line">    int to;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    range(): from(-1), to(-1) &#123;&#125;</span><br><span class="line">    range(int f, int t): from(f), to(t) &#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>map定义为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef map&lt;range*, int&gt; range_map;</span><br></pre></td></tr></table></figure>
-<p>但这里有个问题，map的key是自定义类型，一般需要自定义比较函数才能进行查找，一般的自定义比较函数如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct cmp_func &#123;</span><br><span class="line">    bool operator()(const range* lc,const range* rc) const &#123;</span><br><span class="line">        return (lc-&gt;from &lt; rc-&gt;from) || (lc-&gt;from == rc-&gt;from &amp;&amp; lc-&gt;to &lt; rc-&gt;to);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>但这样的比较函数并不适用于我们的需求，因为我们要求查询的并不是一个范围对，即并不是查询map中有没有&lt;3, 37&gt;这样的范围对，而是要求给定一个值，查询这个值属于哪个范围对，那么能不能自定义一个这样的比较函数呢？以上面那个例子为例，如果我们查找35这个数，我们将35包装成一个范围对&lt;35, 35&gt;，然后查找它包含在map中的哪个范围对，上面的例子是包含在&lt;3, 37&gt;这样的范围对，这样就找到了，也就是两个key相等，只要它们包含在同一个范围对即可。这似乎有点奇怪，违背了通常意义上的比较含义（也就是两个key相等，两个key的组成部分都应该相同才是）。不管如何，这样的比较函数还是比较简单的，如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct cmp_func &#123;</span><br><span class="line">    bool operator()(const range* lc,const range* rc) const &#123;</span><br><span class="line">        return lc-&gt;to &lt; rc-&gt;from;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>这样就实现了我们用map的find函数来查找给定的一个数属于哪个范围对了。当然，这时我们的map定义就变成了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef map&lt;range*, int, cmp_func&gt; range_map;</span><br></pre></td></tr></table></figure>
-<p>用map查找表面上看上去应该挺高效的，至少比一个个顺序查找要快吧，但事实却并非如此。我用未自定义比较函数的map顺序查找和自定义上面比较函数的map find查找，结果却发现用自定义比较函数后的效果并不好，竟然比顺序查找还要慢，下面的粗糙的测试程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">#include&lt;map&gt;</span><br><span class="line">#include&lt;sys/time.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">class range &#123;</span><br><span class="line">public:</span><br><span class="line">    int from;                                                                  </span><br><span class="line">    int to;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    range(): from(-1), to(-1) &#123;&#125;</span><br><span class="line">    range(int f, int t): from(f), to(t) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct cmp_func &#123;</span><br><span class="line">    bool operator()(const range* lc,const range* rc) const &#123;</span><br><span class="line">        return lc-&gt;to &lt; rc-&gt;from;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">typedef map&lt;range*, int, cmp_func&gt; range_map;</span><br><span class="line"></span><br><span class="line">int get_next1(range_map *rm, int c) &#123;</span><br><span class="line">    for(range_map::iterator it = rm-&gt;begin(); it != rm-&gt;end(); ++it) &#123;</span><br><span class="line">        if(c &gt;= it-&gt;first-&gt;from &amp;&amp; c &lt;= it-&gt;first-&gt;to) return it-&gt;second;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return -1; // not found.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int get_next2(range_map *rm, int c) &#123;</span><br><span class="line">    range_map::iterator iter = rm-&gt;find(new range(c, c));</span><br><span class="line">    if(iter != rm-&gt;end())  return iter-&gt;second;</span><br><span class="line"></span><br><span class="line">    return -1;  // not found.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    struct timeval t_begin, t_end;</span><br><span class="line"></span><br><span class="line">    range_map *rm = new range_map();</span><br><span class="line"></span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(1, 2), 20));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(3, 37), 27));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(48, 57), 28));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(58, 63), 27));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(97, 128), 122));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(129, 149), 12));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(150, 189), 12));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(200, 245), 14));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(246, 256), 129));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(479, 560), 12));</span><br><span class="line"></span><br><span class="line">    gettimeofday(&amp;t_begin,NULL);</span><br><span class="line">    int result[256];</span><br><span class="line">    for(int c = 0; c &lt; 256; c++)</span><br><span class="line">        result[c] = get_next1(rm, c);</span><br><span class="line">    gettimeofday(&amp;t_end,NULL);</span><br><span class="line">    double timeuse=1000000*(t_end.tv_sec-t_begin.tv_sec)+(t_end.tv_usec-t_begin.tv_usec);</span><br><span class="line">    timeuse/=1000000;</span><br><span class="line">    printf(&quot;\nget_next1 time use: %.12f\n&quot;, timeuse);</span><br><span class="line">    for(int c = 0; c &lt; 256; c++)</span><br><span class="line">        cout &lt;&lt; result[c] &lt;&lt; &quot; &quot;;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    gettimeofday(&amp;t_begin,NULL);</span><br><span class="line">    for(int c = 0; c &lt; 256; c++)</span><br><span class="line">        result[c] = get_next2(rm, c);</span><br><span class="line">    gettimeofday(&amp;t_end,NULL);</span><br><span class="line">    timeuse=1000000*(t_end.tv_sec-t_begin.tv_sec)+(t_end.tv_usec-t_begin.tv_usec);</span><br><span class="line">    timeuse/=1000000;</span><br><span class="line">    printf(&quot;\nget_next2 time use: %.12f\n&quot;, timeuse);</span><br><span class="line">    for(int c = 0; c &lt; 256; c++)</span><br><span class="line">        cout &lt;&lt; result[c] &lt;&lt; &quot; &quot;;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>运行结果为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">get_next1 time use: 0.000124000000</span><br><span class="line">get_next2 time use: 0.000144000000</span><br></pre></td></tr></table></figure>
-<p>当然这个例子并不能代表所有情况，且每次运行结果也不一样，但从每次的运行结果来看，几乎没有一次是用自定义比较函数比顺序查找情况好的。这至少说明了一点：我们的自定义比较函数让map在查找时做了一些额外的工作，减慢了速度。比如我们为了使用map的find函数，不得不封装我们的一个数为一个range对象，在查找的时候还得调用我们自定义的比较函数进行处理。</p>
-<p>难道就只能顺序查找吗？在这个不靠谱的思路过后又萌生了另一个不靠谱的思路。</p>
-<h3 id="使用二分查找的思想来查找范围对"><a href="#使用二分查找的思想来查找范围对" class="headerlink" title="使用二分查找的思想来查找范围对"></a>使用二分查找的思想来查找范围对</h3><p>我们使用ranges和results这两个数组来保存范围对及对应的结果，按序保存，每两个ranges数对应一个results里的数。</p>
-<p>例如上面的例子保存为：</p>
-<p>int ranges[] = {1, 2, 3, 37, 48, 57, 58, 63, 97, 128, 129, 149, 150, 189, 200, 245, 246, 256, 479, 560};<br>int results[] = {20, 27, 28, 27, 122, 12, 13, 14, 129, 12};</p>
-<p>使用二分查找来查找某个数属于哪个范围对。那么如何查找呢？比如查找35属于哪个范围对，首先与最中间的128进行比较，35&lt;128，这时候有两种可能：</p>
-<p>（1）100在128前半部分的数组里，即1, 2, 3, 37, 48, 57, 58, 63, 97；</p>
-<p>（2）由于128是范围对&lt;97, 128&gt;的第二部分，那么也有可能这个数属于这个范围对。</p>
-<p>由于35不属于这个范围对，那么只有在97之前的部分找（不包括97），继续二分即与37进行比较，35 &lt; 37，与上类似，此时35属于范围对&lt;3, 37&gt;，也就是找到了。</p>
-<p>再举个例子，找130属于哪个范围对，同样的先与128比较，130 &gt; 128，这时候130只可能在128的后半部分而不需要判断是否属于范围对&lt;128, 129&gt;，因为&lt;128, 129&gt;不是范围对。怎么判断是不是范围对呢？很简单，根据当前位置的奇偶性判断即可。</p>
-<p>下面是我写的二分查找算法，及与map顺序查找、数组顺序查找的简单对比试验：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">#include&lt;map&gt;</span><br><span class="line">#include&lt;sys/time.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">class range &#123;</span><br><span class="line">public:</span><br><span class="line">    int from;                                                                  </span><br><span class="line">    int to;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    range(): from(-1), to(-1) &#123;&#125;</span><br><span class="line">    range(int f, int t): from(f), to(t) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">typedef map&lt;range*, int&gt; range_map;</span><br><span class="line"></span><br><span class="line">int get_next1(range_map *rm, int c) &#123;</span><br><span class="line">    for(range_map::iterator it = rm-&gt;begin(); it != rm-&gt;end(); ++it) &#123;</span><br><span class="line">        if(c &gt;= it-&gt;first-&gt;from &amp;&amp; c &lt;= it-&gt;first-&gt;to) return it-&gt;second;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return -1; // not found.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// binary search</span><br><span class="line">int get_next2(int *ranges, int *results, int size, int c) &#123;</span><br><span class="line">    if(size &lt;= 1) return -1;</span><br><span class="line"></span><br><span class="line">    int start, end, mid;</span><br><span class="line">    start = 0;</span><br><span class="line">    end = size - 1;</span><br><span class="line"></span><br><span class="line">    while(start &lt;= end) &#123;</span><br><span class="line">        if(c &lt; ranges[start] || c &gt; ranges[end]) return -1;</span><br><span class="line">        mid = start + (end - start) / 2;</span><br><span class="line">        if(c == ranges[mid]) return results[mid / 2];</span><br><span class="line">        if(c &lt; ranges[mid]) &#123;</span><br><span class="line">            if(mid % 2 == 1) &#123;</span><br><span class="line">                if(c &gt;= ranges[mid - 1]) return results[mid / 2];</span><br><span class="line">                else end = mid - 2;</span><br><span class="line">            &#125;</span><br><span class="line">            else end = mid - 1;</span><br><span class="line">        &#125;</span><br><span class="line">        else &#123;</span><br><span class="line">            if(mid % 2 == 0) &#123;</span><br><span class="line">                if(c &lt;= ranges[mid + 1]) return results[mid / 2];</span><br><span class="line">                else start = mid + 2;</span><br><span class="line">            &#125;</span><br><span class="line">            else start = mid + 1;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return -1;  // not found.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int get_next3(int *ranges, int *results, int size, int c) &#123;</span><br><span class="line">    for(int i = 0; i &lt; size;) &#123;</span><br><span class="line">        if(i % 2 == 0) &#123;</span><br><span class="line">            if(c &gt;= ranges[i] &amp;&amp; c &lt;= ranges[i + 1]) return results[i / 2];</span><br><span class="line">            else if(c &lt; ranges[i]) return -1;</span><br><span class="line">            else i += 2;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    struct timeval t_begin, t_end;</span><br><span class="line"></span><br><span class="line">    range_map *rm = new range_map();</span><br><span class="line"></span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(1, 2), 20));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(3, 37), 27));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(48, 57), 28));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(58, 63), 27));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(97, 128), 122));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(129, 149), 12));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(150, 189), 13));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(200, 245), 14));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(246, 256), 129));</span><br><span class="line">    rm-&gt;insert(pair&lt;range*, int&gt;(new range(479, 560), 12));</span><br><span class="line"></span><br><span class="line">    int ranges[] = &#123;1, 2, 3, 37, 48, 57, 58, 63, 97, 128, 129, 149, 150, 189, 200, 245, 246, 256, 479, 560&#125;;</span><br><span class="line">    int results[] = &#123;20, 27, 28, 27, 122, 12, 13, 14, 129, 12&#125;;</span><br><span class="line"></span><br><span class="line">    // int r = get_next2(ranges, results, 20, 65);</span><br><span class="line">    // cout &lt;&lt; r &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    gettimeofday(&amp;t_begin,NULL);</span><br><span class="line">    int result[256];</span><br><span class="line">    for(int c = 0; c &lt; 256; c++)</span><br><span class="line">        result[c] = get_next1(rm, c);</span><br><span class="line">    gettimeofday(&amp;t_end,NULL);</span><br><span class="line">    double timeuse=1000000*(t_end.tv_sec-t_begin.tv_sec)+(t_end.tv_usec-t_begin.tv_usec);</span><br><span class="line">    timeuse/=1000000;</span><br><span class="line">    printf(&quot;\nget_next1 time use: %.12f\n&quot;, timeuse);</span><br><span class="line">    // for(int c = 0; c &lt; 256; c++)</span><br><span class="line">    //     cout &lt;&lt; result[c] &lt;&lt; &quot; &quot;;</span><br><span class="line">    // cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    gettimeofday(&amp;t_begin,NULL);</span><br><span class="line">    for(int c = 0; c &lt; 256; c++)</span><br><span class="line">        result[c] = get_next2(ranges, results, 20, c);</span><br><span class="line">    gettimeofday(&amp;t_end,NULL);</span><br><span class="line">    timeuse=1000000*(t_end.tv_sec-t_begin.tv_sec)+(t_end.tv_usec-t_begin.tv_usec);</span><br><span class="line">    timeuse/=1000000;</span><br><span class="line">    printf(&quot;\nget_next2 time use: %.12f\n&quot;, timeuse);</span><br><span class="line">    // for(int c = 0; c &lt; 256; c++)</span><br><span class="line">    //     cout &lt;&lt; result[c] &lt;&lt; &quot; &quot;;</span><br><span class="line">    // cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    gettimeofday(&amp;t_begin,NULL);</span><br><span class="line">    for(int c = 0; c &lt; 256; c++)</span><br><span class="line">        result[c] = get_next3(ranges, results, 20, c);</span><br><span class="line">    gettimeofday(&amp;t_end,NULL);</span><br><span class="line">    timeuse=1000000*(t_end.tv_sec-t_begin.tv_sec)+(t_end.tv_usec-t_begin.tv_usec);</span><br><span class="line">    timeuse/=1000000;</span><br><span class="line">    printf(&quot;\nget_next3 time use: %.12f\n&quot;, timeuse);</span><br><span class="line">    // for(int c = 0; c &lt; 256; c++)</span><br><span class="line">    //     cout &lt;&lt; result[c] &lt;&lt; &quot; &quot;;</span><br><span class="line">    // cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>运行结果为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">get_next1 time use: 0.000302000000</span><br><span class="line">get_next2 time use: 0.000043000000</span><br><span class="line">get_next3 time use: 0.000165000000</span><br></pre></td></tr></table></figure>
-<p>说明二分查找算法还是挺高效的，顺序查找也不错，有时候表现的与二分查找差不多，这里的数据比较少，体现不出准确的对比，但至少可能说明二分查找算法比简单的顺序查找（map顺序和数组顺序查找）要快不少。</p>
-<p>上面是自己的一点拙见，相信二分查找算法肯定不是最高效的算法，但目前实在想不出更好的办法了。大家有想法的尽管提，不试试不知道算法好不好！</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1631,7 +1741,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1642,7 +1752,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1653,7 +1763,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

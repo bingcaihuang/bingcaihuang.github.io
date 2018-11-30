@@ -293,6 +293,410 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/02/Qt程序启动画面QSplashScreen/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/02/Qt程序启动画面QSplashScreen/" itemprop="url">Qt程序启动画面QSplashScreen</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-02T08:24:17+08:00">
+                2018-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/02/Qt程序启动画面QSplashScreen/" class="leancloud_visitors" data-flag-title="Qt程序启动画面QSplashScreen">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Qt程序启动画面QSplashScreen"><a href="#Qt程序启动画面QSplashScreen" class="headerlink" title="Qt程序启动画面QSplashScreen"></a>Qt程序启动画面QSplashScreen</h2><p>关于Qt程序启动画面QSplashScreen类的使用，Qt官方文档给出的例子是用于显示静态图片的，帮助文档中有这样一段话：</p>
+<blockquote>
+<p>The user can hide the splash screen by clicking on it with the mouse. Since the splash screen is typically displayed before the event loop has started running, it is necessary to periodically call QApplication::processEvents() to receive the mouse clicks.</p>
+</blockquote>
+<p>翻译成中文意思是：用户可以点击隐藏启动画面，但由于启动界面在系统事件循环开始之前已经显示，需要周期性的调用QApplication::processEvents()，强制事件循环投递事件，达到接受并处理鼠标事件的目的。<br>意思是QSplashScreen启动时，系统事件循环还没有真正跑起来，用户需要手动强制事件循环，对于需要在启动界面中显示进度条、显示动画、或者显示QMovie的操作，这个处理就显得非常有必要，否则上述的几项操作，在缺少事件循环投递的情况下，只会显示成静态图片或者根本没效果。<br>查询资料只有stackoverflow上有比较详细的例子，参考以下两文章</p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/18334499/showing-a-qmovie-in-qsplashscreen" target="_blank" rel="noopener">Showing a QMovie in QSplashScreen</a><br><a href="https://stackoverflow.com/questions/12682888/qt-c-aligning-qprogressbar-inside-a-qsplashscreen" target="_blank" rel="noopener">Qt C++ - Aligning QProgressBar inside a QSplashScreen</a></p>
+</blockquote>
+<p>第一篇文章作者通过代码调试，发现只显示了一帧画面，就是时间循环没启动导致的。往下有个给出了解决方案，摘录有用的部分如下：</p>
+<blockquote>
+<p>Problem is quite profound. To have animation working you have to allow process events in main thread. On other hand initialization process is also performed on main thread.<br>First approach is add those app.processEvents() as often as possible but this will limit frame rate so badly that it is useless.</p>
+</blockquote>
+<p>翻译如下：要使动画正常播放，必须令主线程的事件正常投递，另一方面初始化处理依然在主线程中执行，常用的方法是主动调用app.processEvents()，但这种方法极大的限制了帧率。</p>
+<blockquote>
+<p>To fix it properly you have answer two important question:</p>
+<ul>
+<li>what are you doing during initialization?</li>
+<li>and can this initialization be moved to separate thread?</li>
+</ul>
+</blockquote>
+<p>翻译如下：要正确地处理必须回答以下两个问题：</p>
+<ul>
+<li>在初始化期间做了什么？</li>
+<li>这个初始化处理是否能够通过独立的线程处理？</li>
+</ul>
+<blockquote>
+<p>Once I’ve had application where during initialization large index was build. This took about 40 seconds so quite a lot. I’ve moved building index to separate thread using QtConcurrent::run(this, &amp;MyClass::MyMethodToBuildIndex) and showing some progress by emitting signals periodically from MyClass::MyMethodToBuildIndex (default automatic connection did the whole trick).<br>If you have similar log time initialization this solution will enable animation of your QMovie out of the box, problem will be just smart connection of signal and slots so windows will be shown and hidden with proper timings.</p>
+</blockquote>
+<p>翻译如下：一旦需要做耗时操作，例如建立索引等耗时超过40s的初始化，应通过QtConcurrent::run(this, &amp;MyClass::MyMethodToBuildIndex)把处理转移到子线程中执行，并通过周期性的信号方式通知前台UI显示进度。</p>
+<p>示例代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    QApplication app(argc, argv);</span><br><span class="line">    SplashScreen splash();</span><br><span class="line">    splash.show();</span><br><span class="line">    app.processEvents(); // need to process events manually</span><br><span class="line"></span><br><span class="line">    QMainWindow window;</span><br><span class="line">    SomeLogicClass data;</span><br><span class="line">    window.setData(&amp;data);</span><br><span class="line"></span><br><span class="line">    connect(&amp;data, SIGNAL(initializationProgressChanged(int)),</span><br><span class="line">            &amp;spash, SLOT(setProgress(int)));</span><br><span class="line"></span><br><span class="line">    // show main window when initialization is finished</span><br><span class="line">    connect(&amp;data, SIGNAL(initializationFinished()),</span><br><span class="line">            &amp;window, SLOT(show()));</span><br><span class="line"></span><br><span class="line">    // close splash when initialization is finished</span><br><span class="line">    connect(&amp;data, SIGNAL(initializationFinished()),</span><br><span class="line">            &amp;spash, SLOT(close()));</span><br><span class="line"></span><br><span class="line">    // this line I usually hide behind some method like: startBackgroundInitialization</span><br><span class="line">    QtCuncurent::run(&amp;data, &amp;SomeLogicClass::heavyInitialization);</span><br><span class="line"></span><br><span class="line">    return app.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>If you need to use QSplashScreen::finish instead close then QSignalMapper can help.<br>Note that last argument of connect is default value Qt::AutoConnection which will enforce slots to be run in main thread.</p>
+</blockquote>
+<p>文章二提供了一种在启动界面中绘制进度条，并提供一接口设置进度条数值的方法：<br>sp.h:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">#ifndef SPLASHSCREEN_H</span><br><span class="line">#define SPLASHSCREEN_H</span><br><span class="line"></span><br><span class="line">#include &lt;QSplashScreen&gt;</span><br><span class="line">#include &lt;QApplication&gt;</span><br><span class="line"></span><br><span class="line">class SplashScreen : public QSplashScreen</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">public:</span><br><span class="line">    explicit SplashScreen(QApplication *app, QWidget *parent = 0);</span><br><span class="line">    int m_progress;</span><br><span class="line">    QApplication *app;</span><br><span class="line"></span><br><span class="line">public slots:</span><br><span class="line">    void setProgress(int value)</span><br><span class="line">    &#123;</span><br><span class="line">      m_progress = value;</span><br><span class="line">      if (m_progress &gt; 100)</span><br><span class="line">        m_progress = 100;</span><br><span class="line">      if (m_progress &lt; 0)</span><br><span class="line">        m_progress = 0;</span><br><span class="line">      update();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    void drawContents(QPainter *painter);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">#endif // SPLASHSCREEN_H</span><br></pre></td></tr></table></figure></p>
+<p>sp.cpp<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;sp.h&quot;</span><br><span class="line"></span><br><span class="line">SplashScreen::SplashScreen(QApplication *aApp, QWidget *parent) :</span><br><span class="line">    QSplashScreen(parent), app(aApp), m_progress(0)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    this-&gt;setPixmap(QPixmap(&quot;:/images/splashscreen.png&quot;));</span><br><span class="line">    this-&gt;setCursor(Qt::BusyCursor);</span><br><span class="line"></span><br><span class="line">    this-&gt;showMessage(&quot;Hello&quot;, Qt::AlignBottom);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void SplashScreen::drawContents(QPainter *painter)</span><br><span class="line">&#123;</span><br><span class="line">  QSplashScreen::drawContents(painter);</span><br><span class="line"></span><br><span class="line">  // Set style for progressbar...</span><br><span class="line">  QStyleOptionProgressBarV2 pbstyle;</span><br><span class="line">  pbstyle.initFrom(this);</span><br><span class="line">  pbstyle.state = QStyle::State_Enabled;</span><br><span class="line">  pbstyle.textVisible = false;</span><br><span class="line">  pbstyle.minimum = 0;</span><br><span class="line">  pbstyle.maximum = 100;</span><br><span class="line">  pbstyle.progress = m_progress;</span><br><span class="line">  pbstyle.invertedAppearance = false;</span><br><span class="line">  pbstyle.rect = QRect(0, 265, 380, 19); // Where is it.</span><br><span class="line"></span><br><span class="line">  // Draw it...</span><br><span class="line">  style()-&gt;drawControl(QStyle::CE_ProgressBar, &amp;pbstyle, painter, this);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/01/C-新特性学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/01/C-新特性学习/" itemprop="url">C++新特性学习</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-01T17:09:33+08:00">
+                2018-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/08/01/C-新特性学习/" class="leancloud_visitors" data-flag-title="C++新特性学习">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="C-新特性学习"><a href="#C-新特性学习" class="headerlink" title="C++新特性学习"></a>C++新特性学习</h2><h3 id="c-Lambda表达式"><a href="#c-Lambda表达式" class="headerlink" title="c++ Lambda表达式"></a>c++ Lambda表达式</h3><blockquote>
+<p><a href="https://www.cnblogs.com/jin521/p/5710559.html" target="_blank" rel="noopener">c++ Lambda表达式待修改</a></p>
+</blockquote>
+<p>C++11引入了lambda表达式，使得程序员可以定义匿名函数，该函数是一次性执行的，既方便了编程，又能防止别人的访问。<br>Lambda表达式的语法通过下图来介绍：</p>
+<p><img src="/2018/08/01/C-新特性学习/1533114695717.png" alt=""></p>
+<p>这里假设我们定义了一个如上图的lambda表达式。现在来介绍途中标有编号的各个部分是什么意思。</p>
+<ol>
+<li>Lambda表达式的引入标志，在‘[]’里面可以填入‘=’或‘&amp;’表示该lambda表达式“捕获”（lambda表达式在一定的scope可以访问的数据）的数据时以什么方式捕获的，‘&amp;’表示一引用的方式；‘=’表明以值传递的方式捕获，除非专门指出。</li>
+<li>Lambda表达式的参数列表</li>
+<li>Mutable 标识</li>
+<li>异常标识</li>
+<li>返回值</li>
+<li>“函数”体，也就是lambda表达式需要进行的实际操作</li>
+</ol>
+<p>将上图的代码片段补充完整：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int x = 10;</span><br><span class="line">int y = 3;</span><br><span class="line">int z ;</span><br><span class="line">z = [=]()mutable throw() -&gt; int &#123; int n = x + y; x = y ; y = n; return n;&#125;();</span><br><span class="line">cout&lt;&lt;z&lt;&lt;endl;</span><br><span class="line">cout&lt;&lt;&quot;x:&quot;&lt;&lt;x&lt;&lt;&quot;\t&quot;&lt;&lt;&quot;y:&quot;&lt;&lt;y&lt;&lt;endl;</span><br></pre></td></tr></table></figure>
+<h3 id="std-function的用法"><a href="#std-function的用法" class="headerlink" title="std::function的用法"></a>std::function的用法</h3><blockquote>
+<p><a href="https://blog.csdn.net/zeqi1991/article/details/73727458?locationNum=8&amp;fps=1" target="_blank" rel="noopener">std::function的用法</a></p>
+</blockquote>
+<p>类模版<code>std::function</code>是一种通用、多态的函数封装。<code>std::function</code>的实例可以对任何可以调用的目标实体进行存储、复制、和调用操作，这些目标实体包括普通函数、Lambda表达式、函数指针、以及其它函数对象等。<code>std::function</code>对象是对C++中现有的可调用实体的一种类型安全的包裹（我们知道像函数指针这类可调用实体，是类型不安全的）。</p>
+<p>通常<code>std::function</code>是一个函数对象类，它包装其它任意的函数对象，被包装的函数对象具有类型为T1, …,TN的N个参数，并且返回一个可转换到R类型的值。std::function使用 模板转换构造函数接收被包装的函数对象；特别是，闭包类型可以隐式地转换为<code>std::function</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;list&gt;</span><br><span class="line">#include &lt;map&gt;</span><br><span class="line">#include &lt;set&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;functional&gt;</span><br><span class="line">#include &lt;memory&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">//声明一个模板</span><br><span class="line">typedef std::function&lt;int(int)&gt; Functional;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//normal function</span><br><span class="line">int TestFunc(int a)</span><br><span class="line">&#123;</span><br><span class="line">    return a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//lambda expression</span><br><span class="line">auto lambda = [](int a)-&gt;int&#123;return a;&#125;;</span><br><span class="line"></span><br><span class="line">//functor仿函数</span><br><span class="line">class Functor</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    int operator() (int a)</span><br><span class="line">    &#123;</span><br><span class="line">        return a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//类的成员函数和类的静态成员函数</span><br><span class="line">class CTest</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    int Func(int a)</span><br><span class="line">    &#123;</span><br><span class="line">        return a;</span><br><span class="line">    &#125;</span><br><span class="line">    static int SFunc(int a)</span><br><span class="line">    &#123;</span><br><span class="line">        return a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    //封装普通函数</span><br><span class="line">    Functional obj = TestFunc;</span><br><span class="line">    int res = obj(0);</span><br><span class="line">    cout &lt;&lt; &quot;normal function : &quot; &lt;&lt; res &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    //封装lambda表达式</span><br><span class="line">    obj = lambda;</span><br><span class="line">    res = obj(1);</span><br><span class="line">    cout &lt;&lt; &quot;lambda expression : &quot; &lt;&lt; res &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    //封装仿函数</span><br><span class="line">    Functor functorObj;</span><br><span class="line">    obj = functorObj;</span><br><span class="line">    res = obj(2);</span><br><span class="line">    cout &lt;&lt; &quot;functor : &quot; &lt;&lt; res &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    //封装类的成员函数和static成员函数</span><br><span class="line">    CTest t;</span><br><span class="line">    obj = std::bind(&amp;CTest::Func, &amp;t, std::placeholders::_1);</span><br><span class="line">    res = obj(3);</span><br><span class="line">    cout &lt;&lt; &quot;member function : &quot; &lt;&lt; res &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    obj = CTest::SFunc;</span><br><span class="line">    res = obj(4);</span><br><span class="line">    cout &lt;&lt; &quot;static member function : &quot; &lt;&lt; res &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2018/08/01/C-新特性学习/1533114713752.png" alt=""></p>
+<p>对于各个可调用实体转换成std::function类型的对象，上面的代码都有，运行一下代码，阅读一下上面那段简单的代码。总结了简单的用法以后，来看看一些需要注意的事项：</p>
+<ul>
+<li>关于可调用实体转换为<code>std::function</code>对象需要遵守以下两条原则：<ul>
+<li>转换后的<code>std::function</code>对象的参数能转换为可调用实体的参数；</li>
+<li>可调用实体的返回值能转换为<code>std::function</code>对象的返回值。</li>
+</ul>
+</li>
+<li><code>std::function</code>对象最大的用处就是在实现函数回调，使用者需要注意，它不能被用来检查相等或者不相等，但是可以与NULL或者nullptr进行比较。</li>
+</ul>
+<p><strong>为什么要用std::function</strong><br>好用并实用的东西才会加入标准的。因为好用，实用，我们才在项目中使用它。std::function实现了一套类型消除机制，可以统一处理不同的函数对象类型。以前我们使用函数指针来完成这些；现在我们可以使用更安全的std::function来完成这些任务。</p>
+<h3 id="C-11新特性之-CALLBACKS"><a href="#C-11新特性之-CALLBACKS" class="headerlink" title="C++11新特性之 CALLBACKS"></a>C++11新特性之 CALLBACKS</h3><blockquote>
+<p>文章链接：<a href="https://blog.csdn.net/wangshubo1989/article/details/49644543" target="_blank" rel="noopener">C++11新特性之 CALLBACKS</a></p>
+</blockquote>
+<h4 id="使用回调"><a href="#使用回调" class="headerlink" title="使用回调"></a>使用回调</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;functional&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">namespace &#123;</span><br><span class="line">using cb1_t = std::function&lt;void()&gt;;</span><br><span class="line">using cb2_t = std::function&lt;void(int)&gt;;</span><br><span class="line"></span><br><span class="line">void foo1()</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo1 is called\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void foo2(int i)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo2 is called with: &quot; &lt;&lt; i &lt;&lt; &quot;\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">struct S &#123;</span><br><span class="line">    void foo3()</span><br><span class="line">    &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;foo3 is called.\n&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    // Bind a free function.</span><br><span class="line">    cb1_t f1 = std::bind(&amp;foo1);</span><br><span class="line">    // Invoke the function foo1.</span><br><span class="line">    f1();</span><br><span class="line"></span><br><span class="line">    // Bind a free function with an int argument.</span><br><span class="line">    // Note that the argument can be specified with bind directly.</span><br><span class="line">    cb1_t f2 = std::bind(&amp;foo2, 5);</span><br><span class="line">    // Invoke the function foo2.</span><br><span class="line">    f2();</span><br><span class="line"></span><br><span class="line">    // Bind a function with a placeholder.</span><br><span class="line">    cb2_t f3 = std::bind(&amp;foo2, std::placeholders::_1);</span><br><span class="line">    // Invoke the function with an argument.</span><br><span class="line">    f3(42);</span><br><span class="line"></span><br><span class="line">    // Bind a member function.</span><br><span class="line">    S s;</span><br><span class="line">    cb1_t   f4 = std::bind(&amp;S::foo3, &amp;s);</span><br><span class="line">    // Invoke the method foo3.</span><br><span class="line">    f4();</span><br><span class="line"></span><br><span class="line">    // Bind a lambda.</span><br><span class="line">    cb1_t f5 = std::bind([] &#123; std::cout &lt;&lt; &quot;lambda is called\n&quot;; &#125;);</span><br><span class="line">    f5();</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="存储回调"><a href="#存储回调" class="headerlink" title="存储回调"></a>存储回调</h4><p>使用回调是非常好的，但是更多的情况下，我们往往需要存储一些回调函数，并稍后使用。例如，注册一个客户端到某个事件上。（也许注册和事件是C Sharp的词汇）</p>
+<p>我们经常使用std::vector来完成任务。<br>缺点就是，我们不能再vector中存储不同的类型 。<br>但是，大多数情况下，一种类型就可以满足我们了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;functional&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">namespace &#123;</span><br><span class="line"></span><br><span class="line">using cb1_t = std::function&lt;void()&gt;;</span><br><span class="line">using callbacks_t = std::vector&lt;cb1_t&gt;;</span><br><span class="line"></span><br><span class="line">callbacks_t callbacks;</span><br><span class="line"></span><br><span class="line">void foo1()</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo1 is called\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void foo2(int i)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo2 is called with: &quot; &lt;&lt; i &lt;&lt; &quot;\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125; // end anonymous namespace</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    // Bind a free function.</span><br><span class="line">    cb1_t f1 = std::bind(&amp;foo1);</span><br><span class="line">    callbacks.push_back(f1);</span><br><span class="line"></span><br><span class="line">    // Bind a free function with an int argument.</span><br><span class="line">    // Here the argument is statically known.</span><br><span class="line">    cb1_t f2 = std::bind(&amp;foo2, 5);</span><br><span class="line">    callbacks.push_back(f2);</span><br><span class="line"></span><br><span class="line">    // Bind a free function with an int argument.</span><br><span class="line">    // Here the argument is bound and can be changed at runtime.</span><br><span class="line">    int n = 15;</span><br><span class="line">    cb1_t f3 = std::bind(&amp;foo2, std::cref(n));</span><br><span class="line">    callbacks.push_back(f3);</span><br><span class="line"></span><br><span class="line">    // Invoke the functions</span><br><span class="line">    for(auto&amp; fun : callbacks) &#123;</span><br><span class="line">        fun();</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="包装函数"><a href="#包装函数" class="headerlink" title="包装函数"></a>包装函数</h4><p>上面提到都不是重点，个人觉得特别重要的就是std::function作为函数的参数使用。<br>下面一个例子就将展示一个函数被copy不同的参数。</p>
+<p>Note that we always produce an std::function, even though in some cases we could invoke the target directly. Whether this is required depends on the use case. If all the function does is invoking the target, then directly doing it is more efficient. The reason is that std::function does have some overhead, because it is a polymorphic class.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;functional&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">namespace &#123;</span><br><span class="line"></span><br><span class="line">using cb1_t = std::function&lt;void()&gt;;</span><br><span class="line">using cb2_t = std::function&lt;void(int)&gt;;</span><br><span class="line"></span><br><span class="line">// Wrapper function with std::function without arguments.</span><br><span class="line">template&lt;typename R&gt;</span><br><span class="line">void call(std::function&lt;R(void)&gt; f)</span><br><span class="line">&#123;</span><br><span class="line">    f();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Wrapper function with std::function with arguments.</span><br><span class="line">template&lt;typename R, typename ...A&gt;</span><br><span class="line">void call(std::function&lt;R(A...)&gt; f, A... args)</span><br><span class="line">&#123;</span><br><span class="line">    f(args...);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Wrapper function for generic callable object without arguments.</span><br><span class="line">// Delegates to the std::function call.</span><br><span class="line">template&lt;typename R&gt;</span><br><span class="line">void call(R f(void))</span><br><span class="line">&#123;</span><br><span class="line">    call(std::function&lt;R(void)&gt;(f));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Wrapper function for generic callable object with arguments.</span><br><span class="line">// Delegates to the std::function call.</span><br><span class="line">template&lt;typename R, typename ...A&gt;</span><br><span class="line">void call(R f(A...), A... args)</span><br><span class="line">&#123;</span><br><span class="line">    call(std::function&lt;R(A...)&gt;(f), args...);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Wrapper for a function pointer (e.g. a lambda without capture) without</span><br><span class="line">// arguments.</span><br><span class="line">using fp = void (*)(void);</span><br><span class="line">void call(fp f)</span><br><span class="line">&#123;</span><br><span class="line">    call(std::function&lt;void()&gt;(f));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void foo1()</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo1 is called\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void foo2(int i)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;foo2 is called with: &quot; &lt;&lt; i &lt;&lt; &quot;\n&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125; // end anonymous namespace</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    // Call function 1.</span><br><span class="line">    call(&amp;foo1);</span><br><span class="line"></span><br><span class="line">    // Alternative to call function 1.</span><br><span class="line">    cb1_t f1 = std::bind(&amp;foo1);</span><br><span class="line">    call(f1);</span><br><span class="line"></span><br><span class="line">    // Call function 2.</span><br><span class="line">    call(&amp;foo2, 5);</span><br><span class="line"></span><br><span class="line">    // Alternative to call function 2.</span><br><span class="line">    cb2_t f2 = std::bind(&amp;foo2, std::placeholders::_1);</span><br><span class="line">    call(f2, 5);</span><br><span class="line"></span><br><span class="line">    // Here is an example with a lambda. It calls the function that takes a</span><br><span class="line">    // function pointer.</span><br><span class="line">    call([] &#123; std::cout &lt;&lt; &quot;lambda called\n&quot;; &#125;);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="C-11-STL-functional-标准库"><a href="#C-11-STL-functional-标准库" class="headerlink" title="C++ 11 STL | functional 标准库"></a>C++ 11 STL | functional 标准库</h3><blockquote>
+<p>文章链接：<a href="https://www.sczyh30.com/posts/C-C/cpp-stl-functional/" target="_blank" rel="noopener">C++ 11 STL | functional 标准库</a></p>
+</blockquote>
+<p>最近正好用到了这个，就顺便总结下吧。</p>
+<p>C++ 11引入了函数对象标准库<functional>，里面包含各种内建的函数对象以及相关的操作函数，非常方便。这里总结一下std::function和std::bind的相关用法。</functional></p>
+<h4 id="Callable-type"><a href="#Callable-type" class="headerlink" title="Callable type"></a>Callable type</h4><p>Callable type指可以像调用函数一样被调用的对象或函数，包括：</p>
+<ul>
+<li>std::function</li>
+<li>std::bind</li>
+<li>std::result_of</li>
+<li>std::thread::thread</li>
+<li>std::call_once</li>
+<li>std::async</li>
+<li>std::packaged_task</li>
+<li>std::reference_wrapper</li>
+</ul>
+<p>根据C++ 17 Standard，所有Callable type都可以通过std::invoke方法进行显式调用。</p>
+<h4 id="std-function"><a href="#std-function" class="headerlink" title="std::function"></a>std::function</h4><p><code>std::function</code>类模板是一种通用的函数包装器，它可以容纳所有可以调用的对象（Callable），包括 <strong>函数、函数指针、Lambda表达式、bind表达式、成员函数及成员变量或者其他函数对象</strong>。通过std::function可以储存、拷贝或调用Callable对象。它的模板参数如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">template&lt; class R, class... Args &gt;</span><br><span class="line">class function&lt;R(Args...)&gt;</span><br></pre></td></tr></table></figure></p>
+<p>使用时，模板参数与要存储的函数参数一致即可，下面是一些例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;functional&gt;</span><br><span class="line">double f(int x, char y, double z) &#123;</span><br><span class="line">    return x + y + z;</span><br><span class="line">&#125;</span><br><span class="line">void print_num(int num) &#123;</span><br><span class="line">    std::cout &lt;&lt; num &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line">struct Dog &#123;</span><br><span class="line">    int id;</span><br><span class="line">    explicit Dog(int id): id(id) &#123;&#125;</span><br><span class="line">    void print_add(int i) const &#123;</span><br><span class="line">        std::cout &lt;&lt; id + i &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">class PrintString &#123;</span><br><span class="line">public:</span><br><span class="line">    void operator()(std::string&amp;&amp; s) const &#123;</span><br><span class="line">        std::cout &lt;&lt; s &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">int main(int argc, char **argv) &#123;</span><br><span class="line">    // common function</span><br><span class="line">    std::function&lt;void(int)&gt; func_display_num = print_num;</span><br><span class="line">    func_display_num(9);</span><br><span class="line">    // common function</span><br><span class="line">    std::function&lt;double(int, char, double)&gt; func_display = f;</span><br><span class="line">    std::cout &lt;&lt; func_display(3, &apos;a&apos;, 1.7) &lt;&lt; &quot;\n&quot;;</span><br><span class="line">    // lambda expression</span><br><span class="line">    std::function&lt;void(const char*)&gt; lbd_dsp_str = [](const char *s) &#123;std::cout &lt;&lt; s &lt;&lt; std::endl;&#125;;   </span><br><span class="line">    lbd_dsp_str(&quot;Scala&quot;);</span><br><span class="line">    // bind expression</span><br><span class="line">    auto func_num_bind = std::bind(&amp;f, std::placeholders::_1, &apos;c&apos;, 2.4);</span><br><span class="line">    std::cout &lt;&lt; func_num_bind(24) &lt;&lt; &quot;\n&quot;;</span><br><span class="line">    // function object</span><br><span class="line">    std::function&lt;void(std::string&amp;&amp;)&gt; func_obj_print = PrintString();</span><br><span class="line">    func_obj_print(&quot;C++ 17 Nice!&quot;);</span><br><span class="line">    // member function</span><br><span class="line">    const Dog dog(2424);</span><br><span class="line">    std::function&lt;void(const Dog&amp;, int)&gt; func_mem_display_num = &amp;Dog::print_add;</span><br><span class="line">    func_mem_display_num(dog, 24);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意声明时可用 <code>auto</code> 进行自动类型推导，这样可以节约时间，不过这样会牺牲代码的可读性，因此需要根据情况合理使用 <code>auto</code> 。</p>
+<h4 id="std-bind"><a href="#std-bind" class="headerlink" title="std::bind"></a>std::bind</h4><p>顾名思义，<code>std::bind</code> 函数用来绑定函数的某些参数并生成一个新的 <code>function</code> 对象。<br> <code>bind</code> 用于实现偏函数（Partial Function），相当于实现了函数式编程中的 Currying（柯里化）。<br>比如有一函数的定义为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void func_muti(int a, std::string&amp;&amp; b, const char* c, double d, char e) &#123;</span><br><span class="line">    std::cout &lt;&lt; a &lt;&lt; &quot;, &quot; &lt;&lt; b &lt;&lt; &quot;, &quot; &lt;&lt; c &lt;&lt; &quot;, &quot; &lt;&lt; d &lt;&lt; &quot;, &quot; &lt;&lt; e &lt;&lt; &quot;\n&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>现在将此函数的一些参数绑定上值，其余部分用占位符对象（std::placeholders）表示。占位符是有序号的，代表调用此函数对象时参数在参数列表中的位置。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto f = std::bind(&amp;func_muti, 24, std::placeholders::_1, &quot;Haha&quot;, std::placeholders::_2, &apos;P&apos;);  </span><br><span class="line">f(&quot;Hehe&quot;, 24.24);</span><br></pre></td></tr></table></figure></p>
+<p>调用这个函数对象相当于调用以下函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void f(std::string&amp;&amp; b, double d) &#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;24&quot; &lt;&lt; &quot;, &quot; &lt;&lt; b &lt;&lt; &quot;, &quot; &lt;&lt; &quot;Haha&quot; &lt;&lt; &quot;, &quot; &lt;&lt; d &lt;&lt; &quot;, &quot; &lt;&lt; &apos;P&apos; &lt;&lt; &quot;\n&quot;;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/31/SQLite中的自增关键字：AUTO-INCREMENT、INTEGER-PRIMARY-KEY与AUTOINCREMENT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -829,439 +1233,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/26/Git-submodule用法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/26/Git-submodule用法/" itemprop="url">Git-submodule用法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-26T14:48:54+08:00">
-                2018-07-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TortoiseGit/" itemprop="url" rel="index">
-                    <span itemprop="name">TortoiseGit</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/07/26/Git-submodule用法/" class="leancloud_visitors" data-flag-title="Git-submodule用法">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>参考文章<a href="https://blog.csdn.net/zahuopuboss/article/details/51472842" target="_blank" rel="noopener">git的submodule功能详解</a></p>
-</blockquote>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>项目的版本库在某些情况下需要引用其他版本库中的文件，例如有一套公用的代码库，可以被多个项目调用，这个公用代码库能直接放在某个项目的代码中，而是要独立为一个代码库，那么其他要调用公用的代码库该如何处理？分别把公用的代码库拷贝到各自的项目中会造成冗余，丢弃了公共代码库的维护历史，这些显示不是好的办法，现在要了解的git子模组(git submodule)就解决了这个问题。</p>
-<p>Git 子模块功能允许你将一个Git仓库当作另外一个Git仓库的子目录。这允许你克隆另外一个仓库到你的项目中并且保持你的提交相对独立。</p>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>首先需要两个版本库例如：<br>1) 一个公共的版本库(例如：libA.git)<br><a href="mailto:git@gitlab.szreach.com" target="_blank" rel="noopener">git@gitlab.szreach.com</a>:fengyang/liba.git</p>
-<p>2) 一个引用公共版本库的主版本库(例如：super.git)<br><a href="mailto:git@gitlab.szreach.com" target="_blank" rel="noopener">git@gitlab.szreach.com</a>:fengyang/super.git</p>
-<h2 id="TortoiseGit上git-submodule功能实现"><a href="#TortoiseGit上git-submodule功能实现" class="headerlink" title="TortoiseGit上git submodule功能实现"></a>TortoiseGit上git submodule功能实现</h2><h3 id="添加子模组的步骤"><a href="#添加子模组的步骤" class="headerlink" title="添加子模组的步骤"></a>添加子模组的步骤</h3><p>####第一步：使用submodule add…添加子模组<br>在需要作添加子模组的Git版本库中右击，选择“TortoiseGit-&gt;Submodule Add…”，在“Repository:”里面输入需要添加子模组的版本库路径，在“Path：”<br>中输入添加子模组存放的目录路径。如下图所示：</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588080598.png" alt=""></p>
-<p>此时查看需要添加子模组的Git工作区的目录结构。在根目录下多了一个.gitmodules文件，并且公共代码库被克隆到lib/lib_a目录下。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588131524.png" alt=""></p>
-<p>####第二步：查看.gitmodules的内容<br>.gitmodules的内容记录着含子模组存放的目录路径及子模组版本库的路径</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588172075.png" alt=""><br>注：此时工作区尚未提交，完成提交后，子模组才算正式完成在需要作添加子模组的Git版本库中创立。</p>
-<p>注：此主版本库(super.git)就变成了一个包含子模组的版本库。</p>
-<h3 id="克隆带子模组的版本库的步骤"><a href="#克隆带子模组的版本库的步骤" class="headerlink" title="克隆带子模组的版本库的步骤"></a>克隆带子模组的版本库的步骤</h3><p>克隆带子模组的git库，并不能自动将子模组的版本库克隆出来，对于只关心项目本身的数据，而不关心项目引用的外部项目数据的用户，这个功能非常好，数据没有冗余而且克隆的速度也很快。</p>
-<h4 id="第一步：克隆super主版本库"><a href="#第一步：克隆super主版本库" class="headerlink" title="第一步：克隆super主版本库"></a>第一步：克隆super主版本库</h4><p>在工作区中克隆主主版本库后，会发现子模组的版本库并没有克隆，只有将存放子模组版本库的目录克隆下来了。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588235376.png" alt=""></p>
-<p>存放子模组版本库的目录路径</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588265251.png" alt=""></p>
-<h4 id="第二步：克隆子模组"><a href="#第二步：克隆子模组" class="headerlink" title="第二步：克隆子模组"></a>第二步：克隆子模组</h4><p>如果需要克隆出子模组形式引用的外部库，首先需要执行Submodule Update操作。</p>
-<p>在需要作克隆子模组的Git工作区中右击，选择“TortoiseGit-&gt;Submodule Update…”,点击“OK”即可。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588301375.png" alt=""></p>
-<p>执行Submodule Update…操作后就会把子模组的版本库克隆下来。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588313780.png" alt=""></p>
-<h3 id="对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果"><a href="#对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果" class="headerlink" title="对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果"></a>对主Git库工作区作commit、checkout、revert、pull、push等更改Git工作区内容的操作时，查看Submodule目录下内容的效果</h3><h4 id="1-对主Git库工作区作commit操作"><a href="#1-对主Git库工作区作commit操作" class="headerlink" title="1) 对主Git库工作区作commit操作"></a>1) 对主Git库工作区作commit操作</h4><p>当在主Git库工作区中变更到达一个适当状态时，我们需要将这些变更提交到Git库，作版本备份和跟踪。</p>
-<p>方法：</p>
-<p>在工作区内右击，选择“ Commit-&gt; “当前分支名称” ”，在Commit窗口中，选择需要提交的变更path，填写提交说明，点击“Ok”。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588398302.png" alt=""></p>
-<p>结论：在主git工作区作commit操作，只是将主Git工作区的变更历史提交到主Git本地库中，对Submodule没有任何影响。</p>
-<h4 id="对主Git库工作区作checkout操作"><a href="#对主Git库工作区作checkout操作" class="headerlink" title="对主Git库工作区作checkout操作"></a>对主Git库工作区作checkout操作</h4><p>当在主Git库工作区中想要切换到其他某个分支、某个tag、某个commit历史记录。</p>
-<p>我们这里举个特殊的例子：</p>
-<p>切换到某个commit历史记录(如在主版本库中提交子版本库的历史记录)</p>
-<p>方法：</p>
-<p>在Git工作区内的某目录上右击，选择“Swicht/Checkout…”在Swicht/Checkout…Checkout窗口中，在Switch to Commmit中列出需要切换的commit历史记录，在此列表中选择需要切换到的commit历史记录，以后点击“Ok”按钮。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588440810.png" alt=""></p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588447419.png" alt=""></p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588452662.png" alt=""></p>
-<p>注：由于切换到的是在主版本库中提交子版本库的那条历史记录，因此子模组中状态也会改换，也需要在子模组中执行切换。</p>
-<p>执行Submodule Update操作即可。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588463163.png" alt=""></p>
-<h4 id="对主Git库工作区作revert操作"><a href="#对主Git库工作区作revert操作" class="headerlink" title="对主Git库工作区作revert操作"></a>对主Git库工作区作revert操作</h4><p>当在主Git库工作区中这次变更有错误时，就可以使用revert操作来撤销这次次操作。</p>
-<p>方法：</p>
-<p>在工作区内右击，选择“Revert”，在Revert窗口中，选择需要撤销的变更path，点击“Ok”。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588499678.png" alt=""></p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588505922.png" alt=""></p>
-<p>结论：在主git工作区作revert操作，只是将主Git工作区某次的变更操作给撤销，此次操作之前的commit都会被保留，且对Submodule没有任何影响。</p>
-<h4 id="对主Git库工作区作push操作"><a href="#对主Git库工作区作push操作" class="headerlink" title="对主Git库工作区作push操作"></a>对主Git库工作区作push操作</h4><p>当在主Git库工作区中将主Git本地库的数据推送到主Git远程库中。</p>
-<p>方法：在工作区的目录上（不要在文件上）右击，选择“Git Sync…”</p>
-<p>“Local Branch”，”Remote Branch”，“Remote URL”这3栏必须正确才能“推”数据。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588527148.png" alt=""></p>
-<p>结论：在主git工作区作push操作，只是将主Git本地库的变更历史推送到到主Git远程库中，对Submodule没有任何影响。</p>
-<h4 id="对主Git库工作区作pull操作"><a href="#对主Git库工作区作pull操作" class="headerlink" title="对主Git库工作区作pull操作"></a>对主Git库工作区作pull操作</h4><p>当在主Git库工作区中将主Git远程库的拉取到主Git本地库中。</p>
-<p>方法：在工作区的目录上（不要在文件上）右击，选择“Git Sync…”</p>
-<p>“Local Branch”，”Remote Branch”，“Remote URL”这3栏必须正确才能“拉”数据。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588582483.png" alt=""></p>
-<p>结论：在主git工作区作pull操作，只是将主Git远程库的变更历史拉取到到主Git本地库中，对Submodule没有任何影响。</p>
-<h3 id="对submodule下的内容进行修改后commit、push，对submodule目录作pull"><a href="#对submodule下的内容进行修改后commit、push，对submodule目录作pull" class="headerlink" title="对submodule下的内容进行修改后commit、push，对submodule目录作pull"></a>对submodule下的内容进行修改后commit、push，对submodule目录作pull</h3><p>在执行Submodule Update…操作更新出子模组后，都以某个具体的提交版本进行检出，进入子模组目录，会发现其处于非跟踪状态。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588613891.png" alt=""></p>
-<p>显然这种情况下，如果修改lib/lib_a下的文件，提交就会丢失。下面介绍如何在检查的子模组中修改，以及如何更新子模组。</p>
-<p>在子模组中切换到master分支(或者其他想要修改的分支)后在进行修改。</p>
-<ul>
-<li>切换到master分支，然后在工作区做一些改动。</li>
-</ul>
-<p><img src="/2018/07/26/Git-submodule用法/1532588630623.png" alt=""></p>
-<ul>
-<li>执行commit后，并且推送到子模组库中后。</li>
-<li>回到主版本库中。</li>
-</ul>
-<p>在主版本库中查看状态，在主版本库中可以看到子模组已修改，包含了更新的提交。</p>
-<ul>
-<li>需要将修改提交在主版本库中进行推送。<br><img src="/2018/07/26/Git-submodule用法/1532588659308.png" alt=""></li>
-</ul>
-<h4 id="对submodule目录作pull"><a href="#对submodule目录作pull" class="headerlink" title="对submodule目录作pull"></a>对submodule目录作pull</h4><p>当子模组版本库中有新的提交历史记录，就需要做pull操作来更新。</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588709532.png" alt=""></p>
-<p>注：对子模组库中做了pull操作，同时需要对调用子模组库的主版本库中也要做Pull操作。</p>
-<p>如下图所示：<br><img src="/2018/07/26/Git-submodule用法/1532588723173.png" alt=""></p>
-<p>注意：进入子模组目录，会发现其处于非跟踪状态。显然这种情况下，如果修改lib/lib_a下的文件，提交就会丢失。提示如下：</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588742276.png" alt=""></p>
-<h3 id="移除Submodule"><a href="#移除Submodule" class="headerlink" title="移除Submodule"></a>移除Submodule</h3><p>第一步：用Delete(keep local) 将目录或文件命令从git的索引库中移除子模块目录<br>方法：</p>
-<p>在工作区内目录或文件上右击，选择“Delete(keep local)”，在Delete窗口中，点击“Remove”。</p>
-<p>Delete(keep local)把目录lib/从git的索引库中移除,但是对目录lib/本身并不进行任何操作。</p>
-<p>因此需要彻底删除。</p>
-<p>第二步：删除物理文件</p>
-<p>第三步：删除.gitmodule文件</p>
-<p>第四步：删除.git/config的submodule配置源文件</p>
-<p>删除如下图所示红框的部门</p>
-<p><img src="/2018/07/26/Git-submodule用法/1532588786127.png" alt=""></p>
-<p>第五步：删除后，提交更改</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/26/Git-cherry-pick用法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/26/Git-cherry-pick用法/" itemprop="url">Git cherry-pick用法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-26T13:48:11+08:00">
-                2018-07-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TortoiseGit/" itemprop="url" rel="index">
-                    <span itemprop="name">TortoiseGit</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/07/26/Git-cherry-pick用法/" class="leancloud_visitors" data-flag-title="Git cherry-pick用法">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="TortoiseGit之cherry-pick使用"><a href="#TortoiseGit之cherry-pick使用" class="headerlink" title="TortoiseGit之cherry-pick使用"></a>TortoiseGit之cherry-pick使用</h2><p>有这么一个需求，分支节点A作为dev分支，分支节点B和C作为功能分支，某天在B节点上爆发出一个bug，经研究发现该bug是根节点带出的，意味着C上也会有该bug，此时正确的修复手段是从B和C的共同根节点A中拉出分支，对该bug进行修复，而不是分别在B和C上进行代码修改。于此同时也许在A节点上有新的功能增加，此时不能直接把修复bug对应的commit合并到B和C上，而需要用到cherry-pick。参考以下文章：</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/liu0808/article/details/79158980" target="_blank" rel="noopener">git cherry-pick 把提交到A分支的部分commit 再提交到B分支上</a></p>
-</blockquote>
-<blockquote>
-<p>应用环境:<br>有一个主分支 <code>master</code> (这个分支只是用来合并其他通过测试的分支,及上线打版本)<br>另一个分支 <code>dev</code> (开发提交的分支)<br> 当你通过一番挣扎终于搞定一个bug,顺手提交到 git 服务器,心里一阵暗爽. 这时发现你当前所在的分支是 master !!!<br>这个分支不是开发者用来提交代码的,可惜现在剁手也晚了。<br>怎么办?<br>于是你想到,合并分支……<br>合并分支通常会带来各种各样的冲突，而且当前 <code>dev</code> 分支还在开发中,没有进过测试,所以就算合并也是 <code>dev</code> 合并 <code>master</code> 分支。但是车根本太大。<br>这时最好的解决方案就是用 <code>cherry-pick</code>。</p>
-</blockquote>
-<p>使用方法:</p>
-<ol>
-<li><p>先切换到刚才你误操作的分支下 <code>master</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout master</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>然后找到你的提交信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git log</span><br><span class="line">commit 424037d22c5830ba39b7c46bacd4abcb2abe072d</span><br><span class="line">Author: bingcaihuang &lt;bingcaihuang@gmail.com&gt;</span><br><span class="line">Date:   Thu Jul 26 13:31:33 2018 +0800</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>从提交日志中找到 <code>commitID</code>  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">424037d22c5830ba39b7c46bacd4abcb2abe072d</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>切换到 <code>dev</code> 分支下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout dev</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>把 <code>master</code> 下的 bug fixed! 提交重新提交的 <code>dev</code> 分支下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git cherry-pick &apos;424037d22c5830ba39b7c46bacd4abcb2abe072d&apos;</span><br><span class="line">Finished one cherry-pick.</span><br><span class="line">On branch dev</span><br><span class="line">Your branch is ahead of &apos;origin/dev&apos; by 1 commits.</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>上面的提示信息告诉我们这个 commit 已经重新提交到了 dev 分支下。<br>注意,这个操作也行会报错,这时需要你手动去合并冲突,然后重新提交。<br>最后  git push</p>
-<h2 id="Cherry-picking"><a href="#Cherry-picking" class="headerlink" title="Cherry picking"></a>Cherry picking</h2><p>TortoiseGit官方说明书：<br>Cherry-picking in TortoiseGit is invoked from the Revision Log Dialog. Within this dialog, select the commit(s) to cherry-pick, then right-click on one of the selected commits to pop up the context menu. Select Cherry Pick this commit… (or Cherry Pick select commits… if more than one commit is selected).</p>
-<p>The Cherry Pick dialog will be shown.<br>Cherry-picking in TortoiseGit is invoked from the Revision Log Dialog. Within this dialog, select the commit(s) to cherry-pick, then right-click on one of the selected commits to pop up the context menu. Select Cherry Pick this commit… (or Cherry Pick select commits… if more than one commit is selected).</p>
-<p>The Cherry Pick dialog will be shown.<br>Cherry-picking in TortoiseGit is invoked from the Revision Log Dialog. Within this dialog, select the commit(s) to cherry-pick, then right-click on one of the selected commits to pop up the context menu. Select Cherry Pick this commit… (or Cherry Pick select commits… if more than one commit is selected).</p>
-<p>The Cherry Pick dialog will be shown.</p>
-<p><img src="/2018/07/26/Git-cherry-pick用法/1532586900831.png" alt=""></p>
-<p>The Cherry Pick dialog is similar to the Rebase dialog. The top table displays one line for each selected commit to cherry-pick. Buttons below it control the actions (Pick, Squash, Edit, Skip) and the order in which multiple commits are picked. Selecting a line shows the files affected by the commit.</p>
-<h2 id="git-cherry-pick-从其他分支检出指定的commit到当前分支"><a href="#git-cherry-pick-从其他分支检出指定的commit到当前分支" class="headerlink" title="git cherry-pick 从其他分支检出指定的commit到当前分支"></a>git cherry-pick 从其他分支检出指定的commit到当前分支</h2><blockquote>
-<p>参考文章：<a href="https://www.cnblogs.com/chucklu/p/4707108.html" target="_blank" rel="noopener">git cherry-pick 从其他分支检出指定的commit到当前分支</a></p>
-</blockquote>
-<p><img src="/2018/07/26/Git-cherry-pick用法/1532587081566.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1307,7 +1283,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1318,7 +1294,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1329,7 +1305,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

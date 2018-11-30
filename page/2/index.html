@@ -293,6 +293,373 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/23/QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）/" itemprop="url">QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T14:00:18+08:00">
+                2018-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt-Model-View/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt - Model/View</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/23/QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）/" class="leancloud_visitors" data-flag-title="QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）"><a href="#QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）" class="headerlink" title="QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）"></a>QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）</h2><blockquote>
+<p><a href="https://blog.csdn.net/gxc1222/article/details/53035591" target="_blank" rel="noopener">QTreeView处理大量数据（使用1000万条数据，每次都只是部分刷新）</a></p>
+</blockquote>
+<p>如何使QTreeView快速显示1000万条数据，并且内存占用量少呢？这个问题困扰我很久，在网上找了好多相关资料，都没有找到合理的解决方案，今天在这里把我的解决方案提供给朋友们，供大家相互学习。</p>
+<p>我开始使用的QTreeWidget 控件来显示我的数据，发现该控件在显示10000行以下的数据还可以应付的过来，但超过10000条，就明显感觉到屏幕刷新就会有卡的现象，而且占据内存很大，虽然操作起来简单方便，但灵活性没有QTreeView强大。因为我要显示的数据量是非常大的，甚至过1000万，因此，采用QTreeWidget来显示，很显然不能满足性能要求，所以打算采用QTreeView来显示，不罗嗦了，赶快进入正题了，下面讲讲我是怎么通过QTreeView来快速显示1000万条数据的吧！</p>
+<ol>
+<li>通过从文件里面读取要显示的数据，交给QTreeView来显示，从而不用把数据一次性读到内存，就可以解决内存占用大的问题。</li>
+<li>我们知道数据显示是通过刷新来实现的，通过刷新时，每次只刷新屏幕可见区域，其他部分不用刷新的方法，从而解决速度显示慢的问题。</li>
+</ol>
+<p>解决了上面的两个问题，显示1亿条数据都不会有任何问题，而且显示速度和内存占有量与显示1000条数据相当，听起来很诱人啊，下面是我是怎么通过QTreeView来解决这两个问题的：</p>
+<ol>
+<li>重载QAbstractItemModel中的如下函数：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">QVariant headerData(int section, Qt::Orientation orientation,</span><br><span class="line">int role = Qt::DisplayRole) const;</span><br><span class="line">QVariant data(const QModelIndex &amp;index, int role) const;</span><br><span class="line">int rowCount(const QModelIndex &amp;parent = QModelIndex()) const;      </span><br><span class="line">int columnCount(const QModelIndex &amp;parent = QModelIndex()) const;</span><br><span class="line">QModelIndex index(int row, int column,</span><br><span class="line">const QModelIndex &amp;parent = QModelIndex()) const;</span><br><span class="line">QModelIndex parent(const QModelIndex &amp;index) const;</span><br></pre></td></tr></table></figure>
+<p>(1) QVariant headerData(intsection, Qt::Orientationorientation, int role =Qt::DisplayRole)const;<br>显示树视的标题，section表示列，从0开始，orientation表示标题的方向（水平还是垂直），role表式标题栏显示的方式，当role的角色为Qt::DisplayRole时，表示显示文本，当然还有其他角色，大家可以参考Qt开发手册。示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">QVariant CMyModel::headerData(int section, Qt::Orientation orientation, int role) const</span><br><span class="line">&#123;</span><br><span class="line">	if (role == Qt::DisplayRole &amp;&amp; orientation == Qt::Horizontal)</span><br><span class="line">	&#123;</span><br><span class="line">		return pData-&gt;headerData(section);</span><br><span class="line">	&#125;</span><br><span class="line">	return QVariant();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>显示水平标题，其中pData是我定义的一个数据类的对象，在这里我把该类命名为CData。headerData来取出要显示的数据。</p>
+<p>(2) QVariant data(const QModelIndex &amp;index,int role)const;<br>显示数据，index表示树节点索引，树中的每个节点都有一个对应的该索引，当index = QModelIndex()时，表示该节点是根节点，否则为非根节点。index中存放了该节点在同存节点中的位置信息（行和列），以及节点的特殊信息，如index.internalPointer()，这是一个指针，我们可以通过该指针保存我们想要的节点信息，角色同上。示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">QVariant CMyModel::data(const QModelIndex &amp;index, int role) const</span><br><span class="line">&#123;</span><br><span class="line">	if (!index.isValid())</span><br><span class="line">		return QVariant();</span><br><span class="line">	int row = index.row();</span><br><span class="line">	int col = index.column();</span><br><span class="line">	if (role == Qt::DisplayRole)</span><br><span class="line">	&#123;</span><br><span class="line">		return pData-&gt;getData(row, col);</span><br><span class="line">	&#125;</span><br><span class="line">	return QVariant();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过getData来获取要显示的数据，该数据方在我们的文件里，每次只需要读取我们想要显示的数据，不需要把所有的数据都放到内存，从而节省了内存空间，这样就解决了上面讲的第一个问题。</p>
+<p>(3) int rowCount(const QModelIndex &amp;parent = QModelIndex())const;<br>大家不难猜出该函数是返回该父节点下有多少个子节点，还是来看示例代码吧：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int CMyModel::rowCount(const QModelIndex &amp;parent)const</span><br><span class="line">&#123;</span><br><span class="line">	return pData-&gt;rowCount();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>为了简单起见，这里不考虑父节点，认为任何节点都存在rowCount()个节点。</p>
+<p>(4) int columnCount(const QModelIndex &amp;parent = QModelIndex())const;<br>返回父节点有多少列，示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int CMyModel::columnCount(const QModelIndex &amp;parent)const</span><br><span class="line">&#123;</span><br><span class="line">	return pData-&gt;colCount();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>(5) QModelIndex index(int row, int column, const QModelIndex &amp;parent = QModelIndex()) const;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QModelIndex CMChModel::index(int row, int column, const QModelIndex &amp;parent) const</span><br><span class="line">&#123;</span><br><span class="line">	return createIndex(row, column, NULL);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过该函数创建节点的索引，我这里简单一点，只创建一层节点，若大家要创建多层节点，则要通parent索引里的数据（如internalPointer()）来创建对应的节点，通过createIndex的第3个参数来向节点传入指定的索引数据，由于我这里不需要创建多层节点，所以我传入NULL。那麽我们怎么建立节点的父子关系呢，聪明的你肯定想到了吧，QModelIndex parent(const QModelIndex &amp;index) const;就是建立父子节点的父子关系的，如果只有一层节点，该函数无须重载，至此我们的显示数据模型已经实现了，接下来就是要把这个模型通过视图来表现出来(QTreeView)。</p>
+<p>我们看看QTreeView是怎么来显示我们上面建立的模型的，看一段简单的代码，大家就明白了:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QTreeView treeView;</span><br><span class="line">CMyModel *pModel = new CMyModel();</span><br><span class="line">treeView.setModel(pModel);</span><br><span class="line">treeView.show();</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li>是不是很简单，到这里通过QTreeView来处理大量的数据的实现方式差不多讲完了，当你按照上面的方式准备处理你的大批量数据时，你就会发现显示10000行数据还是会卡，这是什么原因呢？其实这个也困扰我很久，网上也没有找到相关资料，没办法啊，只有啃QTreeView实现的源代码，实际上QTreeView确实是显示可见部分数据（每次显示1000行数据，按理论上来说1000行足以占据计算机屏幕，这样一来不管你数据量是多大，我始终只取1000行数据，所以1亿条数据与1000条数据显示速度是一样的，只要你一次只读出要显示的数据，内存占有量也是一样的），既然问题都解决了，那麽为什么还会有卡的现象呢？</li>
+</ol>
+<p>经过进一步研究QTreeView源代码，最后发现耗时的地方是QTreeView第一次刷新的时候会计算每一行的行高，这样刷新时，就要遍历所有行数据，原来卡是出在这个地方啊，那麽应该怎么解决呢？实现方法很简单，就是上面的代码多加一行，treeView.setUniformRowHeights(true);这样一来就不会刷新计算所有行的行高了，至此用QTreeView显示大批量数据问题得到解决。</p>
+<p>最后再补充一下，该实现方式可以适应其他QTableView, QListView等视图。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/Qt-任务调度器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BingcaiHuang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BingcaiHuang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/23/Qt-任务调度器/" itemprop="url">Qt 任务调度器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T13:51:05+08:00">
+                2018-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt-多线程/" itemprop="url" rel="index">
+                    <span itemprop="name">Qt - 多线程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/23/Qt-任务调度器/" class="leancloud_visitors" data-flag-title="Qt 任务调度器">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Qt-任务调度器"><a href="#Qt-任务调度器" class="headerlink" title="Qt 任务调度器"></a>Qt 任务调度器</h2><blockquote>
+<p><a href="http://m.www.cnblogs.com/daxia319/p/4797314.html" target="_blank" rel="noopener">Qt 任务调度器</a></p>
+</blockquote>
+<p>近期刚刚完成的C/S端远程监控软件，架构为1个TcpClt对应N个TcpSvr。Clt可向Svr发送指令，Svr接收到指令执行，并通过报文反馈进度。<br>过去，软件管理的个体是每个Svr；现在需要将若干Svr合并为一个群体，各Svr之间执行指令有先后顺序。<br>因此过去只需单线程一次性向各Svr发送报文，只需在界面所在线程处理。现在需要有一个调度（等待）的过程，要在子线程里处理。</p>
+<p>需要解决的问题如下：</p>
+<ol>
+<li>定时调度</li>
+<li>跨线程更新界面。</li>
+</ol>
+<p>首先看问题2：跨线程更新界面<br>Qt可以用signal/slot机制，跨线程传递信号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Schedler *pSchd;</span><br><span class="line">QDialog *pDlg;</span><br><span class="line">//...</span><br><span class="line">connect(pSchd, SIGNAL(notify(const QString &amp;, const QString &amp;)), pDlg, SLOT(updateUI(const QString &amp;, const QString &amp;)), Qt::QueuedConnection);</span><br></pre></td></tr></table></figure>
+<p>其中最后一个参数Qt::QueuedConnection适用于跨线程调用，将信号传递到消息队列中，由QAppliction.exec()或QThread.exec()等函数调用。</p>
+<p>该参数可缺省，缺省为Qt::AutoConnection。Qt::AutoConnection根据emitter/receiver是否在同一线程内，自动决定连接方式：当位于同一线程时，采用Qt::DirectConnection（直连方式，立即执行）；位于不同线程时，采用Qt::QueuedConnection。</p>
+<p>有关Qt::connectionType，QAssistant解释如下：<br><img src="/2018/11/23/Qt-任务调度器/1542952623734.png" alt=""></p>
+<p>回到问题1：调度器需要满足以下条件：</p>
+<ol>
+<li>前一个任务未执行到关键点，禁止下一个任务开始。</li>
+<li>前一个任务执行失败，中断剩余任务。</li>
+<li>所有任务都开始执行后，需等待任务执行结束。</li>
+</ol>
+<p>根据以上原则，定义调度器如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">class AberScheduler : public QObject</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">public:</span><br><span class="line">    AberScheduler();</span><br><span class="line">    ~AberScheduler();</span><br><span class="line"></span><br><span class="line">    int process();    //执行调度</span><br><span class="line">    int init(QList&lt;AberInfo&gt; infoList, const QString &amp;cmdType);</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    void sortMachine();</span><br><span class="line">    int goFirst();</span><br><span class="line">    int goNext();</span><br><span class="line">    bool end();</span><br><span class="line"></span><br><span class="line">    void TryGoNext();</span><br><span class="line">    bool IsAllDone();</span><br><span class="line"></span><br><span class="line">protected:</span><br><span class="line">    void OnBegin();</span><br><span class="line">    void OnEnd();</span><br><span class="line">    void UpdateAllStatus();    //从通讯线程获取状态</span><br><span class="line">    void UpdateAllUI();    //更新界面线程</span><br><span class="line"></span><br><span class="line">signals:</span><br><span class="line">   int sendAberOrder(const QString &amp;machineName, const QString &amp;orderType);</span><br><span class="line">   int notify(const QString &amp;machineName, const QString &amp;progressInfo);</span><br><span class="line">   int updateSingleStatus(const QString &amp;machineName, int *next, int *status, double *progress);</span><br><span class="line">   int setUIDisabled(const QString &amp;machineName, bool bDisabled);</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    QList&lt;AberInfo&gt; m_aberInfoList;</span><br><span class="line">    int m_index;</span><br><span class="line">    QString m_cmdType;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>机器信息结构体定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">struct AberInfo</span><br><span class="line">&#123;</span><br><span class="line">    QString machineName;    </span><br><span class="line">    int machineType;</span><br><span class="line">    int next;    //下一台机器是否可以开始： -1:叵;0:可;1:中断所有</span><br><span class="line">    int status;    //命令执行状态： 0:未开始;1:正在执行;2:成功;3:失败</span><br><span class="line">    double progress;    //进度，范围: [0.00, 1.00]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>核心调度代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">int AberScheduler::process()</span><br><span class="line">&#123;</span><br><span class="line">    int ret_next = -1;</span><br><span class="line">    bool bAllDone = false;</span><br><span class="line"></span><br><span class="line">    if(this-&gt;m_infoList.count() &lt;= 0)</span><br><span class="line">    &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    OnBegin();</span><br><span class="line"></span><br><span class="line">    goFirst();</span><br><span class="line">    UpdateAllUI();</span><br><span class="line"></span><br><span class="line">    const AberInfo &amp;info = this.m_infoList[this-&gt;m_index];</span><br><span class="line">    emit sendOrder(info.machineName, this-&gt;m_cmdType);</span><br><span class="line">    Sleep(5000);</span><br><span class="line"></span><br><span class="line">    while(!end())</span><br><span class="line">    &#123;</span><br><span class="line">        Sleep(1000);</span><br><span class="line">        UpdateAllStatus();</span><br><span class="line">        UpdateAllUI();</span><br><span class="line"></span><br><span class="line">        ret_next = TryGoNext();</span><br><span class="line">        if(ret_next == 0)  //可以进行下一个</span><br><span class="line">        &#123;</span><br><span class="line">            int ret_go_next = goNext();</span><br><span class="line">            if(ret_go_next == -1)</span><br><span class="line">            &#123;</span><br><span class="line">                onEnd();</span><br><span class="line">                return -1;</span><br><span class="line">            &#125;</span><br><span class="line">            if(!end())</span><br><span class="line">            &#123;</span><br><span class="line">                const AberInfo &amp;info = this.m_infoList[this-&gt;m_index];</span><br><span class="line">                emit sendOrder(info.machineName, this-&gt;cmd_type);</span><br><span class="line">                Sleep(5000);</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else if(ret_next == -1)  //中断全部</span><br><span class="line">        &#123;</span><br><span class="line">            UpdateAllStatus();</span><br><span class="line">            UpdateAllUI();</span><br><span class="line">            onEnd();</span><br><span class="line">            return 1;</span><br><span class="line">        &#125;</span><br><span class="line">        bAllDone = IsAllDone();</span><br><span class="line">        if(bAllDone)</span><br><span class="line">        &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    while(!bAllDone)</span><br><span class="line">    &#123;</span><br><span class="line">        Sleep(1000);</span><br><span class="line">        UpdateAllStatus();</span><br><span class="line">        UpdateAllUI();</span><br><span class="line">        bAllDone = IsAllDone();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    UpdateAllStatus();</span><br><span class="line">    UpdateAllUI();</span><br><span class="line">    onEnd();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>与发送信号有关的函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">void AberScheduler::UpdateAllStatus()</span><br><span class="line">&#123;</span><br><span class="line">    //只更新index及之前的机器</span><br><span class="line">    for(int i=0; i &lt;= this-&gt;m_index &amp;&amp; i &lt; this-&gt;m_infoList.count(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        AberInfo &amp;info = this-&gt;m_infoList[i];</span><br><span class="line">        emit UpdateStatus(this-&gt;m_cmd_type, info.machineName, &amp;info.next, &amp;info.status, &amp;info.progress);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void AberScheduler::UpdateAllUI()</span><br><span class="line">&#123;</span><br><span class="line">    foreach(AberInfo info, this-&gt;m_infoList)</span><br><span class="line">    &#123;</span><br><span class="line">        emit notify(info.machineInfo, info.progress, info.status);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void AberScheduler::OnBegin()</span><br><span class="line">&#123;</span><br><span class="line">　　foreach(AberInfo info, this-&gt;m_infoList)</span><br><span class="line">　　&#123;</span><br><span class="line">　　　　emit setDisabled(info.machineInfo, true);</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void AberScheduler::OnEnd()</span><br><span class="line">&#123;</span><br><span class="line">　　foreach(AberInfo info, this-&gt;m_infoList)</span><br><span class="line">　　&#123;</span><br><span class="line">　　　　emit setDisabled(info.machineInfo, false);</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int AberScheduler::TryGoNext()</span><br><span class="line">&#123;</span><br><span class="line">    AberInfo curInfo = this-&gt;m_infoList[m_index]; //???</span><br><span class="line">    return curInfo.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用线程包装AberScheduler，使其能适用于跨线程更新界面。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class AberThread : public QRunnable</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    AberThread();</span><br><span class="line">    ~AberThread();</span><br><span class="line">    void init(const QList&lt;AberInfo&gt; &amp;infoList, const QString &amp;cmdType);</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    void run();</span><br><span class="line">    AberScheduler *schd();</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    AberScheduler *m_shcd;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void void AberThread::run()</span><br><span class="line">&#123;</span><br><span class="line">　　m_schd-&gt;process();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>界面连接signal/slot如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">void AberDialog::doSth()</span><br><span class="line">&#123;</span><br><span class="line">    QList&lt;AberInfo&gt; infoList;</span><br><span class="line">    //...</span><br><span class="line">    AberThread *bThread = new AberThread;</span><br><span class="line">    bThread-&gt;init(infoList, &quot;cmdType1&quot;);</span><br><span class="line"></span><br><span class="line">    AberScheduler *p_schd = bThread-&gt;schd();</span><br><span class="line">    connect(p_schd, SIGNAL(sendAberOrder(const QString &amp;, const QString &amp;)), this, SLOT(sendAberOrder(const QString &amp;, const QString &amp;)));</span><br><span class="line">    connect(p_schd, SIGNAL(notify(const QString &amp;, const QString &amp;)), this, SLOT(updateSingleUI(const QString &amp;, const QString &amp;)));</span><br><span class="line">    connect(p_schd, SIGNAL(updateSingleStatus(const QString &amp;, int *, int *, double *)), this, SLOT(getSingleStatus(const QString &amp;, int *, int *, double *)));</span><br><span class="line">    connect(p_schd, SIGNAL(setUIDisabled(const QString &amp;, bool)), this, SLOT(setUIDisabled(const QString &amp;, bool)));</span><br><span class="line"></span><br><span class="line">    QThreadPool::globalInstance()-&gt;start(bThread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p> QTheadPool是Qt自带的线程池，只能处理QRunnable，而不能处理QThread，可设置同时运行任务的数量，超过数量的线程会在队列中排队。并且无法强制终止QRunnable。如果要实现调度的强制中断，可以采用类似全局变量的方式，在process循环中读取g_flag，若为false，则终止调度（代码就不贴了）。</p>
+<p>总结：</p>
+<ol>
+<li>QRunnable包装AberScheduler，利用多线程防止界面卡死。</li>
+<li>AberScheduler继承QObject，并使用signal/slot机制，对处理逻辑与界面解耦。</li>
+<li>利用QThreadPool实现多个任务同时调度。<br>4.<br>P.S.</li>
+<li>VS2008无法对QObject::connect()函数、SIGNAL宏、SLOT宏做语法检查。即使写了不存在的函数也能编译通过，但信号无法传递，此处极易出错。</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/QT线程池实验研究与分析（QThread与和QThreadPool-QRunnable使用上的区别）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -792,489 +1159,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/QTransform类/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/12/QTransform类/" itemprop="url">QTransform类</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-12T09:35:48+08:00">
-                2018-09-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Qt/" itemprop="url" rel="index">
-                    <span itemprop="name">Qt</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/09/12/QTransform类/" class="leancloud_visitors" data-flag-title="QTransform类">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="QTransform类"><a href="#QTransform类" class="headerlink" title="QTransform类"></a>QTransform类</h2><blockquote>
-<p><a href="https://blog.csdn.net/founderznd/article/details/51533777" target="_blank" rel="noopener">QTransform类</a></p>
-</blockquote>
-<p>QTransform类用于控制二维坐标系之间的转换<br>包含：位移、缩放、扭曲、旋转还有映射<br>首先看它的核心内容：</p>
-<p><img src="/2018/09/12/QTransform类/1536716220481.png" alt=""></p>
-<p>这是一个仿射变换矩阵(affine transformation)，它包含了坐标系转换所需要的所有信息</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">element</th>
-<th style="text-align:left">description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">m11</td>
-<td style="text-align:left">水平缩放</td>
-</tr>
-<tr>
-<td style="text-align:left">m22</td>
-<td style="text-align:left">垂直缩放</td>
-</tr>
-<tr>
-<td style="text-align:left">m21</td>
-<td style="text-align:left">水平扭曲</td>
-</tr>
-<tr>
-<td style="text-align:left">m12</td>
-<td style="text-align:left">垂直扭曲</td>
-</tr>
-<tr>
-<td style="text-align:left">m31(dx)</td>
-<td style="text-align:left">水平位移</td>
-</tr>
-<tr>
-<td style="text-align:left">m32(dy)</td>
-<td style="text-align:left">垂直位移</td>
-</tr>
-<tr>
-<td style="text-align:left">m13</td>
-<td style="text-align:left">水平映射</td>
-</tr>
-<tr>
-<td style="text-align:left">m23</td>
-<td style="text-align:left">垂直映射</td>
-</tr>
-<tr>
-<td style="text-align:left">m33</td>
-<td style="text-align:left">额外的映射因子</td>
-</tr>
-</tbody>
-</table>
-<p>他们具体的功能可以看下图：</p>
-<p><img src="/2018/09/12/QTransform类/1536716518172.png" alt=""></p>
-<p>你可以直接使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void setMatrix(qreal m11, qreal m12, qreal m13, qreal m21, qreal m22, qreal m23, qreal m31, qreal m32, qreal m33)</span><br></pre></td></tr></table></figure></p>
-<p>来设置这些元素</p>
-<p>当然，QTransform也提供了很多方法来方便你使用</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">method</th>
-<th style="text-align:left">descripiton</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">QTransform.translate(qreal dx, qreal dy)</td>
-<td style="text-align:left">dx,dy为任意大小的实数，保存到m31(dx)和m32(dy)中</td>
-</tr>
-<tr>
-<td style="text-align:left">QTransform.scale(qreal sx, qreal sy)</td>
-<td style="text-align:left">sx，sy为任意大小的实数，保存到m11和m22中</td>
-</tr>
-<tr>
-<td style="text-align:left">QTransform.rotate(qreal angle)</td>
-<td style="text-align:left">angle为任意大小的实数，不过为了便于阅读，最好是0到360之间</td>
-</tr>
-<tr>
-<td style="text-align:left">QTransform.shear(qreal sh, qreal sv)</td>
-<td style="text-align:left">sh，sv为任意大小的实数，保存到m12和m21中</td>
-</tr>
-</tbody>
-</table>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/07/Effective-C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="BingcaiHuang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BingcaiHuang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/07/Effective-C/" itemprop="url">Effective-C++</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-07T11:54:51+08:00">
-                2018-09-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Effective-C/" itemprop="url" rel="index">
-                    <span itemprop="name">Effective-C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/09/07/Effective-C/" class="leancloud_visitors" data-flag-title="Effective-C++">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Effective-C"><a href="#Effective-C" class="headerlink" title="Effective-C++"></a>Effective-C++</h2><h3 id="Item-1：将C-视作一系列的语言"><a href="#Item-1：将C-视作一系列的语言" class="headerlink" title="Item 1：将C++视作一系列的语言"></a>Item 1：将C++视作一系列的语言</h3><blockquote>
-<p>文章：<a href="http://harttle.com/2015/07/19/effective-cpp-1.html" target="_blank" rel="noopener">Item 1：将C++视作一系列的语言</a></p>
-</blockquote>
-<p>最初，C++只是C语言加上一些面向对象的特性，所以C++的原名是“C with Classes”。 现在的C++已经逐渐成熟，成为一门多范式的程序设计语言（multiparadigm programming language）。同时支持过程式、面向对象、函数式、泛型编程，以及元编程。</p>
-<p>C++的灵活使得它在很多问题上并没有统一的规则，而是取决于具体的程序设计范式和当前架构的设计意图。这样的情况下，我们最好把C++看做是一系列的编程语言，而非一种特定的编程语言。</p>
-<p>C++有四种主要的子语言：</p>
-<ul>
-<li>C。C++是基于C设计的，你可以只使用C++中C的那部分语法。此时你会发现你的程序反映的完全是C的特征：没有模板、没有异常、没有重载。</li>
-<li>Object-Oriented C++。面向对象程序设计也是C++的设计初衷：构造与析构、封装与继承、多态、动态绑定的虚函数。</li>
-<li>Template C++。这是C++的泛型编程部分，多数程序员很少涉及，但模板在很多情况下仍然很方便。另外模板元编程（template metaprogramming）也是一个新兴的程序设计范式，虽然有点非主流。</li>
-<li>STL。这是一个特殊的模板库，它的容器、迭代器和算法优雅地结合在一起，只是在使用时你需要遵循它的程序设计惯例。当然你也可以基于其他想法来构建模板库。</li>
-</ul>
-<p>总之C++并非单一的一门语言，它有很多不同的规则集。因而C++可以被视为四种主要子语言的集合，每个子语言都有自己的程序设计惯例。</p>
-<p>C++程序设计的惯例并非一尘不变，而是取决于你使用C++语言的哪一部分。例如， 在基于C语言的程序设计中，<strong>基本类型传参时传值比传引用更有效率</strong>。 然而当你接触Object-Oriented C++时会发现，传常量指针是更好的选择。 但是你如果又碰到了STL，其中的迭代器和函数对象都是基于C语言的指针而设计的， 这时又回到了原来的规则：传值比传引用更好。</p>
-<h3 id="Item-2：避免使用define"><a href="#Item-2：避免使用define" class="headerlink" title="Item 2：避免使用define"></a>Item 2：避免使用define</h3><blockquote>
-<p>文章：<a href="http://harttle.com/2015/07/20/effective-cpp-2.html" target="_blank" rel="noopener">Item 2：避免使用define</a></p>
-</blockquote>
-<p>尽量使用常量、枚举和内联函数，代替<code>#define</code>。我们知道<code>#define</code>定义的宏会在编译时进行替换，属于模块化程序设计的概念。 宏是全局的，面向对象程序设计中破坏了封装。因此在C++中尽量避免它！</p>
-<p>接着我们具体来看<code>#define</code>造成的问题。</p>
-<p><strong>不易理解</strong><br>众所周知，由于预处理器会直接替换的原因，宏定义最好用括号括起来。#define函数将会产生出乎意料的结果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define MAX(a,b) a&gt;b?a:b</span><br><span class="line">MAX(i++,j)</span><br></pre></td></tr></table></figure>
-<p><code>i</code>自加次数将取决于<code>j</code>的大小，然而调用者并不知情。宏的行为不易理解，本质上是因为宏并非C++语言的一部分，它只是源代码的预处理手段。</p>
-<p><strong>不利于调试</strong><br>宏替换发生在编译时，语法检查之前。因此相关的编译错误中不会出现宏名称，我们不知道是哪个宏出了问题。例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define PERSON alice</span><br><span class="line">PERSON = bob;</span><br></pre></td></tr></table></figure>
-<p>如果<code>alice</code>未定义，<code>PERSON=bob;</code>便会出错：<code>use of undeclared identifier &#39;alice&#39;</code>。 然而我们可能不知道<code>alice</code>是什么东西，<code>PERSON</code>才是我们定义的“变量”。</p>
-<p>宏替换是在预处理过程中进行的，原则上讲编译器不知道宏的概念。然而，在现代的编译器中（例如<code>Apple LLVM version 6.0</code>）， 编译器会记录宏替换信息，在编译错误中给出宏的名称：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">test.cpp:8:5: error: use of undeclared identifier &apos;alice&apos;</span><br><span class="line">    PERSON  = bob;</span><br><span class="line">    ^</span><br><span class="line">test.cpp:4:16: note: expanded from macro &apos;PERSON&apos;</span><br><span class="line">#define PERSON alice;</span><br><span class="line">               ^</span><br></pre></td></tr></table></figure>
-<p>于是，Meyers提到的这个问题已经不存在了。然而作者的本意在于：尽量使用编译器，而不是预处理器。 因为<code>#define</code>并不是C++语言的一部分。</p>
-<p><strong>enum 比 const 更好用</strong><br>既然<code>#define</code>不能封装在一个类中，我们可以用<code>static const</code>来定义一个常量，并把它的作用于局限在当前类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class C&#123;</span><br><span class="line">    static const int NUM = 3;</span><br><span class="line">    int a[NUM];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>通常C++要求所有的声明都给出定义，然而数值类型（<code>char</code>, <code>int</code>, <code>long</code>）的静态常量可以只给声明。这里的<code>NUM</code>就是一个例子。 然而，如果你想取<code>NUM</code>的地址，则会得到编译错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Undefined symbols for architecture x86_64:</span><br><span class="line">  &quot;C::NUM&quot;, referenced from:</span><br><span class="line">      _main in a-88bbac.o</span><br><span class="line">ld: symbol(s) not found for architecture x86_64</span><br><span class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</span><br></pre></td></tr></table></figure>
-<p>因此如果你要取地址，那么就给出它的定义：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class C&#123;</span><br><span class="line">    static const int NUM = 3;</span><br><span class="line">    int a[NUM];</span><br><span class="line">&#125;;</span><br><span class="line">const int C::NUM;</span><br></pre></td></tr></table></figure>
-<p>因为声明<code>NUM</code>时已经给定了初始值，定义时不允许再次给初始值。<br>如果使用<code>enum</code>，事情会简单很多：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class C&#123;</span><br><span class="line">    enum &#123; NUM = 3 &#125;;</span><br><span class="line">    int a[NUM];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="Item-3：尽量使用常量"><a href="#Item-3：尽量使用常量" class="headerlink" title="Item 3：尽量使用常量"></a>Item 3：尽量使用常量</h3><blockquote>
-<p><a href="https://harttle.land/2015/07/21/effective-cpp-3.html" target="_blank" rel="noopener">Item 3：尽量使用常量</a></p>
-</blockquote>
-<blockquote>
-<p>Item 3: Use const whenever possible</p>
-</blockquote>
-<p>尽量使用常量。不需多说，这是防卫型（defensive）程序设计的原则， 尽量使用常量限定符，从而防止客户错误地使用你的代码。</p>
-<h4 id="常量的声明"><a href="#常量的声明" class="headerlink" title="常量的声明"></a>常量的声明</h4><p>总结一下各种指针的声明方式吧：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">char greeting[] = &quot;Hello&quot;;</span><br><span class="line"></span><br><span class="line">char *p = greeting;                    // non-const pointer, non-const data</span><br><span class="line">const char *p = greeting;              // non-const pointer, const data</span><br><span class="line">char * const p = greeting;             // const pointer, non-const data</span><br><span class="line">const char * const p = greeting;       // const pointer, const data</span><br></pre></td></tr></table></figure></p>
-<p><code>const</code> 出现在 <code>*</code> 左边则被指向的对象是常量，出现在 <code>*</code> 右边则指针本身是常量。 然而对于常量对象，有人把 <code>const</code> 放在类型左边，有人把 <code>const</code> 放在 <code>*</code> 左边，都是可以的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">void f1(const Widget *pw);   // f1 takes a pointer to a constant Widget object</span><br><span class="line">void f2(Widget const *pw);   // 等效</span><br></pre></td></tr></table></figure></p>
-<p>STL的iterator也是类似的，如果你希望指针本身是常量，可以声明 <code>const iterator</code>； 如果你希望指针指向的对象是常量，请使用 <code>const_iterator</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;int&gt; vec;</span><br><span class="line"></span><br><span class="line">// iter acts like a T* const</span><br><span class="line">const std::vector&lt;int&gt;::iterator iter = vec.begin();</span><br><span class="line">*iter = 10;                              // OK, changes what iter points to</span><br><span class="line">++iter;                                  // error! iter is const</span><br><span class="line"></span><br><span class="line">//cIter acts like a const T*</span><br><span class="line">std::vector&lt;int&gt;::const_iterator cIter = vec.begin();</span><br><span class="line">*cIter = 10;                             // error! *cIter is const</span><br><span class="line">++cIter;                                 // fine, changes cIter</span><br></pre></td></tr></table></figure></p>
-<p>返回值声明为常量可以防止你的代码被错误地使用，例如实数相加的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const Rational operator*(const Rational&amp; lhs, const Rational&amp; rhs);</span><br></pre></td></tr></table></figure></p>
-<p>当用户错误地使用 <code>=</code> 时：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Rational a, b, c;</span><br><span class="line">if (a * b = c)&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>编译器便会给出错误：不可赋值给常量。</p>
-<h4 id="常量成员方法"><a href="#常量成员方法" class="headerlink" title="常量成员方法"></a>常量成员方法</h4><p>声明常量成员函数是为了确定哪些方法可以通过常量对象来访问，另外一方面让接口更加易懂： 很容易知道哪些方法会改变对象，哪些不会。</p>
-<p>成员方法添加常量限定符属于函数重载。常量对象只能调用常量方法， 非常量对象优先调用非常量方法，如不存在会调用同名常量方法。 常量成员函数也可以在类声明外定义，但声明和定义都需要指定 const 关键字。 例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class TextBlock &#123;</span><br><span class="line">public:</span><br><span class="line">  const char&amp; operator[](std::size_t position) const   // operator[] for</span><br><span class="line">  &#123; return text[position]; &#125;                           // const objects</span><br><span class="line"></span><br><span class="line">  char&amp; operator[](std::size_t position)               // operator[] for</span><br><span class="line">  &#123; return text[position]; &#125;                           // non-const objects</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">   std::string text;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">TextBlock tb(&quot;Hello&quot;);</span><br><span class="line">const TextBlock ctb(&quot;World&quot;);</span><br><span class="line">tb[0] = &apos;x&apos;;             // fine — writing a non-const TextBlock</span><br><span class="line">ctb[0] = &apos;x&apos;;            // error! — writing a const TextBlock</span><br></pre></td></tr></table></figure></p>
-<h4 id="比特常量和逻辑常量"><a href="#比特常量和逻辑常量" class="headerlink" title="比特常量和逻辑常量"></a>比特常量和逻辑常量</h4><p><strong>比特常量</strong>（bitwise constness）：如果一个方法不改变对象的任何非静态变量，那么该方法是常量方法。 比特常量是C++定义常量的方式，然而一个满足比特常量的方法，却不见得表现得像个常量， 尤其是数据成员是指针时：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class TextBlock&#123;</span><br><span class="line">    char* text;</span><br><span class="line">public:</span><br><span class="line">    char&amp; operator[](int pos) const&#123;</span><br><span class="line">        return text[pos];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">const TextBlock tb;</span><br><span class="line">char *p = &amp;tb[1];</span><br><span class="line">*p = &apos;a&apos;;</span><br></pre></td></tr></table></figure></p>
-<p>因为 <code>char* text</code> 并未发生改变，所以编译器认为我们的操作都是合法的。 然而我们定义了一个常量对象 <code>tb</code>，只调用它的常量方法，却能够修改tb的数据。 对数据的操作甚至可以放在 <code>operator[]()</code> 方法里面。</p>
-<p>这一点不合理之处引发了 <strong>逻辑常量</strong>（logical constness）的讨论：常量方法可以修改数据成员， 只要客户检测不到变化就可以。可是常量方法修改数据成员C++编译器不会同意的！这时我们需要 <code>mutable</code> 限定符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class CTextBlock &#123;</span><br><span class="line">public:</span><br><span class="line">  std::size_t length() const;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">  char *pText;</span><br><span class="line"></span><br><span class="line">  mutable std::size_t textLength;         // these data members may</span><br><span class="line">  mutable bool lengthIsValid;             // always be modified</span><br><span class="line">&#125;;                                     </span><br><span class="line"></span><br><span class="line">std::size_t CTextBlock::length() const&#123;</span><br><span class="line">  if (!lengthIsValid) &#123;</span><br><span class="line">    textLength = std::strlen(pText);</span><br><span class="line">    lengthIsValid = true;          </span><br><span class="line">  &#125;</span><br><span class="line">  return textLength;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h4 id="避免常量-非常量方法的重复"><a href="#避免常量-非常量方法的重复" class="headerlink" title="避免常量/非常量方法的重复"></a>避免常量/非常量方法的重复</h4><p>通常我们需要定义成对的常量和普通方法，只是返回值的修改权限不同。 当然我们不希望重新编写方法的逻辑。最先想到的方法是常量方法调用普通方法，然而这是C++语法不允许的。 于是我们只能用普通方法调用常量方法，并做相应的类型转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const char&amp; operator[](size_t pos) const&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">char&amp; operator[](size_t pos)&#123;</span><br><span class="line">    return const_cast&lt;char&amp;&gt;(</span><br><span class="line">        static_cast&lt;const TextBlock&amp;&gt;(*this)</span><br><span class="line">            [pos]   </span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li><code>*this</code> 的类型是 <code>TextBlock</code>，先把它强制隐式转换为 <code>const TextBlock</code>，这样我们才能调用那个常量方法。</li>
-<li>调用 <code>operator[](size_t) const</code>，得到的返回值类型为 <code>const char&amp;</code>。</li>
-<li>把返回值去掉 <code>const</code> 属性，得到类型为 <code>char&amp;</code> 的返回值。</li>
-</ol>
-<h3 id="Item-4：确保变量的初始化"><a href="#Item-4：确保变量的初始化" class="headerlink" title="Item 4：确保变量的初始化"></a>Item 4：确保变量的初始化</h3><blockquote>
-<p><a href="https://harttle.land/2015/07/22/effective-cpp-4.html" target="_blank" rel="noopener">Item 4：确保变量的初始化</a></p>
-</blockquote>
-<blockquote>
-<p>Item 4: Make sure that objects are initialized before they’re used.</p>
-</blockquote>
-<p>出于效率原因，C++不保证内置类型数据成员的初始化。对于成员变量的内置类型， 会在构造函数进入之前进行初始化。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class C&#123;</span><br><span class="line">    int a;</span><br><span class="line">    B b;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>其中数据成员a是基本数据类型，b是成员对象。有些情况下C++会初始化a，有些情况下则不会。 对象类型的b却是总会被初始化的，它的无参数的构造函数将被调用。</p>
-<blockquote>
-<p>有成员对象的类称为封闭类（C就是一个），如果B没有不带参数的构造函数，则必须在C的构造函数中进行b的初始化。</p>
-</blockquote>
-<p>C++中变量的初始化规则较为复杂，大致的规则是这样的：</p>
-<ul>
-<li>对于C风格的C++：如果初始化会产生额外的负担，则不会初始化。</li>
-<li>对于面向对象风格的C++：类的构造函数中一般都会进行所有成员的初始化（所以你也应该这样做！）。</li>
-<li>全局/静态变量会自动初始化，自动变量（栈里面的）不会自动初始化。</li>
-</ul>
-<h4 id="构造函数中初始化所有成员"><a href="#构造函数中初始化所有成员" class="headerlink" title="构造函数中初始化所有成员"></a>构造函数中初始化所有成员</h4><p>在C++程序设计中的绝大多数场景下，由构造函数上进行变量的初始化。于是规则很简单：在构造函数中初始化所有成员。 值得注意的是，在构造函数进入之前成员已经进行了初始化。下面的代码会使得成员对象构造两次：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class C&#123;</span><br><span class="line">   B b;</span><br><span class="line">public:</span><br><span class="line">   C()&#123; b = B(); &#125;  // 这个是赋值啦</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>正确的做法是在构造函数前给出初始化列表：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class C&#123;</span><br><span class="line">    B b;</span><br><span class="line">    int i;</span><br><span class="line">public:</span><br><span class="line">    C():b(), i()&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line">// 或者</span><br><span class="line">C::C() : b(), i(1)&#123;&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>在构造函数前总是列出所有成员变量，以免遗漏。</p>
-</blockquote>
-<h4 id="类静态变量的初始化"><a href="#类静态变量的初始化" class="headerlink" title="类静态变量的初始化"></a>类静态变量的初始化</h4><p>类的静态变量除了在类声明中进行声明外，还需要在类声明外进行定义。 （static const int是个例外，参见：<a href="https://harttle.land/2015/07/21/effective-cpp-2.html" target="_blank" rel="noopener">Effective C++笔记：避免使用define</a>）</p>
-<blockquote>
-<p>静态变量的生命周期不同于栈或者堆中的对象，从它被构造开始一直存在，直到程序结束。 包括全局变量、命名空间下的变量、类中和函数中定义的static对象。 其中，定义在函数中的称为 local static，其他的称为 non-local static。</p>
-</blockquote>
-<p>多个编译单元的 non-local static 对象初始化次序是不确定的。因此可能会在使用时造成未初始化的问题， 解决办法便是把它变成一个 local static，C++保证了在第一次函数调用遇到该 local static 声明时， 它会被初始化。这也是Singleton(local static) 的典型实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class FileSystem&#123;...&#125;;</span><br><span class="line">FileSystem&amp; tfs()&#123;</span><br><span class="line">		//将在首次进入函数时构造</span><br><span class="line">		static FileSystem fs;</span><br><span class="line">		return fs;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>以下提供较完整的Signleton C++实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Singleton&#123;</span><br><span class="line">private:</span><br><span class="line">    Singleton()&#123;&#125;</span><br><span class="line">    Singleton(const Singleton&amp;);</span><br><span class="line">    Singleton&amp; operator=(const Singleton&amp; rhs);</span><br><span class="line">public:</span><br><span class="line">    static Singleton&amp; getInstance()&#123;</span><br><span class="line">        static Singleton instance;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>一旦声明了任何形式的构造函数（包括拷贝构造函数），编译器将不会生成默认的无参构造函数。所以上述的无参数的构造函数可以省略。</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1320,7 +1209,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1331,7 +1220,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1342,7 +1231,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
